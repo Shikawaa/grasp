@@ -45,19 +45,49 @@ export async function signOut() {
  * Send password reset email
  */
 export async function forgetPassword(email: string, redirectTo?: string) {
-  return (authClient as any).forgetPassword({
-    email,
-    redirectTo: redirectTo || `${window.location.origin}/reset-password`,
-  });
+  try {
+    const res = await fetch("/api/auth/request-password-reset", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        redirectTo: redirectTo || `${window.location.origin}/reset-password`,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { error: { message: data?.message || "Failed to send reset email" } };
+    }
+    return { data };
+  } catch (err: any) {
+    return { error: { message: err?.message || "Failed to send reset email" } };
+  }
 }
 
 /**
  * Reset password using token
  */
 export async function resetPassword(newPassword: string, token: string) {
-  return (authClient as any).resetPassword({
-    newPassword,
-    token,
-  });
+  try {
+    const res = await fetch("/api/auth/reset-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        newPassword,
+        token,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { error: { message: data?.message || "Failed to reset password" } };
+    }
+    return { data };
+  } catch (err: any) {
+    return { error: { message: err?.message || "Failed to reset password" } };
+  }
 }
 
