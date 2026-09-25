@@ -3,10 +3,11 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Public routes: /sign-in, /sign-up, /auth/*, /api/auth/*, /share/*
+  // Public routes: /sign-in, /sign-up, /reset-password, /auth/*, /api/auth/*, /share/*
   const isPublicRoute =
     pathname === "/sign-in" ||
     pathname === "/sign-up" ||
+    pathname === "/reset-password" ||
     pathname.startsWith("/auth/") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/share/");
