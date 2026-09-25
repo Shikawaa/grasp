@@ -52,14 +52,14 @@ export async function POST(request: Request) {
         const result = await fetchYouTubeTranscript(videoId);
         transcript = result.transcript;
         title = result.title;
-    } catch (err) {
+    } catch (err: any) {
         if (err instanceof TranscriptError) {
             const status = err.code === "NOT_FOUND" ? 404 : 422;
             return NextResponse.json({ error: err.message }, { status });
         }
         console.error("Transcript error:", err);
         return NextResponse.json(
-            { error: "Failed to fetch transcript. Please try again." },
+            { error: `Transcript extraction failed: ${err?.message || "Please check SUPADATA_API_KEY or video availability"}` },
             { status: 502 }
         );
     }
@@ -71,15 +71,15 @@ export async function POST(request: Request) {
         const raw = await summarize(transcript, "youtube");
         if (!raw) {
             return NextResponse.json(
-                { error: "Could not generate summary. Please try again." },
+                { error: "Could not generate summary (empty AI response)." },
                 { status: 502 }
             );
         }
         ({ title: aiTitle, summary } = extractTitle(raw, title));
-    } catch (err) {
+    } catch (err: any) {
         console.error("Gemini error:", err);
         return NextResponse.json(
-            { error: "Could not generate summary. Please try again." },
+            { error: `Gemini AI error: ${err?.message || "Please check GEMINI_API_KEY"}` },
             { status: 502 }
         );
     }

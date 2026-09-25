@@ -57,9 +57,9 @@ export async function POST(request: Request) {
         const result = await geminiModel.generateContent(fullPrompt);
         reply = result.response.text();
         if (!reply) throw new Error("Empty response from Gemini");
-    } catch (err) {
+    } catch (err: any) {
         console.error("[chat/contextual] Gemini error:", err);
-        return NextResponse.json({ error: "Failed to generate reply" }, { status: 502 });
+        return NextResponse.json({ error: `Gemini AI error: ${err?.message || "Failed to generate reply"}` }, { status: 502 });
     }
 
     // Persist both messages in Postgres
