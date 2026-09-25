@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { signInWithPassword, signInWithGoogle } from "@/lib/auth/client";
+import { signInWithPassword, signInWithGoogle, forgetPassword } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -24,7 +24,9 @@ export default function SignInPage() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
+    const [forgotLoading, setForgotLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [info, setInfo] = useState<string | null>(null);
 
     const handleEmailSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -52,6 +54,29 @@ export default function SignInPage() {
             setGoogleLoading(false);
         }
     };
+
+    const handleForgotPassword = async () => {
+        if (!email) {
+            setError("Please enter your email above to receive a reset link");
+            return;
+        }
+        setForgotLoading(true);
+        setError(null);
+        setInfo(null);
+        try {
+            const res = await forgetPassword(email);
+            if (res?.error) {
+                setError(res.error.message || "Failed to send reset link");
+            } else {
+                setInfo("Check your email: a password reset link has been sent!");
+            }
+        } catch (err: any) {
+            setError(err?.message || "Failed to request password reset");
+        } finally {
+            setForgotLoading(false);
+        }
+    };
+
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-[#080914] px-4">
@@ -118,7 +143,17 @@ export default function SignInPage() {
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <Label htmlFor="password" className="text-[#F4F4F5]">Password</Label>
+                                <div className="flex items-center justify-between">
+                                    <Label htmlFor="password" className="text-[#F4F4F5]">Password</Label>
+                                    <button
+                                        type="button"
+                                        onClick={handleForgotPassword}
+                                        disabled={forgotLoading}
+                                        className="text-xs text-[#818CF8] hover:text-[#A5B4FC] hover:underline disabled:opacity-50"
+                                    >
+                                        {forgotLoading ? "Sending..." : "Forgot password?"}
+                                    </button>
+                                </div>
                                 <Input
                                     id="password"
                                     type="password"
@@ -132,6 +167,10 @@ export default function SignInPage() {
 
                             {error && (
                                 <p className="text-sm text-destructive">{error}</p>
+                            )}
+
+                            {info && (
+                                <p className="text-sm text-emerald-400 bg-emerald-950/40 border border-emerald-800/50 rounded p-2">{info}</p>
                             )}
 
                             <Button type="submit" className="w-full bg-[#4F46E5] hover:bg-[#4338CA]" disabled={loading}>

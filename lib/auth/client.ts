@@ -50,3 +50,14 @@ export async function forgetPassword(email: string, redirectTo?: string) {
     redirectTo: redirectTo || `${window.location.origin}/reset-password`,
   });
 }
+
+/**
+ * Reset password using token
+ */
+export async function resetPassword(newPassword: string, token: string) {
+  return (authClient as any).resetPassword({
+    newPassword,
+    token,
+  });
+}
+
