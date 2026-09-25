@@ -1,21 +1,24 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 import { LibraryContent } from "@/components/library-content";
 import type { ContentItem } from "@/components/content-card";
 
 export default async function LibraryPage() {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) redirect("/sign-in");
 
-    const { data: contents } = await supabase
-        .from("contents")
-        .select("id, title, type, source_url, created_at")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(200);
+    const result = await query(
+        `SELECT id, title, type, source_url, created_at 
+         FROM public.contents 
+         WHERE user_id = $1 
+         ORDER BY created_at DESC 
+         LIMIT 200`,
+        [user.id],
+        user.id
+    );
 
-    const items = (contents ?? []) as ContentItem[];
+    const items = (result.rows ?? []) as ContentItem[];
 
     return (
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 import { generateFlashcards } from "@/lib/generateFlashcards";
 
 export async function POST(request: Request) {
@@ -10,26 +11,25 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Missing contentId" }, { status: 400 });
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Verify ownership AND fetch summary in one query
-    const { data: content } = await supabase
-        .from("contents")
-        .select("id, summary")
-        .eq("id", contentId)
-        .eq("user_id", user.id)
-        .single();
+    const checkRes = await query(
+        "SELECT id, summary FROM public.contents WHERE id = $1 AND user_id = $2",
+        [contentId, user.id],
+        user.id
+    );
 
-    if (!content) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (checkRes.rows.length === 0) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const content = checkRes.rows[0];
 
     if (!content.summary) {
         return NextResponse.json({ error: "Content has no summary to generate flashcards from" }, { status: 422 });
     }
 
-    // Generate — pass supabase client to preserve auth context
-    await generateFlashcards({ contentId, summary: content.summary, supabase });
+    // Generate flashcards using user context
+    await generateFlashcards({ contentId, summary: content.summary, userId: user.id });
 
     return NextResponse.json({ success: true });
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -9,23 +10,24 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "Missing contentId" }, { status: 400 });
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { data, error } = await supabase
-        .from("messages")
-        .select("id, role, body, created_at")
-        .eq("content_id", contentId)
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: true })
-        .limit(50);
+    try {
+        const result = await query(
+            `SELECT id, role, body, created_at 
+             FROM public.messages 
+             WHERE content_id = $1 AND user_id = $2 
+             ORDER BY created_at ASC 
+             LIMIT 50`,
+            [contentId, user.id],
+            user.id
+        );
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json(result.rows ?? []);
+    } catch (error: any) {
+        return NextResponse.json({ error: error?.message || "DB error" }, { status: 500 });
     }
-
-    return NextResponse.json(data ?? []);
 }
 
 export async function DELETE(request: Request) {
@@ -36,19 +38,18 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ error: "Missing contentId" }, { status: 400 });
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { error } = await supabase
-        .from("messages")
-        .delete()
-        .eq("content_id", contentId)
-        .eq("user_id", user.id);
+    try {
+        await query(
+            "DELETE FROM public.messages WHERE content_id = $1 AND user_id = $2",
+            [contentId, user.id],
+            user.id
+        );
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        return NextResponse.json({ error: error?.message || "DB error" }, { status: 500 });
     }
-
-    return NextResponse.json({ success: true });
 }

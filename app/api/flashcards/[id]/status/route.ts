@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 
 const VALID_STATUSES = ["new", "known", "review"] as const;
 type Status = typeof VALID_STATUSES[number];
@@ -17,30 +18,32 @@ export async function PATCH(
         return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Verify ownership via JOIN with contents
-    const { data: card } = await supabase
-        .from("flashcards")
-        .select("id, content_id, contents!inner(user_id)")
-        .eq("id", flashcardId)
-        .single();
+    const checkRes = await query(
+        `SELECT f.id 
+         FROM public.flashcards f
+         JOIN public.contents c ON c.id = f.content_id
+         WHERE f.id = $1 AND c.user_id = $2`,
+        [flashcardId, user.id],
+        user.id
+    );
 
-    if (!card) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-    const cardWithContent = card as typeof card & { contents: { user_id: string } };
-    if (cardWithContent.contents?.user_id !== user.id) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (checkRes.rows.length === 0) {
+        return NextResponse.json({ error: "Not found or forbidden" }, { status: 404 });
     }
 
-    const { error } = await supabase
-        .from("flashcards")
-        .update({ status })
-        .eq("id", flashcardId);
+    try {
+        await query(
+            "UPDATE public.flashcards SET status = $1 WHERE id = $2",
+            [status, flashcardId],
+            user.id
+        );
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-    return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        return NextResponse.json({ error: error?.message || "DB error" }, { status: 500 });
+    }
 }

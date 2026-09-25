@@ -1,6 +1,5 @@
 import { geminiModel } from "@/lib/gemini";
-import { createClient } from "@/lib/supabase/server";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { query } from "@/lib/db";
 
 const FLASHCARD_PROMPT = `You are a learning assistant. Based on the following summary, generate flashcards to test knowledge of the key concepts.
 
@@ -20,13 +19,10 @@ Write in English.`;
 interface FlashcardInput {
     contentId: string;
     summary: string;
-    supabase?: SupabaseClient;
+    userId?: string;
 }
 
-export async function generateFlashcards({ contentId, summary, supabase: passedClient }: FlashcardInput): Promise<void> {
-    // Use passed client (has auth context from request) or create a new one
-    const supabase = passedClient ?? createClient();
-
+export async function generateFlashcards({ contentId, summary, userId }: FlashcardInput): Promise<void> {
     try {
         const result = await geminiModel.generateContent(`${FLASHCARD_PROMPT}\n\n---\n\n${summary}`);
         const raw = result.response.text();
@@ -60,9 +56,15 @@ export async function generateFlashcards({ contentId, summary, supabase: passedC
 
         if (capped.length === 0) return;
 
-        const { error } = await supabase.from("flashcards").insert(capped);
-        if (error) console.error("generateFlashcards: Supabase insert error", error);
+        for (const card of capped) {
+            await query(
+                `INSERT INTO public.flashcards (content_id, question, answer, status)
+                 VALUES ($1, $2, $3, $4)`,
+                [card.content_id, card.question, card.answer, card.status],
+                userId
+            );
+        }
     } catch (err) {
-        console.error("generateFlashcards: Gemini error", err);
+        console.error("generateFlashcards: Gemini/DB error", err);
     }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { summarize, extractTitle } from "@/lib/gemini";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 import { generateFlashcards } from "@/lib/generateFlashcards";
 
 const URL_REGEX = /^https?:\/\/.+/i;
@@ -87,7 +88,7 @@ export async function POST(request: Request) {
         );
     }
 
-    // ── 3. Summarise with Gemini 2.5 Flash ────────────────────────────────
+    // ── 3. Summarise with Gemini ──────────────────────────────────
     let summary: string;
     let aiTitle: string = title;
     try {
@@ -106,38 +107,32 @@ export async function POST(request: Request) {
             { status: 502 }
         );
     }
-    // ── 4. Save to Supabase ───────────────────────────────────────
-    try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
 
+    // ── 4. Save to Postgres ───────────────────────────────────────
+    try {
+        const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
         }
 
-        const { data, error } = await supabase
-            .from("contents")
-            .insert({
-                user_id: user.id,
-                title: aiTitle,
-                type: "article",
-                source_url: url,
-                raw_text: rawText,
-                summary,
-                is_public: false,
-            })
-            .select("id")
-            .single();
+        const result = await query(
+            `INSERT INTO public.contents (user_id, title, type, source_url, raw_text, summary, is_public)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING id`,
+            [user.id, aiTitle, "article", url, rawText, summary, false],
+            user.id
+        );
 
-        if (error || !data) {
-            console.error("Supabase insert error:", error);
+        if (result.rows.length === 0) {
             return NextResponse.json({ error: "Failed to save content." }, { status: 500 });
         }
 
-        // Fire & forget — don't block the response
-        generateFlashcards({ contentId: data.id, summary, supabase }).catch(console.error);
+        const contentId = result.rows[0].id;
 
-        return NextResponse.json({ id: data.id }, { status: 200 });
+        // Fire & forget — don't block the response
+        generateFlashcards({ contentId, summary, userId: user.id }).catch(console.error);
+
+        return NextResponse.json({ id: contentId }, { status: 200 });
     } catch (err) {
         console.error("DB error:", err);
         return NextResponse.json({ error: "Failed to save content." }, { status: 500 });

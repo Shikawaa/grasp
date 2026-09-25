@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { signUp, signInWithGoogle } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -44,17 +44,10 @@ export default function SignUpPage() {
 
         setLoading(true);
 
-        const supabase = createClient();
-        const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                emailRedirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
+        const res = await signUp(email, password);
 
-        if (error) {
-            setError(error.message);
+        if (res.error) {
+            setError(res.error.message || "Failed to create account");
             setLoading(false);
         } else {
             setSuccess(true);
@@ -65,16 +58,10 @@ export default function SignUpPage() {
         setGoogleLoading(true);
         setError(null);
 
-        const supabase = createClient();
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
+        const res = await signInWithGoogle(`${window.location.origin}/`);
 
-        if (error) {
-            setError(error.message);
+        if (res.error) {
+            setError(res.error.message || "Google sign in failed");
             setGoogleLoading(false);
         }
     };

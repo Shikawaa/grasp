@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
+import { uploadFile } from "@/lib/storage";
 import { execFile } from "child_process";
 import { readFileSync, unlinkSync } from "fs";
 import path from "path";
@@ -30,11 +32,7 @@ function generateTTS(text: string): Promise<{ file: string; size: number }> {
 
 export async function POST(req: Request) {
     try {
-        const supabase = createClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-
+        const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
@@ -47,16 +45,17 @@ export async function POST(req: Request) {
         }
 
         // 1. Verify content ownership
-        const { data: content, error: authError } = await supabase
-            .from("contents")
-            .select("id, summary, audio_url")
-            .eq("id", content_id)
-            .eq("user_id", user.id)
-            .single();
+        const contentRes = await query(
+            "SELECT id, summary, audio_url FROM public.contents WHERE id = $1 AND user_id = $2",
+            [content_id, user.id],
+            user.id
+        );
 
-        if (authError || !content) {
+        if (contentRes.rows.length === 0) {
             return NextResponse.json({ error: "Content not found or unauthorized" }, { status: 404 });
         }
+
+        const content = contentRes.rows[0];
 
         // 2. Return existing if present (idempotent), unless forcing regeneration
         if (content.audio_url && !force_regenerate) {
@@ -85,7 +84,7 @@ export async function POST(req: Request) {
         try {
             audioBuffer = readFileSync(ttsResult.file);
             unlinkSync(ttsResult.file);
-        } catch (fsError: any) {
+        } catch {
             return NextResponse.json({ error: "Failed to read generated audio file" }, { status: 500 });
         }
 
@@ -96,34 +95,24 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Generated audio is not valid MP3" }, { status: 500 });
         }
 
-        // 7. Upload to Supabase Storage
+        // 7. Upload to Neon Object Storage
         const filePath = `${user.id}/${content.id}.mp3`;
-        const { error: uploadError } = await supabase.storage
-            .from("audio")
-            .upload(filePath, new Uint8Array(audioBuffer), {
-                contentType: "audio/mpeg",
-                upsert: true,
-            });
-
-        if (uploadError) {
-            console.error("[Audio] Upload error:", uploadError);
+        let publicUrl: string;
+        try {
+            publicUrl = await uploadFile("audio", filePath, audioBuffer, "audio/mpeg");
+        } catch (uploadError) {
+            console.error("[Audio] S3 upload error:", uploadError);
             return NextResponse.json({ error: "Failed to upload audio to storage" }, { status: 500 });
         }
 
-        // 8. Get public URL and save to DB
-        const { data: publicUrlData } = supabase.storage
-            .from("audio")
-            .getPublicUrl(filePath);
-
-        const publicUrl = publicUrlData.publicUrl;
-
-        const { error: updateError } = await supabase
-            .from("contents")
-            .update({ audio_url: publicUrl })
-            .eq("id", content.id)
-            .eq("user_id", user.id);
-
-        if (updateError) {
+        // 8. Save audio URL to DB
+        try {
+            await query(
+                "UPDATE public.contents SET audio_url = $1 WHERE id = $2 AND user_id = $3",
+                [publicUrl, content.id, user.id],
+                user.id
+            );
+        } catch (updateError) {
             console.error("[Audio] DB update error:", updateError);
             return NextResponse.json({ error: "Failed to save audio URL" }, { status: 500 });
         }

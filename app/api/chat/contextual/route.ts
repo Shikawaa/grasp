@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 import { geminiModel } from "@/lib/gemini";
 
 const SYSTEM_PROMPT = `You are a learning assistant. Answer questions strictly based on the following content summary. Be concise and pedagogical. If the answer is not in the summary, say so honestly. Always respond in English.`;
@@ -14,17 +15,17 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Missing content_id or user_message" }, { status: 400 });
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Fetch summary server-side — never trust the client
-    const { data: content } = await supabase
-        .from("contents")
-        .select("id, summary")
-        .eq("id", content_id)
-        .eq("user_id", user.id)
-        .single();
+    const contentRes = await query(
+        "SELECT id, summary FROM public.contents WHERE id = $1 AND user_id = $2 LIMIT 1",
+        [content_id, user.id],
+        user.id
+    );
+
+    const content = contentRes.rows[0];
 
     if (!content) return NextResponse.json({ error: "Content not found" }, { status: 404 });
 
@@ -61,15 +62,20 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to generate reply" }, { status: 502 });
     }
 
-    // Persist both messages in Supabase
-    const { error: insertError } = await supabase.from("messages").insert([
-        { content_id, user_id: user.id, role: "user", body: user_message },
-        { content_id, user_id: user.id, role: "assistant", body: reply },
-    ]);
-
-    if (insertError) {
+    // Persist both messages in Postgres
+    try {
+        await query(
+            "INSERT INTO public.messages (content_id, user_id, role, body) VALUES ($1, $2, $3, $4)",
+            [content_id, user.id, "user", user_message],
+            user.id
+        );
+        await query(
+            "INSERT INTO public.messages (content_id, user_id, role, body) VALUES ($1, $2, $3, $4)",
+            [content_id, user.id, "assistant", reply],
+            user.id
+        );
+    } catch (insertError) {
         console.error("[chat/contextual] DB insert error:", insertError);
-        // Non-fatal — still return the reply
     }
 
     return NextResponse.json({ reply });

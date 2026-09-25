@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { summarize, extractTitle } from "@/lib/gemini";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
+import { uploadFile } from "@/lib/storage";
 import { generateFlashcards } from "@/lib/generateFlashcards";
 import { extractText, getDocumentProxy } from "unpdf";
 
@@ -10,8 +12,7 @@ const MAX_CHARS = 100_000;
 
 export async function POST(request: Request) {
     // ── 1. Auth ───────────────────────────────────────────────────
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) {
         return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
@@ -69,7 +70,7 @@ export async function POST(request: Request) {
     // Extract title from filename
     const title = file.name.replace(/\.pdf$/i, "").trim() || "Untitled PDF";
 
-    // ── 4. Summarize with Gemini 2.5 Flash ────────────────────────────────
+    // ── 4. Summarize with Gemini ──────────────────────────────────
     let summary: string;
     let aiTitle: string = title;
     try {
@@ -86,46 +87,36 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Could not generate summary. Please try again." }, { status: 502 });
     }
 
-    // ── 5. Save to Supabase ───────────────────────────────────────
+    // ── 5. Save to Postgres ───────────────────────────────────────
     let contentId: string;
     try {
-        const { data, error } = await supabase
-            .from("contents")
-            .insert({
-                user_id: user.id,
-                title: aiTitle,
-                type: "pdf",
-                source_url: null,
-                raw_text: rawText,
-                summary,
-                is_public: false,
-            })
-            .select("id")
-            .single();
+        const result = await query(
+            `INSERT INTO public.contents (user_id, title, type, source_url, raw_text, summary, is_public)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING id`,
+            [user.id, aiTitle, "pdf", null, rawText, summary, false],
+            user.id
+        );
 
-        if (error || !data) {
-            console.error("Supabase insert error:", error);
+        if (result.rows.length === 0) {
             return NextResponse.json({ error: "Failed to save content." }, { status: 500 });
         }
 
-        contentId = data.id;
+        contentId = result.rows[0].id;
     } catch (err) {
         console.error("DB error:", err);
         return NextResponse.json({ error: "Failed to save content." }, { status: 500 });
     }
 
-    // ── 6. Upload PDF to Supabase Storage ─────────────────────────
+    // ── 6. Upload PDF to Neon Object Storage ───────────────────────
     try {
-        await supabase.storage
-            .from("pdfs")
-            .upload(`${user.id}/${contentId}.pdf`, buffer, { contentType: "application/pdf" });
-        // Storage upload failure is non-fatal — content is already saved
+        await uploadFile("pdfs", `${user.id}/${contentId}.pdf`, buffer, "application/pdf");
     } catch (err) {
         console.error("Storage upload error (non-fatal):", err);
     }
 
     // Fire & forget — don't block the response
-    generateFlashcards({ contentId, summary, supabase }).catch(console.error);
+    generateFlashcards({ contentId, summary, userId: user.id }).catch(console.error);
 
     return NextResponse.json({ id: contentId }, { status: 200 });
 }

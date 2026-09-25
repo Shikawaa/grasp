@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 import { ArrowLeft } from "lucide-react";
 import { FlipCardReview } from "@/components/flip-card-review";
 
@@ -16,29 +17,26 @@ export default async function ReviewPage({
 }: {
     params: { id: string };
 }) {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) redirect("/sign-in");
 
     // Verify content ownership
-    const { data: content } = await supabase
-        .from("contents")
-        .select("id, title")
-        .eq("id", params.id)
-        .eq("user_id", user.id)
-        .single();
+    const contentRes = await query(
+        "SELECT id, title FROM public.contents WHERE id = $1 AND user_id = $2 LIMIT 1",
+        [params.id, user.id],
+        user.id
+    );
 
-    if (!content) redirect("/");
+    if (contentRes.rows.length === 0) redirect("/");
 
     // Fetch only cards that need reviewing
-    const { data: flashcardData } = await supabase
-        .from("flashcards")
-        .select("id, question, answer, status")
-        .eq("content_id", params.id)
-        .in("status", ["new", "review"])
-        .order("created_at", { ascending: true });
+    const flashcardRes = await query<Flashcard>(
+        "SELECT id, question, answer, status FROM public.flashcards WHERE content_id = $1 AND status IN ('new', 'review') ORDER BY created_at ASC",
+        [params.id],
+        user.id
+    );
 
-    const flashcards = (flashcardData ?? []) as Flashcard[];
+    const flashcards = flashcardRes.rows;
 
     // All cards already known
     if (flashcards.length === 0) {

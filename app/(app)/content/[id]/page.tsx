@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
+import { getSignedPdfUrl } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, ArrowLeft, FileText } from "lucide-react";
 import { ContentTitleEditor } from "@/components/content-title-editor";
@@ -42,38 +44,44 @@ export default async function ContentPage({
 }: {
     params: { id: string };
 }) {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) redirect("/sign-in");
 
-    const [{ data }, { data: flashcardData }] = await Promise.all([
-        supabase
-            .from("contents")
-            .select("id, title, type, source_url, summary, created_at, user_id, share_token, audio_url")
-            .eq("id", params.id)
-            .single(),
-        supabase
-            .from("flashcards")
-            .select("id, question, answer, status")
-            .eq("content_id", params.id)
-            .order("created_at", { ascending: true }),
+    const [contentRes, flashcardsRes] = await Promise.all([
+        query<ContentRow>(
+            `SELECT id, title, type, source_url, summary, created_at, user_id, share_token, audio_url
+             FROM public.contents
+             WHERE id = $1 AND user_id = $2
+             LIMIT 1`,
+            [params.id, user.id],
+            user.id
+        ),
+        query<Flashcard>(
+            `SELECT id, question, answer, status
+             FROM public.flashcards
+             WHERE content_id = $1
+             ORDER BY created_at ASC`,
+            [params.id],
+            user.id
+        ),
     ]);
 
-    const content = data as ContentRow | null;
+    const content = contentRes.rows[0] || null;
 
-    if (!content || content.user_id !== user.id) {
+    if (!content) {
         redirect("/");
     }
 
-    const flashcards = (flashcardData ?? []) as Flashcard[];
+    const flashcards = flashcardsRes.rows;
 
-    // For PDFs: generate a signed URL from Supabase Storage (valid 1 hour)
+    // For PDFs: generate a presigned URL from Neon Object Storage (valid 1 hour)
     let pdfSignedUrl: string | null = null;
     if (content.type === "pdf") {
-        const { data: signed } = await supabase.storage
-            .from("pdfs")
-            .createSignedUrl(`${user.id}/${content.id}.pdf`, 3600);
-        pdfSignedUrl = signed?.signedUrl ?? null;
+        try {
+            pdfSignedUrl = await getSignedPdfUrl(`${user.id}/${content.id}.pdf`, 3600);
+        } catch (err) {
+            console.error("Error generating presigned PDF URL:", err);
+        }
     }
 
     const displayTitle = content.title ?? content.source_url ?? "Untitled";

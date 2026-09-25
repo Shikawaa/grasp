@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/server";
+import { query } from "@/lib/db";
 import { ArrowRight } from "lucide-react";
 
 function typeLabel(type: string | null): string {
@@ -28,19 +29,21 @@ function formatRelativeDate(dateString: string): string {
 }
 
 export default async function DashboardPage() {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) redirect("/sign-in");
 
     // Fetch top 5: first is "Continue learning", next 4 are "Recent imports"
-    const { data: contents } = await supabase
-        .from("contents")
-        .select("id, title, type, source_url, created_at, summary")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
+    const result = await query(
+        `SELECT id, title, type, source_url, created_at, summary 
+         FROM public.contents 
+         WHERE user_id = $1 
+         ORDER BY created_at DESC 
+         LIMIT 5`,
+        [user.id],
+        user.id
+    );
 
-    const items = contents ?? [];
+    const items = result.rows ?? [];
     const continueItem = items[0] ?? null;
     const recentItems = items.slice(1, 5);
 

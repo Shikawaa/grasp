@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, FileText } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { PublicShareSummary } from "@/components/public-share-summary";
 import { PublicShareFlashcards } from "@/components/public-share-flashcards";
 
@@ -37,34 +37,37 @@ export default async function PublicSharePage({
 }: {
     params: { token: string };
 }) {
-    // Note: this assumes Supabase policies allow public select where share_token matches.
-    const supabase = createClient();
-    
-    // 1. Fetch content by share token
-    const { data } = await supabase
-        .from("contents")
-        .select("id, title, type, source_url, summary, created_at")
-        .eq("share_token", params.token)
-        .single();
-        
-    const content = data as ContentRow | null;
+    // 1. Fetch content via dedicated SECURITY DEFINER function
+    let content: ContentRow | null = null;
+    try {
+        const contentRes = await query<ContentRow>(
+            "SELECT id, title, type, source_url, summary, created_at FROM get_public_share_content($1::uuid)",
+            [params.token]
+        );
+        content = contentRes.rows[0] || null;
+    } catch (err) {
+        console.error("Error fetching shared content:", err);
+    }
 
     if (!content) {
         notFound();
     }
 
-    // 2. Fetch flashcards
-    const { data: flashcardData } = await supabase
-        .from("flashcards")
-        .select("id, question, answer, status")
-        .eq("content_id", content.id)
-        .order("created_at", { ascending: true });
+    // 2. Fetch public flashcards for this shared content
+    let flashcards: Flashcard[] = [];
+    try {
+        const flashcardsRes = await query<Flashcard>(
+            `SELECT id, question, answer, status 
+             FROM public.flashcards 
+             WHERE content_id = $1 
+             ORDER BY created_at ASC`,
+            [content.id]
+        );
+        flashcards = flashcardsRes.rows;
+    } catch (err) {
+        console.error("Error fetching shared flashcards:", err);
+    }
 
-    const flashcards = (flashcardData ?? []) as Flashcard[];
-    
-    // For PDFs: technically getting signedUrl requires ownership usually.
-    // In a purely public context, generating signed URLs for PDF storage might fail if RLS for storage isn't public.
-    // We will skip signed PDF links for the public share page or just attempt it safely if it allows anon reads.
     const displayTitle = content.title ?? content.source_url ?? "Untitled";
     const createdDate = new Date(content.created_at).toLocaleDateString("en-US", {
         year: "numeric", month: "long", day: "numeric"
