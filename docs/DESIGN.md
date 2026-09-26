@@ -338,11 +338,11 @@ Après la dernière carte : « Top / Bof / Il y a une erreur » en manuscrit, pu
 
 ## Logo
 
-Le logo est l'élément stable de la DA « Le carnet » : sobre, à l'encre, sans effet. Le carnet vit dans le logo complet à travers un seul geste, le coup de surligneur.
+Le logo est l'élément stable de la DA « Le carnet » : sobre, à l'encre, sans effet. Le carnet vit dans le logo complet à travers un seul geste, le coup de surligneur. Le symbole, le mot vectorisé et ce geste forment un SVG unique, dimensionné par le token `--logo-height` et réutilisé sans recomposition dans l'interface, le favicon et l'image d'aperçu.
 
 ### Symbole
 
-Demi-G + point. Le fichier `public/brand/grasp-symbol.svg` est la source de vérité : ne jamais redessiner ni modifier le tracé.
+Demi-G + point. Le fichier `public/brand/grasp-symbol.svg` conserve le tracé source, avec un `viewBox` recadré au plus près du dessin.
 
 - Couleur unique : encre `#1F1B16` (token encre de ce document s'il existe). Sur fond encre, utiliser le papier `#F7F2E8`.
 - Jamais en couleur de surligneur, jamais d'indigo (l'ancien `#4F46E5` de la V1 est retiré).
@@ -350,9 +350,11 @@ Demi-G + point. Le fichier `public/brand/grasp-symbol.svg` est la source de vér
 
 ### Logo complet
 
-Symbole + mot « grasp », en minuscules, en Fraunces 500, couleur encre.
+Symbole + mot « grasp », en minuscules vectorisées depuis Fraunces 500, couleur encre.
 
-- Proportions : hauteur du symbole ≈ 0,75 × la taille du texte ; espace entre symbole et mot ≈ 0,3 × la taille du texte ; symbole et mot centrés verticalement.
+- Alignement : le bas du symbole repose sur la ligne de base du mot. Son haut suit la hauteur d'x avec un dépassement optique compris entre 2 et 4 %. Il n'est jamais centré verticalement sur la boîte du mot, car les jambages du `g` et du `p` fausseraient cet alignement.
+- Espace entre le symbole et le mot : environ `0,3em`.
+- Le symbole et le mot utilisent exactement l'encre `--ink`. L'épaisseur du symbole reste visuellement cohérente avec Fraunces 500.
 - Approche du mot légèrement serrée (letter-spacing ≈ −0,02 em).
 - Coup de surligneur lavande `#CFC7E8` derrière le mot uniquement, jamais derrière le symbole. Épaisseur ≈ 50 % de la taille du texte, posé sur la moitié basse des lettres, débordant d'environ 0,15 em de chaque côté. Tracé légèrement ondulé, extrémités arrondies :
   `<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M3 12 C 60 7, 130 15, 197 9" stroke="#CFC7E8" stroke-width="12" fill="none" stroke-linecap="round"/></svg>`
@@ -362,6 +364,4 @@ Symbole + mot « grasp », en minuscules, en Fraunces 500, couleur encre.
 
 ### Favicon et icônes
 
-- `icon.svg` : carré encre à coins arrondis, symbole papier.
-- `favicon.ico` : 16, 32 et 48 px, pour les navigateurs qui ne lisent pas le SVG.
-- `apple-icon.png` : 180 px, carré plein sans arrondi (iOS arrondit lui-même), symbole agrandi.
+Le favicon et l'icône Apple réutilisent le SVG complet `public/brand/grasp-logo.svg`. Aucune variante recomposée du logo n'est maintenue séparément.

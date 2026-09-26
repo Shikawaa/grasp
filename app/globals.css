@@ -131,50 +131,10 @@ a {
 }
 
 .wordmark {
-  display: inline-flex;
+  display: block;
+  width: auto;
+  height: var(--logo-height);
   flex-shrink: 0;
-  align-items: center;
-  gap: 0.3em;
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-size: var(--font-title-mobile);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: var(--line-title-mobile);
-}
-
-.wordmark__symbol {
-  position: relative;
-  width: 0.75em;
-  height: 0.75em;
-  flex: 0 0 0.75em;
-}
-
-.wordmark__name {
-  position: relative;
-  z-index: 0;
-}
-
-.wordmark__name > span {
-  position: relative;
-  z-index: 1;
-}
-
-.wordmark__highlight {
-  position: absolute;
-  z-index: 0;
-  right: -0.15em;
-  bottom: -0.02em;
-  left: -0.15em;
-  width: calc(100% + 0.3em);
-  height: 0.5em;
-  overflow: visible;
-}
-
-.wordmark__highlight path {
-  fill: none;
-  stroke: var(--highlight-lavender-gray);
-  stroke-linecap: round;
-  stroke-width: 12;
 }
 
 .language-switch form {
@@ -1881,12 +1841,6 @@ a {
   padding-top: var(--space-6);
 }
 
-.welcome-header .wordmark,
-.welcome-footer .wordmark {
-  font-size: var(--font-title-mobile);
-  line-height: var(--line-title-mobile);
-}
-
 @media (max-width: 63.999rem) {
   .welcome-title {
     max-width: 100%;
@@ -2086,14 +2040,6 @@ a {
 
   .hero-front-group {
     top: var(--hero-front-card-offset-wide-phone);
-  }
-}
-
-@media (min-width: 64rem) {
-  .welcome-header .wordmark,
-  .welcome-footer .wordmark {
-    font-size: var(--font-title-desktop);
-    line-height: var(--line-title-desktop);
   }
 }
 

@@ -26,6 +26,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: siteUrl ? new URL(siteUrl) : undefined,
     title: dictionary.metadata.title,
     description: dictionary.metadata.description,
+    icons: {
+      icon: [{ url: "/brand/grasp-logo.svg", type: "image/svg+xml" }],
+      shortcut: "/brand/grasp-logo.svg",
+      apple: "/brand/grasp-logo.svg",
+    },
   };
 }
 
