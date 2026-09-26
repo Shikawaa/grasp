@@ -4,6 +4,7 @@ import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
 import { PenCircle, PenStrike } from "@/components/carnet/pen-gestures";
 import { Tape } from "@/components/carnet/tape";
+import styles from "@/styles/components.module.css";
 
 export type CardTrueFalseCopy = {
   label: string;
@@ -23,20 +24,22 @@ export function CardTrueFalse({
   copy: CardTrueFalseCopy;
 }) {
   return (
-    <Page className={clsx("review-preview", className)}>
-      <div className="review-preview__tape">
+    <Page className={clsx(styles["review-preview"], className)}>
+      <div className={styles["review-preview__tape"]}>
         <Tape tone="lavender">{copy.theme}</Tape>
       </div>
-      <header className="review-preview__meta">
+      <header className={styles["review-preview__meta"]}>
         <span>{copy.label}</span>
         <span>{copy.progress}</span>
       </header>
-      <p className="review-preview__question">{copy.question}</p>
-      <div className="review-preview__answers" aria-label={copy.label}>
-        <span className="review-preview__answer review-preview__answer--wrong">
+      <p className={styles["review-preview__question"]}>{copy.question}</p>
+      <div className={styles["review-preview__answers"]} aria-label={copy.label}>
+        <span
+          className={`${styles["review-preview__answer"]} ${styles["review-preview__answer--wrong"]}`}
+        >
           <PenStrike>{copy.wrongAnswer}</PenStrike>
         </span>
-        <span className="review-preview__answer">
+        <span className={styles["review-preview__answer"]}>
           <PenCircle>
             <Highlight tone="lavender">{copy.rightAnswer}</Highlight>
           </PenCircle>

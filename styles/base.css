@@ -1,0 +1,38 @@
+html {
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+  font-size: 16px;
+}
+
+@media (--root-scale) {
+  html {
+    font-size: clamp(16px, calc(16px + (100vw - 1600px) * 0.00625), 22px);
+  }
+}
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: var(--border-thin) dashed var(--ink);
+  outline-offset: var(--focus-offset);
+}
+
+@media (--reduced-motion) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: var(--dur-reduced) !important;
+  }
+}

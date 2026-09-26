@@ -12,6 +12,7 @@ import { ThemeWall } from "@/components/carnet/theme-wall";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
 import { LanguageSwitch } from "@/components/carnet/language-switch";
+import styles from "@/styles/components.module.css";
 
 export function ProvisionalHome({
   dictionary,
@@ -21,40 +22,48 @@ export function ProvisionalHome({
   locale: Locale;
 }) {
   return (
-    <main className="welcome-shell">
-      <section className="welcome-hero">
-        <article className="welcome-page welcome-page--hero">
-          <header className="welcome-header">
+    <main className={styles["welcome-shell"]}>
+      <section className={styles["welcome-hero"]} data-testid="welcome-hero">
+        <article className={`${styles["welcome-page"]} ${styles["welcome-page--hero"]}`}>
+          <header className={styles["welcome-header"]}>
             <Logo label={dictionary.brand} />
-            <nav className="welcome-header__actions">
+            <nav className={styles["welcome-header__actions"]}>
               <LanguageSwitch dictionary={dictionary} locale={locale} />
-              <Link className="quiet-link" href="/sign-in">
+              <Link className={styles["quiet-link"]} href="/sign-in">
                 {dictionary.navigation.signIn}
               </Link>
             </nav>
           </header>
 
-          <div className="welcome-layout">
-            <div className="welcome-copy">
+          <div className={styles["welcome-layout"]}>
+            <div className={styles["welcome-copy"]}>
               <Tape>{dictionary.welcome.eyebrow}</Tape>
-              <h1 className="welcome-title">
+              <h1 className={styles["welcome-title"]}>
                 {dictionary.welcome.lead}{" "}
                 <Highlight>{dictionary.welcome.highlight}</Highlight>
               </h1>
-              <p className="welcome-description">{dictionary.welcome.description}</p>
+              <p className={styles["welcome-description"]} data-testid="welcome-description">
+                {dictionary.welcome.description}
+              </p>
               <Note>{dictionary.welcome.accountNote}</Note>
             </div>
 
-            <div className="hero-visual">
-              <div className="hero-card-stack">
-                <div className="hero-card hero-card--back">
+            <div className={styles["hero-visual"]}>
+              <div className={styles["hero-card-stack"]}>
+                <div
+                  className={`${styles["hero-card"]} ${styles["hero-card--back"]}`}
+                  data-testid="hero-card-back"
+                >
                   <LessonPreviewCard copy={dictionary.welcome.lessonPreview} />
                 </div>
-                <div className="hero-front-group">
-                  <div className="hero-card hero-card--front">
+                <div className={styles["hero-front-group"]}>
+                  <div
+                    className={`${styles["hero-card"]} ${styles["hero-card--front"]}`}
+                    data-testid="hero-card-front"
+                  >
                     <CardTrueFalse copy={dictionary.welcome.preview} />
                   </div>
-                  <div className="welcome-callout">
+                  <div className={styles["welcome-callout"]} data-testid="welcome-callout">
                     <Note small>{dictionary.welcome.arrowNote}</Note>
                     <HandDrawnArrow direction="up" />
                   </div>
@@ -63,16 +72,16 @@ export function ProvisionalHome({
             </div>
           </div>
 
-          <div className="welcome-hero__foot">
+          <div className={styles["welcome-hero__foot"]}>
             <LandingScrollHint>{dictionary.welcome.scrollNote}</LandingScrollHint>
           </div>
         </article>
       </section>
 
-      <article className="welcome-page welcome-page--content">
+      <article className={`${styles["welcome-page"]} ${styles["welcome-page--content"]}`}>
         <ThemeWall copy={dictionary.welcome.themeWall} />
         <HowItWorks copy={dictionary.welcome.howItWorks} />
-        <footer className="welcome-footer">
+        <footer className={styles["welcome-footer"]}>
           <Logo label={dictionary.brand} />
           <span>{dictionary.welcome.footer.copyright}</span>
         </footer>

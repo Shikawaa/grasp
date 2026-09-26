@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
+import styles from "@/styles/components.module.css";
 
 export type TapeTone =
   | "apricot"
@@ -33,9 +34,9 @@ export function Tape({
   return (
     <span
       className={clsx(
-        "carnet-tape",
-        `carnet-tape--${tone}`,
-        seed && `carnet-tape--seed-${seed}`,
+        styles["carnet-tape"],
+        styles[`carnet-tape--${tone}`],
+        seed && styles[`carnet-tape--seed-${seed}`],
       )}
     >
       {children}

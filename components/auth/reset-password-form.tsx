@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { resetPassword } from "@/lib/auth/client";
 import type { Dictionary } from "@/lib/i18n";
+import styles from "@/styles/components.module.css";
 
 export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
   const searchParams = useSearchParams();
@@ -50,11 +51,14 @@ export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
 
   if (done) {
     return (
-      <div className="auth-form">
-        <p aria-live="polite" className="form-message">
+      <div className={styles["auth-form"]}>
+        <p aria-live="polite" className={styles["form-message"]}>
           {dictionary.auth.resetDone}
         </p>
-        <Link className="tape-button tape-button--link" href="/sign-in">
+        <Link
+          className={`${styles["tape-button"]} ${styles["tape-button--link"]}`}
+          href="/sign-in"
+        >
           {dictionary.auth.backToSignIn}
         </Link>
       </div>
@@ -62,9 +66,9 @@ export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
+    <form className={styles["auth-form"]} onSubmit={handleSubmit}>
       {!searchParams.get("token") ? (
-        <label className="auth-field">
+        <label className={styles["auth-field"]}>
           <span>{dictionary.auth.resetToken}</span>
           <input
             autoComplete="off"
@@ -78,7 +82,7 @@ export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
         </label>
       ) : null}
 
-      <label className="auth-field">
+      <label className={styles["auth-field"]}>
         <span>{dictionary.auth.newPassword}</span>
         <input
           autoComplete="new-password"
@@ -91,7 +95,7 @@ export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
         />
       </label>
 
-      <label className="auth-field">
+      <label className={styles["auth-field"]}>
         <span>{dictionary.auth.confirmPassword}</span>
         <input
           autoComplete="new-password"
@@ -105,12 +109,12 @@ export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
       </label>
 
       {error ? (
-        <p aria-live="polite" className="form-message">
+        <p aria-live="polite" className={styles["form-message"]}>
           {error}
         </p>
       ) : null}
 
-      <button className="tape-button" disabled={pending} type="submit">
+      <button className={styles["tape-button"]} disabled={pending} type="submit">
         {pending ? dictionary.auth.resetPending : dictionary.auth.resetSubmit}
       </button>
     </form>

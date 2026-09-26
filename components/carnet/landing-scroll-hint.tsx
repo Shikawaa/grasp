@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { HandDrawnArrow } from "@/components/carnet/hand-drawn-arrow";
 import { Note } from "@/components/carnet/note";
+import styles from "@/styles/components.module.css";
 
 export function LandingScrollHint({ children }: { children: string }) {
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -16,7 +17,9 @@ export function LandingScrollHint({ children }: { children: string }) {
   }, []);
 
   return (
-    <div className={clsx("landing-scroll-hint", hasScrolled && "is-hidden")}>
+    <div
+      className={clsx(styles["landing-scroll-hint"], hasScrolled && styles["is-hidden"])}
+    >
       <HandDrawnArrow animated direction="down" />
       <Note small>{children}</Note>
     </div>

@@ -8,6 +8,7 @@ import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
 import { PenCircle } from "@/components/carnet/pen-gestures";
 import { Tape } from "@/components/carnet/tape";
+import styles from "@/styles/components.module.css";
 
 export type HowItWorksCopy = {
   title: string;
@@ -63,7 +64,9 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
     if (!band) return;
 
     const bandBox = band.getBoundingClientRect();
-    const numbers = Array.from(band.querySelectorAll<HTMLElement>(".how-step__number"));
+    const numbers = Array.from(
+      band.querySelectorAll<HTMLElement>(`.${styles["how-step__number"]}`),
+    );
     if (numbers.length < 2) return;
 
     const points = numbers.map((number) => {
@@ -145,19 +148,23 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
   return (
     <section
-      className={clsx("how-it-works", isDrawn && "is-drawn")}
+      className={clsx(styles["how-it-works"], isDrawn && styles["is-drawn"])}
       aria-labelledby="how-it-works-title"
+      data-drawn={isDrawn}
       ref={sectionRef}
     >
-      <div className="section-heading">
+      <div className={styles["section-heading"]}>
         <h2 id="how-it-works-title">{copy.title}</h2>
         <Note>{copy.note}</Note>
       </div>
 
-      <Page className="how-it-works__page" ref={bandRef}>
+      <Page className={styles["how-it-works__page"]} ref={bandRef}>
         {geometry.d ? (
           <svg
-            className={clsx("journey-path", geometry.vertical && "journey-path--vertical")}
+            className={clsx(
+              styles["journey-path"],
+              geometry.vertical && styles["journey-path--vertical"],
+            )}
             viewBox={`0 0 ${geometry.width} ${geometry.height}`}
             preserveAspectRatio="none"
             aria-hidden="true"
@@ -165,7 +172,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             <defs>
               <clipPath id="journey-path-reveal">
                 <rect
-                  className="journey-path__reveal"
+                  className={styles["journey-path__reveal"]}
                   width={geometry.width}
                   height={geometry.height}
                 />
@@ -175,14 +182,16 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
           </svg>
         ) : null}
 
-        <ol className="how-it-works__steps">
-          <li className="how-step">
-            <div className="how-step__number">
+        <ol className={styles["how-it-works__steps"]}>
+          <li className={styles["how-step"]}>
+            <div className={styles["how-step__number"]}>
               <PenCircle>1</PenCircle>
             </div>
             <h3>{copy.interests.title}</h3>
-            <div className="how-step__object how-step__object--interests">
-              <div className="mini-interests">
+            <div
+              className={`${styles["how-step__object"]} ${styles["how-step__object--interests"]}`}
+            >
+              <div className={styles["mini-interests"]}>
                 <Highlight tone="lavender">{copy.interests.history}</Highlight>
                 <Highlight tone="sky">{copy.interests.psychology}</Highlight>
                 <span>{copy.interests.arts}</span>
@@ -191,26 +200,26 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             </div>
           </li>
 
-          <li className="how-step">
-            <div className="how-step__number">
+          <li className={styles["how-step"]}>
+            <div className={styles["how-step__number"]}>
               <PenCircle>2</PenCircle>
             </div>
             <h3>{copy.choice.title}</h3>
-            <div className="how-step__object mini-proposals">
-              <span className="mini-proposal is-muted">
+            <div className={`${styles["how-step__object"]} ${styles["mini-proposals"]}`}>
+              <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
                 <Tape seed={1} tone="lavender">
                   {copy.choice.alternativeOne}
                 </Tape>
               </span>
-              <span className="mini-proposal is-chosen">
+              <span className={`${styles["mini-proposal"]} ${styles["is-chosen"]}`}>
                 <Tape seed={2} tone="sky">
                   <span>{copy.choice.chosen}</span>
-                  <svg className="mini-check" viewBox="0 0 24 20" aria-hidden="true">
+                  <svg className={styles["mini-check"]} viewBox="0 0 24 20" aria-hidden="true">
                     <path d="M2 10 C 5 12, 7 15, 9 17 C 13 11, 17 6, 22 2" />
                   </svg>
                 </Tape>
               </span>
-              <span className="mini-proposal is-muted">
+              <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
                 <Tape seed={3} tone="sage">
                   {copy.choice.alternativeTwo}
                 </Tape>
@@ -218,31 +227,33 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             </div>
           </li>
 
-          <li className="how-step">
-            <div className="how-step__number">
+          <li className={styles["how-step"]}>
+            <div className={styles["how-step__number"]}>
               <PenCircle>3</PenCircle>
             </div>
             <h3>{copy.lesson.title}</h3>
-            <div className="how-step__object how-step__object--lesson">
-              <p className="mini-meta">{copy.lesson.meta}</p>
-              <p className="mini-lesson">
+            <div
+              className={`${styles["how-step__object"]} ${styles["how-step__object--lesson"]}`}
+            >
+              <p className={styles["mini-meta"]}>{copy.lesson.meta}</p>
+              <p className={styles["mini-lesson"]}>
                 {copy.lesson.sentenceBefore} {" "}
                 <Highlight tone="sky">{copy.lesson.sentenceHighlight}</Highlight>
               </p>
             </div>
           </li>
 
-          <li className="how-step">
-            <div className="how-step__number">
+          <li className={styles["how-step"]}>
+            <div className={styles["how-step__number"]}>
               <PenCircle>4</PenCircle>
             </div>
             <h3>{copy.review.title}</h3>
-            <div className="how-step__object mini-review">
-              <div className="mini-memory">
+            <div className={`${styles["how-step__object"]} ${styles["mini-review"]}`}>
+              <div className={styles["mini-memory"]}>
                 <span>{copy.review.memory}</span>
                 <MemoryMeter filled={3} />
               </div>
-              <div className="mini-tomorrow">
+              <div className={styles["mini-tomorrow"]}>
                 <Note small>{copy.review.tomorrow}</Note>
                 <svg viewBox="0 0 48 32" aria-hidden="true">
                   <path d="M6 19 C 9 5, 35 4, 40 16 C 43 25, 31 29, 22 25" />

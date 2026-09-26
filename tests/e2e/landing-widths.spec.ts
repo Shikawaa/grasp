@@ -40,10 +40,8 @@ for (const viewport of viewports) {
     expect(widths.body).toBe(widths.viewport);
 
     if (viewport.width < 640) {
-      const rearHighlight = page.locator(
-        ".hero-card--back .lesson-preview__sentence .carnet-highlight",
-      );
-      const frontCard = page.locator(".hero-card--front");
+      const rearHighlight = page.getByTestId("hero-card-back").locator("[data-highlight]");
+      const frontCard = page.getByTestId("hero-card-front");
       const [highlightBox, frontBox] = await Promise.all([
         rearHighlight.boundingBox(),
         frontCard.boundingBox(),
@@ -56,9 +54,9 @@ for (const viewport of viewports) {
 
     if (viewport.width === 1440) {
       const [heroBox, headerLogoBox, footerLogoBox] = await Promise.all([
-        page.locator(".welcome-hero").boundingBox(),
-        page.locator(".welcome-header .wordmark").boundingBox(),
-        page.locator(".welcome-footer .wordmark").boundingBox(),
+        page.getByTestId("welcome-hero").boundingBox(),
+        page.getByRole("img", { name: "grasp" }).first().boundingBox(),
+        page.getByRole("img", { name: "grasp" }).last().boundingBox(),
       ]);
 
       expect(heroBox?.height).toBe(viewport.height);
@@ -74,15 +72,17 @@ for (const viewport of viewports) {
     }
 
     const { arrowWidth, rootFontSize } = await page
-      .locator(".welcome-callout .hand-arrow")
+      .getByTestId("welcome-callout")
+      .locator("[data-hand-arrow]")
       .evaluate((element) => ({
         arrowWidth: element.getBoundingClientRect().width,
         rootFontSize: Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
       }));
     expect(arrowWidth / rootFontSize).toBeLessThanOrEqual(3);
 
-    await page.locator(".how-it-works").scrollIntoViewIfNeeded();
-    await expect(page.locator(".how-it-works")).toHaveClass(/is-drawn/);
+    const howItWorks = page.getByRole("heading", { name: "Comment ça marche" });
+    await howItWorks.scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-drawn="true"]')).toBeVisible();
     await page.waitForTimeout(600);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(50);
@@ -143,16 +143,12 @@ test("les polices de secours ne créent ni débordement ni chevauchement", async
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
   const beforeFonts = await page.evaluate(() => {
-    const title = document.querySelector<HTMLElement>(".welcome-title")?.getBoundingClientRect();
+    const title = document.querySelector<HTMLElement>("h1")?.getBoundingClientRect();
     const description = document
-      .querySelector<HTMLElement>(".welcome-description")
+      .querySelector<HTMLElement>('[data-testid="welcome-description"]')
       ?.getBoundingClientRect();
-    const logo = document
-      .querySelector<HTMLElement>(".welcome-header .wordmark")
-      ?.getBoundingClientRect();
-    const actions = document
-      .querySelector<HTMLElement>(".welcome-header__actions")
-      ?.getBoundingClientRect();
+    const logo = document.querySelector<HTMLElement>("header img")?.getBoundingClientRect();
+    const actions = document.querySelector<HTMLElement>("header nav")?.getBoundingClientRect();
 
     return {
       bodyWidth: document.body.scrollWidth,

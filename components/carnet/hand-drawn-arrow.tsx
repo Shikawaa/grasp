@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import styles from "@/styles/components.module.css";
 
 type ArrowDirection = "down" | "right" | "up";
 
@@ -32,11 +33,12 @@ export function HandDrawnArrow({
   return (
     <span
       className={clsx(
-        "hand-arrow",
-        `hand-arrow--${direction}`,
-        animated && "hand-arrow--animated",
+        styles["hand-arrow"],
+        styles[`hand-arrow--${direction}`],
+        animated && styles["hand-arrow--animated"],
       )}
       aria-hidden="true"
+      data-hand-arrow
     >
       <svg viewBox={arrow.viewBox} preserveAspectRatio="xMidYMid meet">
         {arrow.paths.map((path) => (

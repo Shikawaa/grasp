@@ -1,6 +1,11 @@
 const config = {
     plugins: {
-        tailwindcss: {},
+        "@csstools/postcss-global-data": {
+            files: ["./styles/tokens.css"],
+        },
+        "postcss-custom-media": {
+            preserve: false,
+        },
         autoprefixer: {},
     },
 };

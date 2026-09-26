@@ -8,6 +8,7 @@ import {
   requestPasswordReset,
   signInWithPassword,
 } from "@/lib/auth/client";
+import styles from "@/styles/components.module.css";
 
 export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
   const router = useRouter();
@@ -67,8 +68,8 @@ export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <label className="auth-field">
+    <form className={styles["auth-form"]} onSubmit={handleSubmit}>
+      <label className={styles["auth-field"]}>
         <span>{dictionary.auth.email}</span>
         <input
           autoComplete="email"
@@ -81,7 +82,7 @@ export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
         />
       </label>
 
-      <label className="auth-field">
+      <label className={styles["auth-field"]}>
         <span>{dictionary.auth.password}</span>
         <input
           autoComplete="current-password"
@@ -95,7 +96,7 @@ export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
       </label>
 
       <button
-        className="quiet-button"
+        className={styles["quiet-button"]}
         disabled={resetPending}
         onClick={handlePasswordReset}
         type="button"
@@ -106,17 +107,17 @@ export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
       </button>
 
       {error ? (
-        <p aria-live="polite" className="form-message">
+        <p aria-live="polite" className={styles["form-message"]}>
           {error}
         </p>
       ) : null}
       {information ? (
-        <p aria-live="polite" className="form-message">
+        <p aria-live="polite" className={styles["form-message"]}>
           {information}
         </p>
       ) : null}
 
-      <button className="tape-button" disabled={pending} type="submit">
+      <button className={styles["tape-button"]} disabled={pending} type="submit">
         {pending ? dictionary.auth.submitting : dictionary.auth.submit}
       </button>
     </form>

@@ -1,3 +1,14 @@
+@custom-media --root-scale (min-width: 100rem);
+@custom-media --tablet-only (min-width: 35rem) and (max-width: 63.999rem);
+@custom-media --desktop (min-width: 64rem);
+@custom-media --wide-desktop (min-width: 80rem);
+@custom-media --desktop-tall (min-width: 64rem) and (min-height: 43.75rem);
+@custom-media --below-desktop (max-width: 63.999rem);
+@custom-media --phone (max-width: 40rem);
+@custom-media --narrow-phone (max-width: 21.25rem);
+@custom-media --wide-phone (min-width: 24rem) and (max-width: 40rem);
+@custom-media --reduced-motion (prefers-reduced-motion: reduce);
+
 :root {
   --desk: #efe8da;
   --paper: #f7f2e8;
