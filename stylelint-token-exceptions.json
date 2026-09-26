@@ -1,0 +1,10 @@
+{
+  "styles/base.css": {
+    "font-size: 16px": 1,
+    "font-size: clamp(16px, calc(16px + (100vw - 1600px) * 0.00625), 22px)": 1,
+    "min-height: 100vh": 1
+  },
+  "styles/components.module.css": {
+    "min-height: 100vh": 3
+  }
+}

@@ -3,8 +3,9 @@ import { extname, join, relative, resolve } from "node:path";
 
 const projectRoot = resolve(import.meta.dirname, "..");
 const sourceRoots = ["app", "components", "lib", "scripts", "styles"];
-const rootFiles = ["next.config.mjs", "tailwind.config.ts"];
+const rootFiles = ["next.config.mjs"];
 const allowedTokenFile = "styles/tokens.css";
+const allowedTokenNamesFile = "styles/token-names.txt";
 const checkedExtensions = new Set([".css", ".js", ".mjs", ".cjs", ".ts", ".tsx"]);
 const hexColorPattern = /#[0-9a-fA-F]{3,8}\b/g;
 
@@ -47,4 +48,23 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log("Design tokens : aucune couleur hexadécimale hors de styles/tokens.css.");
+const tokenSource = await readFile(join(projectRoot, allowedTokenFile), "utf8");
+const allowedTokenNames = new Set(
+  (await readFile(join(projectRoot, allowedTokenNamesFile), "utf8"))
+    .split("\n")
+    .filter(Boolean),
+);
+const currentTokenNames = new Set(
+  Array.from(tokenSource.matchAll(/--[a-z0-9-]+/g), (match) => match[0]),
+);
+const unapprovedTokens = [...currentTokenNames].filter(
+  (token) => !allowedTokenNames.has(token),
+);
+
+if (unapprovedTokens.length > 0) {
+  console.error("Tokens ajoutés sans validation :");
+  console.error(unapprovedTokens.sort().join("\n"));
+  process.exit(1);
+}
+
+console.log("Design tokens : aucune couleur brute ni aucun nouveau token non validé.");
