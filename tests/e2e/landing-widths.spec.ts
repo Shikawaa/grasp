@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import path from "node:path";
 
 const viewports = [
   { width: 320, height: 667 },
@@ -87,11 +86,6 @@ for (const viewport of viewports) {
     await page.waitForTimeout(600);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(50);
-
-    await page.screenshot({
-      fullPage: true,
-      path: path.resolve(`screenshots/landing-${viewport.width}.png`),
-    });
 
     await page.context().addCookies([
       {

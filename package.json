@@ -9,9 +9,11 @@
     "lint": "npm run lint:design && eslint .",
     "lint:design": "node scripts/check-design-tokens.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "npm run test:unit && npm run test:responsive",
+    "test": "npm run test:unit && npm run test:responsive && npm run test:visual",
     "test:unit": "vitest run",
-    "test:responsive": "playwright test"
+    "test:responsive": "playwright test tests/e2e/landing-widths.spec.ts tests/e2e/landing-webkit.spec.ts",
+    "test:visual": "playwright test tests/e2e/landing-visual.spec.ts --project=chromium",
+    "test:visual:update": "playwright test tests/e2e/landing-visual.spec.ts --project=chromium --update-snapshots"
   },
   "dependencies": {
     "@google/genai": "^1.20.0",
@@ -33,7 +35,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "1.63.0",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
