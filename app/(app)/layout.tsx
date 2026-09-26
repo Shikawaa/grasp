@@ -1,21 +1,19 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/server";
-import { AppLayoutClient } from "@/components/app-layout-client";
+import { requireUser, UnauthorizedError } from "@/lib/auth/server";
+
+export const dynamic = "force-dynamic";
 
 export default async function AppLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
-    const user = await getCurrentUser();
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  try {
+    await requireUser();
+  } catch (error) {
+    if (error instanceof UnauthorizedError) redirect("/sign-in");
+    throw error;
+  }
 
-    if (!user) {
-        redirect("/sign-in");
-    }
-
-    return (
-        <AppLayoutClient userEmail={user.email ?? ""}>
-            {children}
-        </AppLayoutClient>
-    );
+  return children;
 }

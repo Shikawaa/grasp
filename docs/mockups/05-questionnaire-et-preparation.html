@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grasp, maquette 05 : questionnaire et préparation du parcours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:32px 20px;background:#E7E2D8;font-family:'Geist',system-ui,sans-serif;color:#1F1B16}
+.intro{max-width:790px;margin:0 auto 20px}
+.intro h1{font-size:18px;font-weight:500;margin:0 0 6px}
+.intro p{font-size:14px;line-height:1.5;color:#6B6254;margin:0}
+.row{max-width:790px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;align-items:start}
+.lbl{margin:10px 0 0;font-size:13px;color:#6B6254;text-align:center}
+.fr{font-family:'Fraunces',Georgia,serif}
+.hd{font-family:'Caveat',cursive}
+.phone{max-width:375px;margin:0 auto;background:#F7F2E8;border-radius:28px;border:1px solid rgba(31,27,22,.15);padding:20px;overflow:hidden}
+.pg{position:relative;background-color:#FFFDF8;border:1px solid #E8DFCC;border-radius:6px;padding:24px 12px 24px 34px;line-height:24px;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 17px,#EFE6D6 17px,#EFE6D6 18px,transparent 18px,transparent 24px)}
+.pg p{margin:0}
+.mg{position:absolute;left:22px;top:0;bottom:0;width:1.5px}
+.tape{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;color:#1F1B16;font-family:'Caveat',cursive}
+.tapebtn{display:block;margin:0 auto;border:none;background:#1F1B16;color:#F7F2E8;font-family:'Caveat',cursive;font-size:22px;height:44px;min-width:190px;padding:0 20px;cursor:pointer;transform:rotate(-1.5deg);clip-path:polygon(2% 0,98% 0,100% 25%,97% 50%,100% 75%,98% 100%,2% 100%,0 70%,3% 45%,0 20%)}
+.chips{display:flex;flex-wrap:wrap;column-gap:16px;row-gap:24px}
+.chip{position:relative;display:inline-block;padding:12px 4px;margin:-12px 0;cursor:pointer;font-size:16px}
+.chip .m{position:absolute;left:0;right:0;bottom:15px;height:14px;background:var(--c);border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.chip.on .m{transform:scaleX(1)}
+.chip .t{position:relative}
+.free{display:block;width:100%;height:24px;border:none;background:transparent;font-family:'Caveat',cursive;font-size:20px;line-height:24px;color:#1F1B16;padding:0;outline:none}
+.free::placeholder{color:#8C8170}
+.chk{stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s ease-out}
+.step{display:flex;gap:10px;align-items:center;height:24px;font-size:14px}
+.note{height:24px;font-size:18px;color:#6B6254;padding-left:27px;opacity:0;transition:opacity .4s}
+#fact{transition:opacity .35s;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="intro">
+<h1>Maquette 05 : questionnaire d'accueil et préparation du parcours</h1>
+<p>À gauche, touche les domaines pour les surligner, et écris sur la ligne « Et plus précisément ? ». La progression se compte en bâtons, par paquets de cinq. À droite, la préparation se joue en boucle : le bouton apparaît dès que la leçon 1 et ses cartes sont prêtes. Touche l'anecdote pour passer à la suivante. Référence : DESIGN.md, sections 5 et 7.1.</p>
+</div>
+
+<div class="row">
+<div><div class="phone">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#6B6254">Question 2 sur 8</span></div>
+<svg width="110" height="18" viewBox="0 0 110 18" style="display:block;margin-top:6px" aria-hidden="true" stroke-linecap="round" stroke-width="1.8">
+<path d="M4 2 L3 15" stroke="#1F1B16"/><path d="M11 2 L10.5 15" stroke="#1F1B16"/><path d="M18 2 L17 15" stroke="#CFC3AB"/><path d="M25 2 L24.5 15" stroke="#CFC3AB"/><path d="M0 12 L29 5" stroke="#CFC3AB"/>
+<path d="M44 2 L43 15" stroke="#CFC3AB"/><path d="M51 2 L50.5 15" stroke="#CFC3AB"/><path d="M58 2 L57 15" stroke="#CFC3AB"/>
+</svg>
+<div style="margin-top:10px"><p class="fr" style="margin:0;font-size:20px;line-height:24px;font-weight:500">Qu'est-ce qui t'attire le plus ?</p>
+<svg viewBox="0 0 200 10" preserveAspectRatio="none" style="width:55%;height:8px;display:block;margin-top:4px" aria-hidden="true"><path d="M3 5 C 60 9, 120 2, 197 6" stroke="#FFE27A" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+<p class="hd" style="margin:8px 0 0;font-size:19px;color:#6B6254">Choisis-en autant que tu veux.</p>
+
+<div class="pg fr" style="margin-top:14px;transform:rotate(-0.5deg)">
+<div class="mg" style="background:#FFE27A"></div>
+<div class="chips">
+<span class="chip on" style="--c:#D9C4FF"><span class="m"></span><span class="t">Histoire</span></span>
+<span class="chip on" style="--c:#A5D8FF"><span class="m"></span><span class="t">Psychologie</span></span>
+<span class="chip" style="--c:#EFD5A8"><span class="m"></span><span class="t">Sciences</span></span>
+<span class="chip" style="--c:#F6C9D0"><span class="m"></span><span class="t">Arts</span></span>
+<span class="chip" style="--c:#CFC7E8"><span class="m"></span><span class="t">Philosophie</span></span>
+<span class="chip" style="--c:#F9CF6B"><span class="m"></span><span class="t">Économie</span></span>
+<span class="chip" style="--c:#CFE0B8"><span class="m"></span><span class="t">Nature</span></span>
+<span class="chip" style="--c:#9ED6E3"><span class="m"></span><span class="t">Technologie</span></span>
+<span class="chip" style="--c:#FFD3AE"><span class="m"></span><span class="t">Société</span></span>
+<span class="chip" style="--c:#C4ECD9"><span class="m"></span><span class="t">Géographie</span></span>
+<span class="chip" style="--c:#B9C3FF"><span class="m"></span><span class="t">Musique</span></span>
+<span class="chip" style="--c:#FFE27A"><span class="m"></span><span class="t">Cuisine</span></span>
+</div>
+<p class="hd" style="margin-top:24px;font-size:19px;color:#6B6254">Et plus précisément ? (facultatif)</p>
+<input class="free" type="text" placeholder="les samouraïs, les jeux vidéo, l'histoire du jazz" aria-label="Et plus précisément ?">
+</div>
+<p id="cnt" class="hd" style="margin:12px 0 10px;font-size:18px;text-align:center">2 choisis</p>
+<button class="tapebtn">Suivant</button>
+</div><p class="lbl">Questionnaire d'accueil</p></div>
+
+<div><div class="phone">
+<div><p class="fr" style="margin:0;font-size:20px;line-height:24px;font-weight:500">Je prépare ton parcours</p>
+<svg viewBox="0 0 200 10" preserveAspectRatio="none" style="width:55%;height:8px;display:block;margin-top:4px" aria-hidden="true"><path d="M3 6 C 55 2, 110 9, 197 4" stroke="#D9C4FF" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+<p class="hd" style="margin:8px 0 0;font-size:19px;color:#6B6254">Comment le Japon s'est fermé au monde pendant 200 ans</p>
+
+<div style="position:relative;margin-top:20px;transform:rotate(0.7deg)">
+<div class="tape" style="top:-12px;left:20px;transform:rotate(-3.5deg);width:96px;height:23px;background:#D9C4FF;font-size:17px;clip-path:polygon(4% 0,95% 0,100% 30%,96% 55%,100% 100%,3% 100%,0 60%,4% 35%)">Histoire</div>
+<div class="pg"><div class="mg" style="background:#D9C4FF"></div>
+<div class="step"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="fr">Trouver des sources fiables</span></div>
+<div class="note hd" id="srcNote">Wikipédia, Britannica, Nippon.com</div>
+<div class="step"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="fr">Tracer le parcours</span></div>
+<div class="step"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="fr">Écrire ta première leçon et ses cartes</span></div>
+<div class="step"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="fr">Écrire la suite du parcours</span></div>
+</div></div>
+
+<div style="position:relative;margin-top:22px;transform:rotate(-0.8deg)">
+<div class="tape" style="top:-12px;left:50%;transform:translateX(-50%) rotate(2deg);width:128px;height:24px;background:#FFE27A;font-size:18px;clip-path:polygon(2% 0,97% 0,100% 40%,97% 70%,99% 100%,3% 100%,0 65%,2% 30%)">Le savais-tu ?</div>
+<div class="pg" style="min-height:120px"><div class="mg" style="background:#FFE27A"></div>
+<p id="fact" class="fr" style="font-size:14.5px" title="Toucher pour passer à la suivante">Se tester juste après avoir lu fixe mieux le souvenir que relire.</p>
+</div></div>
+
+<div style="margin-top:18px;min-height:78px">
+<button class="tapebtn" id="goBtn" style="opacity:0;transition:opacity .4s">Commencer la leçon 1</button>
+<p id="goHint" class="hd" style="margin:6px 0 0;font-size:18px;color:#6B6254;text-align:center;opacity:0;transition:opacity .4s">La suite s'écrit pendant que tu lis.</p>
+</div>
+</div><p class="lbl">Préparation du parcours</p></div>
+</div>
+
+<script>
+const chips=[...document.querySelectorAll('.chip')],cnt=document.getElementById('cnt');
+const upd=()=>{const n=chips.filter(c=>c.classList.contains('on')).length;cnt.textContent=n===0?'Choisis au moins un domaine':(n===1?'1 choisi':n+' choisis');};
+chips.forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('on');upd();}));
+
+const facts=["Se tester juste après avoir lu fixe mieux le souvenir que relire.","Pendant le sakoku, seuls les Hollandais et les Chinois pouvaient commercer avec le Japon, depuis une petite île artificielle de Nagasaki : Dejima.","Le Japon a rouvert ses ports en 1854, après l'arrivée des « navires noirs » américains."];
+let fi=0,timer=null;const fe=document.getElementById('fact');
+const dur=txt=>6000+Math.floor(txt.split(/\s+/).length/12)*1000;
+function next(){fe.style.opacity='0';setTimeout(()=>{fi=(fi+1)%facts.length;fe.textContent=facts[fi];fe.style.opacity='1';schedule();},350);}
+function schedule(){clearTimeout(timer);timer=setTimeout(next,dur(facts[fi]));}
+fe.addEventListener('click',()=>{clearTimeout(timer);next();});
+schedule();
+
+const steps=[...document.querySelectorAll('.step')],note=document.getElementById('srcNote'),gb=document.getElementById('goBtn'),gh=document.getElementById('goHint');
+function run(){
+steps.forEach(s=>s.querySelector('.chk').style.strokeDashoffset='24');note.style.opacity='0';gb.style.opacity='0';gh.style.opacity='0';
+setTimeout(()=>{steps[0].querySelector('.chk').style.strokeDashoffset='0';note.style.opacity='1';},1200);
+setTimeout(()=>{steps[1].querySelector('.chk').style.strokeDashoffset='0';},2800);
+setTimeout(()=>{steps[2].querySelector('.chk').style.strokeDashoffset='0';gb.style.opacity='1';gh.style.opacity='1';},4600);
+setTimeout(()=>{steps[3].querySelector('.chk').style.strokeDashoffset='0';},8000);
+}
+run();setInterval(run,11000);
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+import { expect, test } from "@playwright/test";
+import path from "node:path";
+
+const viewports = [
+  { width: 320, height: 667 },
+  { width: 360, height: 800 },
+  { width: 375, height: 812 },
+  { width: 390, height: 844 },
+  { width: 400, height: 900 },
+  { width: 414, height: 896 },
+  { width: 430, height: 932 },
+  { width: 768, height: 1024 },
+  { width: 820, height: 1180 },
+  { width: 1023, height: 900 },
+  { width: 1024, height: 900 },
+  { width: 1440, height: 900 },
+  { width: 2560, height: 1440 },
+] as const;
+
+for (const viewport of viewports) {
+  test(`la landing ne déborde pas à ${viewport.width} px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.context().addCookies([
+      {
+        name: "lang",
+        value: "fr",
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+
+    const widths = await page.evaluate(() => ({
+      body: document.body.scrollWidth,
+      document: document.documentElement.scrollWidth,
+      viewport: window.innerWidth,
+    }));
+
+    expect(widths.document).toBe(widths.viewport);
+    expect(widths.body).toBe(widths.viewport);
+
+    if (viewport.width < 640) {
+      const rearHighlight = page.locator(
+        ".hero-card--back .lesson-preview__sentence .carnet-highlight",
+      );
+      const frontCard = page.locator(".hero-card--front");
+      const [highlightBox, frontBox] = await Promise.all([
+        rearHighlight.boundingBox(),
+        frontCard.boundingBox(),
+      ]);
+
+      expect(highlightBox).not.toBeNull();
+      expect(frontBox).not.toBeNull();
+      expect(highlightBox!.y + highlightBox!.height).toBeLessThanOrEqual(frontBox!.y);
+    }
+
+    if (viewport.width === 1440) {
+      const [heroBox, headerLogoBox, footerLogoBox] = await Promise.all([
+        page.locator(".welcome-hero").boundingBox(),
+        page.locator(".welcome-header .wordmark").boundingBox(),
+        page.locator(".welcome-footer .wordmark").boundingBox(),
+      ]);
+
+      expect(heroBox?.height).toBe(viewport.height);
+      expect(headerLogoBox?.width).toBeCloseTo(footerLogoBox?.width ?? 0, 1);
+      expect(headerLogoBox?.height).toBeCloseTo(footerLogoBox?.height ?? 0, 1);
+    }
+
+    if (viewport.width === 320 || viewport.width === 2560) {
+      const rootFontSize = await page.evaluate(() =>
+        Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
+      );
+      expect(rootFontSize).toBe(viewport.width === 320 ? 16 : 22);
+    }
+
+    const { arrowWidth, rootFontSize } = await page
+      .locator(".welcome-callout .hand-arrow")
+      .evaluate((element) => ({
+        arrowWidth: element.getBoundingClientRect().width,
+        rootFontSize: Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
+      }));
+    expect(arrowWidth / rootFontSize).toBeLessThanOrEqual(3);
+
+    await page.locator(".how-it-works").scrollIntoViewIfNeeded();
+    await expect(page.locator(".how-it-works")).toHaveClass(/is-drawn/);
+    await page.waitForTimeout(600);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(50);
+
+    await page.screenshot({
+      fullPage: true,
+      path: path.resolve(`screenshots/landing-${viewport.width}.png`),
+    });
+
+    await page.context().addCookies([
+      {
+        name: "lang",
+        value: "en",
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+    await page.reload();
+    await page.evaluate(() => document.fonts.ready);
+
+    const englishWidths = await page.evaluate(() => ({
+      body: document.body.scrollWidth,
+      document: document.documentElement.scrollWidth,
+      viewport: window.innerWidth,
+    }));
+    expect(englishWidths.document).toBe(englishWidths.viewport);
+    expect(englishWidths.body).toBe(englishWidths.viewport);
+  });
+}
+
+test("la landing reste lisible sans JavaScript et force le mode clair", async ({ browser }) => {
+  const context = await browser.newContext({
+    baseURL: "http://127.0.0.1:3100",
+    colorScheme: "dark",
+    javaScriptEnabled: false,
+    locale: "fr-FR",
+    viewport: { width: 375, height: 812 },
+  });
+  const page = await context.newPage();
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comment ça marche" })).toBeVisible();
+  expect(
+    await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme),
+  ).toBe("light");
+
+  await context.close();
+});
+
+test("les polices de secours ne créent ni débordement ni chevauchement", async ({ browser }) => {
+  const context = await browser.newContext({
+    baseURL: "http://127.0.0.1:3100",
+    locale: "fr-FR",
+    viewport: { width: 375, height: 812 },
+  });
+  const page = await context.newPage();
+  await page.route("**/*", async (route) => {
+    const isFont = /\.(woff2?|ttf)(\?|$)/.test(route.request().url());
+    if (isFont) await new Promise((resolve) => setTimeout(resolve, 800));
+    await route.continue();
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  const beforeFonts = await page.evaluate(() => {
+    const title = document.querySelector<HTMLElement>(".welcome-title")?.getBoundingClientRect();
+    const description = document
+      .querySelector<HTMLElement>(".welcome-description")
+      ?.getBoundingClientRect();
+    const logo = document
+      .querySelector<HTMLElement>(".welcome-header .wordmark")
+      ?.getBoundingClientRect();
+    const actions = document
+      .querySelector<HTMLElement>(".welcome-header__actions")
+      ?.getBoundingClientRect();
+
+    return {
+      bodyWidth: document.body.scrollWidth,
+      descriptionTop: description?.top ?? 0,
+      documentWidth: document.documentElement.scrollWidth,
+      headerGap: (actions?.left ?? 0) - (logo?.right ?? 0),
+      titleBottom: title?.bottom ?? 0,
+      viewportWidth: window.innerWidth,
+    };
+  });
+
+  expect(beforeFonts.documentWidth).toBe(beforeFonts.viewportWidth);
+  expect(beforeFonts.bodyWidth).toBe(beforeFonts.viewportWidth);
+  expect(beforeFonts.headerGap).toBeGreaterThanOrEqual(0);
+  expect(beforeFonts.titleBottom).toBeLessThanOrEqual(beforeFonts.descriptionTop);
+
+  await page.evaluate(() => document.fonts.ready);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBe(375);
+
+  await context.close();
+});
+
+test("la landing ne déborde pas en paysage", async ({ page }) => {
+  const landscapeViewports = [
+    { width: 667, height: 320 },
+    { width: 844, height: 390 },
+    { width: 1024, height: 768 },
+  ] as const;
+
+  for (const viewport of landscapeViewports) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(viewport.width);
+  }
+});

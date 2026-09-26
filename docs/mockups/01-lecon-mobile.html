@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grasp, maquette 01 : leçon mobile et carte du carnet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--hl:#FFE27A}
+*{box-sizing:border-box}
+body{margin:0;padding:32px 20px;background:#E7E2D8;font-family:'Geist',system-ui,sans-serif;color:#1F1B16}
+.intro{max-width:720px;margin:0 auto 20px}
+.intro h1{font-size:18px;font-weight:500;margin:0 0 6px}
+.intro p{font-size:14px;line-height:1.5;color:#6B6254;margin:0}
+.layout{max-width:720px;margin:0 auto;display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:start}
+@media(max-width:640px){.layout{grid-template-columns:1fr}}
+.fr{font-family:'Fraunces',Georgia,serif}
+.hd{font-family:'Caveat',cursive}
+.chip{width:30px;height:30px;border-radius:8px;border:1px solid rgba(31,27,22,.25);cursor:pointer;padding:0}
+.chip.sel{box-shadow:0 0 0 2px #1F1B16}
+.phone{width:100%;max-width:375px;background:#F7F2E8;border-radius:28px;border:1px solid rgba(31,27,22,.15);padding:20px;overflow:hidden}
+.pg{position:relative;background-color:#FFFDF8;border:1px solid #E8DFCC;border-radius:6px;padding:24px 14px 24px 36px;line-height:24px;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 17px,#EFE6D6 17px,#EFE6D6 18px,transparent 18px,transparent 24px)}
+.pg p{margin:0}
+.margin{position:absolute;left:24px;top:0;bottom:0;width:1.5px;background:var(--hl)}
+.tape{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;color:#1F1B16;font-family:'Caveat',cursive}
+.hlb{position:absolute;left:0;right:0;bottom:3px;height:14px;background:var(--hl);border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.st{position:absolute;left:4px;right:4px;top:12px;height:2px;background:#1F1B16;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.t{position:relative;transition:color .2s}
+.w{position:relative;cursor:pointer;padding:0 10px;font-size:18px;display:inline-block}
+.rs{display:flex;gap:8px;align-items:center;height:24px;cursor:pointer;font-size:13px}
+.rs .lbl{position:relative;padding:0 2px}
+.stage2{opacity:.35;pointer-events:none;transition:opacity .25s}
+.stage2.on{opacity:1;pointer-events:auto}
+.cir{stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset .5s ease-out}
+.chk{stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s}
+.seg{width:16px;height:7px;border-radius:3px;border:1px solid #CFC3AB;transition:background .3s}
+.tapebtn{display:block;margin:0 auto;border:none;background:#1F1B16;color:#F7F2E8;font-family:'Caveat',cursive;font-size:22px;height:44px;min-width:170px;padding:0 20px;cursor:pointer;transform:rotate(-1.5deg);transition:transform .25s cubic-bezier(.3,1.6,.5,1);clip-path:polygon(2% 0,98% 0,100% 25%,97% 50%,100% 75%,98% 100%,2% 100%,0 70%,3% 45%,0 20%)}
+.link{background:none;border:none;padding:0;font-family:'Caveat',cursive;font-size:18px;color:#1F1B16;text-decoration:underline;cursor:pointer}
+#lesson{transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s;transform-origin:left center}
+#lesson.turned{transform:perspective(900px) rotateY(-75deg);opacity:0}
+.hidden{display:none !important}
+.fadein{animation:fi .35s ease-out}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#cardWrap{transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .4s}
+</style>
+</head>
+<body>
+
+<div class="intro">
+<h1>Maquette 01 : leçon mobile et carte du carnet</h1>
+<p>Lis la leçon, puis touche « J'ai lu » : la page se tourne et la carte apparaît. Réponds (vrai ou faux, puis la raison) pour voir les gestes : entourer, surligner, barrer, cocher. Les pastilles changent la couleur du thème. Référence : DESIGN.md, sections 5, 6 et 7.1.</p>
+</div>
+
+<div class="layout">
+<div>
+<p style="font-size:13px;color:#6B6254;margin:0 0 8px">Couleur du thème</p>
+<div id="chips" style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="chip sel" data-c="#FFE27A" style="background:#FFE27A" aria-label="Beurre"></button>
+<button class="chip" data-c="#EFD5A8" style="background:#EFD5A8" aria-label="Sable"></button>
+<button class="chip" data-c="#A5D8FF" style="background:#A5D8FF" aria-label="Ciel"></button>
+<button class="chip" data-c="#B9C3FF" style="background:#B9C3FF" aria-label="Pervenche"></button>
+<button class="chip" data-c="#D9C4FF" style="background:#D9C4FF" aria-label="Lilas"></button>
+<button class="chip" data-c="#F6C9D0" style="background:#F6C9D0" aria-label="Rose poudré"></button>
+<button class="chip" data-c="#9ED6E3" style="background:#9ED6E3" aria-label="Lagon"></button>
+<button class="chip" data-c="#CFE0B8" style="background:#CFE0B8" aria-label="Sauge"></button>
+</div>
+</div>
+
+<div class="phone" id="pv">
+<p style="margin:0;font-size:12px;color:#6B6254">Leçon 1 sur 5, 3 min</p>
+<div style="margin-top:6px">
+<p class="fr" style="margin:0;font-size:20px;line-height:24px;font-weight:500">Pourquoi Rome payait la soie à prix d'or</p>
+<svg viewBox="0 0 200 10" preserveAspectRatio="none" style="width:62%;height:8px;display:block;margin-top:4px" aria-hidden="true"><path d="M3 6 C 55 2, 110 9, 197 4" style="stroke:var(--hl)" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+</div>
+
+<div id="lesson" style="margin-top:12px">
+<p class="fr" style="margin:0;font-size:15px;line-height:24px">Au Ier siècle, les riches Romaines s'arrachent une étoffe venue du bout du monde. Personne à Rome ne sait comment on la fabrique : Pline l'Ancien croit qu'on la récolte sur les feuilles des arbres.</p>
+<p class="fr" style="margin:12px 0 0;font-size:15px;line-height:24px">En Chine, c'est un secret bien gardé : <span style="background:var(--hl);padding:0 3px;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone">la soie vient d'un ver qu'on élève et qu'on nourrit de mûrier</span>. Tant que ce secret tient, la Chine fixe le prix.</p>
+<div style="margin-top:20px" id="readZone"><button class="tapebtn" id="readBtn">J'ai lu</button></div>
+</div>
+
+<div id="cardZone" class="hidden">
+<p class="hd" style="margin:14px 0 0;font-size:19px;color:#6B6254">De mémoire, cette fois.</p>
+<div id="cardWrap" style="position:relative;margin-top:18px;transform:rotate(-0.6deg)">
+<div class="tape" style="top:-12px;left:50%;transform:translateX(-50%) rotate(-2.5deg);width:140px;height:26px;background:var(--hl);opacity:.92;font-size:18px;clip-path:polygon(3% 0,97% 0,100% 20%,97% 40%,100% 60%,97% 80%,100% 100%,3% 100%,0 80%,3% 60%,0 40%,3% 20%)">Route de la soie</div>
+<div class="pg">
+<div class="margin"></div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#6B6254"><span>Vrai ou faux ?</span><span>1 / 3</span></div>
+<p class="fr" style="font-size:16px">Les Romains savaient comment la soie était fabriquée.</p>
+<div class="fr" style="display:flex;gap:28px;padding:24px 0 0 4px;height:48px">
+<span class="w s1" data-c="0"><span class="hlb"></span><span class="st"></span><span class="t">Vrai</span><svg viewBox="0 0 100 40" preserveAspectRatio="none" style="position:absolute;left:-8px;top:-6px;width:calc(100% + 16px);height:calc(100% + 12px);overflow:visible;pointer-events:none" aria-hidden="true"><path class="cir" d="M10 24 C 6 8, 90 2, 95 18 C 99 34, 20 40, 6 22" fill="none" stroke="#1F1B16" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></span>
+<span class="w s1" data-c="1"><span class="hlb"></span><span class="st"></span><span class="t">Faux</span><svg viewBox="0 0 100 40" preserveAspectRatio="none" style="position:absolute;left:-8px;top:-6px;width:calc(100% + 16px);height:calc(100% + 12px);overflow:visible;pointer-events:none" aria-hidden="true"><path class="cir" d="M10 24 C 6 8, 90 2, 95 18 C 99 34, 20 40, 6 22" fill="none" stroke="#1F1B16" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></span>
+</div>
+<div class="stage2" id="stage2">
+<p class="hd" style="font-size:19px;color:#6B6254">Pourquoi ?</p>
+<div class="rs s2" data-c="0"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2" stroke-linejoin="round"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="lbl fr"><span class="hlb" style="bottom:4px;height:12px"></span><span class="st" style="top:12px"></span><span class="t">La soie venait en réalité d'Inde</span></span></div>
+<div class="rs s2" data-c="1"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2" stroke-linejoin="round"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="lbl fr"><span class="hlb" style="bottom:4px;height:12px"></span><span class="st" style="top:12px"></span><span class="t">La Chine gardait secret l'élevage du ver</span></span></div>
+<div class="rs s2" data-c="0"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2" stroke-linejoin="round"/><path class="chk" d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="lbl fr"><span class="hlb" style="bottom:4px;height:12px"></span><span class="st" style="top:12px"></span><span class="t">Rome refusait tout commerce avec l'Orient</span></span></div>
+</div>
+<p id="fb" class="hd" style="font-size:19px;min-height:24px" aria-live="polite"></p>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#6B6254"><span style="margin-right:6px">Mémoire</span><span class="seg" style="background:var(--hl)"></span><span class="seg" style="background:var(--hl)"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div>
+<button class="link hidden" id="reread">Revoir le passage</button>
+</div>
+<div style="margin-top:14px"><button class="tapebtn" id="contBtn">Continuer</button></div>
+</div>
+<p style="text-align:center;margin:14px 0 0"><button class="link" id="rp" style="font-size:16px;color:#6B6254">Rejouer la maquette</button></p>
+</div>
+</div>
+
+<script>
+const pv=document.getElementById('pv'),lesson=document.getElementById('lesson'),cardZone=document.getElementById('cardZone');
+const readBtn=document.getElementById('readBtn'),readZone=document.getElementById('readZone'),reread=document.getElementById('reread');
+const fb=document.getElementById('fb'),stage2=document.getElementById('stage2'),cardWrap=document.getElementById('cardWrap');
+const s1=[...document.querySelectorAll('.s1')],s2=[...document.querySelectorAll('.s2')],segs=document.querySelectorAll('.seg');
+let d1=false,d2=false;
+const hl=el=>{el.querySelector('.hlb').style.transform='scaleX(1)';};
+const strike=el=>{el.querySelector('.st').style.transform='scaleX(1)';el.querySelector('.t').style.color='#8C8170';};
+const circle=el=>{el.querySelector('.cir').style.strokeDashoffset='0';};
+const check=el=>{el.querySelector('.chk').style.strokeDashoffset='0';};
+const lift=b=>{b.style.transform='rotate(-7deg) translateY(-5px)';setTimeout(()=>{b.style.transform='rotate(-1.5deg)';},240);};
+
+readBtn.addEventListener('click',()=>{
+lift(readBtn);
+lesson.classList.add('turned');
+setTimeout(()=>{lesson.classList.add('hidden');cardZone.classList.remove('hidden');cardZone.classList.add('fadein');},500);
+});
+reread.addEventListener('click',()=>{
+readZone.classList.add('hidden');
+lesson.classList.remove('hidden');
+requestAnimationFrame(()=>requestAnimationFrame(()=>lesson.classList.remove('turned')));
+reread.classList.add('hidden');
+});
+s1.forEach(w=>w.addEventListener('click',()=>{
+if(d1)return;d1=true;
+const ok=w.dataset.c==='1',right=s1.find(x=>x.dataset.c==='1');
+if(ok){circle(w);hl(w);fb.textContent='Bien vu. Maintenant, pourquoi ?';}
+else{strike(w);setTimeout(()=>{circle(right);hl(right);},350);fb.textContent='Pas tout à fait. Mais pourquoi ?';}
+stage2.classList.add('on');
+}));
+s2.forEach(r=>r.addEventListener('click',()=>{
+if(!d1||d2)return;d2=true;
+const ok=r.dataset.c==='1',right=s2.find(x=>x.dataset.c==='1');
+if(ok){check(r);hl(r);segs[2].style.background=getComputedStyle(pv).getPropertyValue('--hl');fb.textContent='Exactement. Cette idée tient mieux.';}
+else{strike(r);setTimeout(()=>{check(right);hl(right);},350);fb.textContent='Presque. Tu la reverras bientôt.';}
+reread.classList.remove('hidden');
+}));
+function resetCard(){
+d1=false;d2=false;
+document.querySelectorAll('.hlb,.st,.cir,.chk').forEach(e=>{e.style.transition='none';});
+document.querySelectorAll('#cardZone .hlb,#cardZone .st').forEach(e=>e.style.transform='scaleX(0)');
+document.querySelectorAll('.cir').forEach(e=>e.style.strokeDashoffset='400');
+document.querySelectorAll('.chk').forEach(e=>e.style.strokeDashoffset='20');
+document.querySelectorAll('#cardZone .t').forEach(e=>e.style.color='#1F1B16');
+void pv.offsetWidth;
+document.querySelectorAll('.hlb,.st,.cir,.chk').forEach(e=>{e.style.transition='';});
+stage2.classList.remove('on');segs[2].style.background='';fb.textContent='';
+}
+document.getElementById('contBtn').addEventListener('click',e=>{
+lift(e.currentTarget);
+cardWrap.style.transform='translateX(-120%) rotate(-10deg)';cardWrap.style.opacity='0';
+setTimeout(()=>{
+resetCard();
+cardWrap.style.transition='none';cardWrap.style.transform='translateX(30%) rotate(-0.6deg)';
+void cardWrap.offsetWidth;
+cardWrap.style.transition='';cardWrap.style.transform='rotate(-0.6deg)';cardWrap.style.opacity='1';
+},420);
+});
+document.getElementById('rp').addEventListener('click',()=>{
+resetCard();
+cardZone.classList.add('hidden');reread.classList.add('hidden');
+readZone.classList.remove('hidden');lesson.classList.remove('hidden','turned');
+});
+const chips=[...document.querySelectorAll('.chip')];
+chips.forEach(c=>c.addEventListener('click',()=>{
+chips.forEach(x=>x.classList.remove('sel'));c.classList.add('sel');
+pv.style.setProperty('--hl',c.dataset.c);
+if(d2&&segs[2].style.background)segs[2].style.background=c.dataset.c;
+}));
+</script>
+</body>
+</html>

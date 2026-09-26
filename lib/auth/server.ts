@@ -1,73 +1,33 @@
-import { cookies } from "next/headers";
+import "server-only";
 
-export interface AuthUser {
-  id: string;
-  email: string;
-  name?: string;
-  emailVerified?: boolean;
-  image?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import { createNeonAuth } from "@neondatabase/auth/next/server";
+import { getAuthEnv } from "@/lib/env";
 
-export interface AuthSession {
-  id: string;
-  userId: string;
-  expiresAt: string;
-  token?: string;
-}
+const env = getAuthEnv();
 
-export interface SessionData {
-  user: AuthUser;
-  session: AuthSession;
-}
+export const auth = createNeonAuth({
+  baseUrl: env.NEON_AUTH_BASE_URL,
+  cookies: {
+    secret: env.NEON_AUTH_COOKIE_SECRET,
+  },
+});
 
-/**
- * Get the current user session from Neon Auth on the server.
- * Reads cookies from next/headers and validates with Neon Auth endpoint.
- */
-export async function getServerSession(): Promise<SessionData | null> {
-  const cookieStore = cookies();
-  const cookieHeader = cookieStore.toString();
-
-  if (!cookieHeader) {
-    return null;
-  }
-
-  const authBaseUrl = process.env.NEON_AUTH_BASE_URL;
-  if (!authBaseUrl) {
-    console.error("NEON_AUTH_BASE_URL is not set.");
-    return null;
-  }
-
-  try {
-    const res = await fetch(`${authBaseUrl.replace(/\/$/, "")}/get-session`, {
-      headers: {
-        cookie: cookieHeader,
-      },
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      return null;
-    }
-
-    const data = await res.json();
-    if (!data || !data.user) {
-      return null;
-    }
-
-    return data as SessionData;
-  } catch (error) {
-    console.error("Error retrieving Neon Auth server session:", error);
-    return null;
+export class UnauthorizedError extends Error {
+  constructor() {
+    super("UNAUTHORIZED");
+    this.name = "UnauthorizedError";
   }
 }
 
-/**
- * Convenience helper returning only the user object or null.
- */
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  const sessionData = await getServerSession();
-  return sessionData ? sessionData.user : null;
+export async function getCurrentUser() {
+  const { data, error } = await auth.getSession();
+  if (error || !data?.user?.email) return null;
+  if (!env.OWNER_EMAILS.has(data.user.email.toLowerCase())) return null;
+  return data.user;
+}
+
+export async function requireUser() {
+  const user = await getCurrentUser();
+  if (!user) throw new UnauthorizedError();
+  return user;
 }

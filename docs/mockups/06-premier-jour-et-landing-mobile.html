@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grasp, maquette 06 : premier jour et landing mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:32px 20px;background:#E7E2D8;font-family:'Geist',system-ui,sans-serif;color:#1F1B16}
+.intro{max-width:790px;margin:0 auto 20px}
+.intro h1{font-size:18px;font-weight:500;margin:0 0 6px}
+.intro p{font-size:14px;line-height:1.5;color:#6B6254;margin:0}
+.row{max-width:790px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;align-items:start}
+.lbl{margin:10px 0 0;font-size:13px;color:#6B6254;text-align:center}
+.fr{font-family:'Fraunces',Georgia,serif}
+.hd{font-family:'Caveat',cursive}
+.phone{max-width:375px;margin:0 auto;background:#F7F2E8;border-radius:28px;border:1px solid rgba(31,27,22,.15);padding:20px 20px 12px;overflow:hidden}
+.pg{position:relative;background-color:#FFFDF8;border:1px solid #E8DFCC;border-radius:6px;padding:24px 12px 24px 34px;line-height:24px;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 17px,#EFE6D6 17px,#EFE6D6 18px,transparent 18px,transparent 24px)}
+.pg p{margin:0}
+.mg{position:absolute;left:22px;top:0;bottom:0;width:1.5px}
+.tape{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;color:#1F1B16;font-family:'Caveat',cursive}
+.tapebtn{display:block;margin:0 auto;border:none;background:#1F1B16;color:#F7F2E8;font-family:'Caveat',cursive;font-size:22px;height:44px;min-width:180px;padding:0 20px;cursor:pointer;transform:rotate(-1.5deg);clip-path:polygon(2% 0,98% 0,100% 25%,97% 50%,100% 75%,98% 100%,2% 100%,0 70%,3% 45%,0 20%)}
+.todo{display:flex;gap:10px;align-items:center;height:24px;font-size:13.5px}
+.nav{display:flex;justify-content:space-around;border-top:1px dashed #D9CDB5;padding-top:8px;margin-top:16px;font-size:11px;color:#6B6254}
+.nav span{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mk{padding:0 3px;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.preview{cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.preview:hover{transform:rotate(0deg) translateY(-2px) !important}
+</style>
+</head>
+<body>
+<div class="intro">
+<h1>Maquette 06 : premier jour et landing mobile</h1>
+<p>À gauche, l'écran Aujourd'hui juste après la toute première leçon : objectif atteint, et accroche de la leçon du lendemain. À droite, la landing mobile pour les recruteurs : la fiche d'aperçu ouvre la démo, et « Se connecter » reste discret. Référence : DESIGN.md, sections 7.1 et 7.3.</p>
+</div>
+
+<div class="row">
+<div><div class="phone">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><p class="fr" style="margin:0;font-size:20px;font-weight:500">Bonjour Alexandre</p><span style="font-size:11px;color:#6B6254">vendredi 25</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+<div class="fr" style="display:flex;gap:10px;font-size:14px;color:#8C8170">
+<span>L</span><span>M</span><span>M</span><span>J</span>
+<span style="position:relative;padding:0 3px;color:#1F1B16"><span style="position:absolute;left:0;right:0;bottom:2px;height:60%;background:#D9C4FF;border-radius:2px"></span><span style="position:relative">V</span><svg viewBox="0 0 40 30" preserveAspectRatio="none" style="position:absolute;left:-6px;top:-5px;width:calc(100% + 12px);height:calc(100% + 10px);overflow:visible" aria-hidden="true"><path d="M6 17 C 3 5, 34 2, 36 14 C 38 27, 9 29, 4 15" fill="none" stroke="#1F1B16" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg></span>
+<span>S</span><span>D</span>
+</div>
+<span class="hd" style="font-size:18px">1 sur 7, un bon début</span>
+</div>
+
+<div style="position:relative;margin-top:22px;transform:rotate(-0.8deg)">
+<div class="tape" style="top:-12px;left:50%;transform:translateX(-50%) rotate(-2deg);width:146px;height:24px;background:#CFE0B8;font-size:18px;clip-path:polygon(3% 0,97% 0,100% 35%,96% 65%,100% 100%,2% 100%,0 60%,3% 25%)">Objectif du jour</div>
+<div class="pg"><div class="mg" style="background:#D9C4FF"></div>
+<div class="todo"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2"/><path d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="fr" style="position:relative;color:#8C8170">Leçon 1 : Le jour où le Japon a fermé ses portes<span style="position:absolute;left:0;right:0;top:12px;height:1.5px;background:#1F1B16"></span></span></div>
+<div class="todo"><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3 L13.5 2.5 L13 13.5 L3 13 Z" fill="none" stroke="#6B6254" stroke-width="1.2"/><path d="M4 8.5 L7 11.5 L13 3" fill="none" stroke="#1F1B16" stroke-width="1.8" stroke-linecap="round"/></svg><span class="fr" style="position:relative;color:#8C8170">3 cartes<span style="position:absolute;left:0;right:0;top:12px;height:1.5px;background:#1F1B16"></span></span></div>
+<p class="hd" style="font-size:20px">Objectif atteint. À demain.</p>
+</div></div>
+
+<div style="position:relative;margin-top:20px;transform:rotate(0.9deg)">
+<div class="tape" style="top:-11px;left:18px;transform:rotate(-3deg);width:86px;height:22px;background:#D9C4FF;font-size:17px;clip-path:polygon(5% 0,96% 0,100% 45%,95% 100%,4% 100%,0 55%)">Demain</div>
+<div class="pg"><div class="mg" style="background:#D9C4FF"></div>
+<p class="fr" style="font-size:15px">Pourquoi un seul port est resté ouvert</p>
+<p class="hd" style="font-size:18px;color:#6B6254">Leçon 2 sur 5, sakoku</p>
+</div></div>
+
+<p class="hd" style="margin:14px 0 0;font-size:18px;color:#6B6254;text-align:center">Envie de continuer ? <span style="text-decoration:underline;color:#1F1B16;cursor:pointer">Lire la leçon 2 maintenant</span></p>
+
+<div class="nav">
+<span style="color:#1F1B16"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Aujourd'hui</span>
+<span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5l3.5 1-3 14-3.5-1z"/></svg>Thèmes</span>
+<span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Capturer</span>
+</div>
+</div><p class="lbl">Premier jour</p></div>
+
+<div><div class="phone" style="padding-bottom:20px">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div><p class="fr" style="margin:0;font-size:20px;font-weight:500">Grasp</p><svg viewBox="0 0 60 8" preserveAspectRatio="none" style="width:58px;height:6px;display:block" aria-hidden="true"><path d="M2 5 C 18 2, 38 7, 58 3" stroke="#FFE27A" stroke-width="4" fill="none" stroke-linecap="round"/></svg></div>
+<div style="display:flex;gap:14px;align-items:center;font-size:12px"><span><span style="text-decoration:underline;text-underline-offset:3px">FR</span> <span style="color:#6B6254">EN</span></span><span style="color:#8C8170">Se connecter</span></div>
+</div>
+<p class="fr" style="margin:22px 0 0;font-size:26px;line-height:32px">Un thème par semaine, quelques minutes par jour, et <span class="mk" style="background:#FFE27A">tu t'en souviens vraiment.</span></p>
+<p style="margin:12px 0 0;font-size:14px;line-height:1.6;color:#6B6254">Grasp te propose des thèmes qui te ressemblent, te les raconte en courtes leçons, puis te fait réviser juste avant que tu oublies.</p>
+<div style="margin-top:18px"><button class="tapebtn">Essayer la démo</button></div>
+<p class="hd" style="margin:6px 0 0;font-size:18px;color:#6B6254;text-align:center">Sans compte, en 2 minutes</p>
+
+<div class="preview" title="Ouvre la démo" style="position:relative;margin:26px 8px 0;transform:rotate(-1.2deg)">
+<div class="tape" style="top:-11px;left:50%;transform:translateX(-50%) rotate(2.5deg);width:120px;height:22px;background:#A5D8FF;font-size:17px;clip-path:polygon(3% 0,97% 0,100% 30%,97% 70%,100% 100%,2% 100%,0 50%)">Psychologie</div>
+<div class="pg"><div class="mg" style="background:#A5D8FF"></div>
+<p class="fr" style="font-size:14.5px">Pourquoi on procrastine, même quand on sait</p>
+<p class="fr" style="font-size:13px">Ton cerveau <span class="mk" style="background:#A5D8FF">préfère une récompense immédiate</span> à une plus grande plus tard.</p>
+</div></div>
+
+<p class="fr" style="margin:26px 0 0;font-size:17px">Comment ça marche</p>
+<div class="pg" style="margin-top:10px"><div class="mg" style="background:#FFE27A"></div>
+<p class="hd" style="font-size:19px">1. Tu réponds à quelques questions</p>
+<p class="hd" style="font-size:19px">2. Tu choisis un thème parmi trois</p>
+<p class="hd" style="font-size:19px">3. Une leçon de 3 minutes par jour</p>
+<p class="hd" style="font-size:19px">4. Tes révisions reviennent au bon moment</p>
+</div>
+
+<div style="border-top:1px dashed #D9CDB5;padding-top:10px;margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#6B6254">
+<span class="hd" style="font-size:18px;color:#1F1B16">Fait en solo par Alexandre Andurand</span>
+<span style="display:flex;gap:10px"><a href="https://alexandreandurand.framer.website" style="color:#6B6254">Portfolio</a><a href="https://linkedin.com/in/andurand-alexandre" style="color:#6B6254">LinkedIn</a></span>
+</div>
+</div><p class="lbl">Landing (mobile)</p></div>
+</div>
+</body>
+</html>

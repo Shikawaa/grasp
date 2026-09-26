@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grasp, maquette 08 : page d'accueil provisoire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Maquette de référence. Dans l'app, ces valeurs passent par les tokens (DESIGN.md). */
+:root{color-scheme:light;
+--paper:#F7F2E8;--page:#FFFDF8;--rule:#EFE6D6;--edge:#E3D9C6;--pencil:#CFC3AB;--ink:#1F1B16;--ink-soft:#6B6254;--ink-faint:#8C8170;
+--beurre:#FFE27A;--ciel:#A5D8FF;--lilas:#D9C4FF;--sable:#EFD5A8;--brique:#E9B8A8;--pervenche:#B9C3FF;--sauge:#CFE0B8;--miel:#F9CF6B;--lavande:#CFC7E8;--rose:#F6C9D0;--lagon:#9ED6E3;
+--section:clamp(7rem,11vw,11rem);
+}
+/* Grands écrans : toute la page grandit proportionnellement (tailles en rem, grille comprise), jusqu'à +37,5 % à 2560 px. */
+html{font-size:16px}
+@media (min-width:1600px){html{font-size:clamp(16px,calc(16px + (100vw - 1600px) * .00625),22px)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Geist',system-ui,sans-serif}
+.fr{font-family:'Fraunces',Georgia,serif}
+.hd{font-family:'Caveat',cursive}
+.wrap{width:100%;max-width:81rem;margin:0 auto;padding:0 clamp(1.25rem,5vw,6rem)}
+.mk{padding:0 .3rem;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* Page lignée : grille de 2rem (32 px), ligne à 22-23 px de chaque rangée, pour que le texte repose dessus */
+.ruled{position:relative;background-color:var(--page);border:1px solid var(--edge);border-radius:6px;line-height:2rem;
+background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 1.375rem,var(--rule) 1.375rem,var(--rule) 1.4375rem,transparent 1.4375rem,transparent 2rem)}
+.ruled p{margin:0}
+.margin-line{position:absolute;left:2.25rem;top:0;bottom:0;width:1.5px}
+.tape{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;font-family:'Caveat',cursive;color:var(--ink)}
+
+/* ---------- Premier écran ---------- */
+.hero{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto}
+.top{padding-top:2rem;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.625rem;font-weight:500;line-height:1}
+.lang{display:flex;gap:1.4rem;align-items:center;font-size:.9375rem}
+.lang .on{text-decoration:underline;text-decoration-color:var(--beurre);text-decoration-thickness:3px;text-underline-offset:5px}
+.lang .off{color:var(--ink-soft)}
+.lang .login{color:var(--ink-faint);font-size:.875rem}
+.hero-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,29rem);gap:3.5rem;align-items:center;padding-top:2.5rem;padding-bottom:2.5rem}
+.badge{display:inline-flex;align-items:center;height:2.125rem;padding:0 1rem;font-family:'Caveat',cursive;font-size:1.3rem;background:var(--beurre);transform:rotate(-2deg);clip-path:polygon(3% 0,97% 0,100% 30%,97% 70%,100% 100%,2% 100%,0 60%,3% 25%)}
+.display{margin:1.75rem 0 0;font-size:clamp(1.9rem,3.2vw + .6rem,3.5rem);line-height:1.2;font-weight:400}
+.sub{margin:1.6rem 0 0;font-size:1.1875rem;line-height:1.6;color:var(--ink-soft);max-width:31rem}
+.soon{margin:1.75rem 0 0;font-size:1.5625rem;color:var(--ink-soft)}
+.visual{position:relative;height:29rem}
+.card-back{position:absolute;top:0;right:0;width:23.75rem;transform:rotate(3.5deg)}
+.card-front{position:absolute;top:11rem;left:0;width:25.5rem;transform:rotate(-2deg)}
+.card{padding:2rem 1.5rem 2rem 3.25rem}
+.meta{font-size:.8125rem;color:var(--ink-soft)}
+.annot{position:absolute;right:1rem;bottom:-3.75rem;display:flex;align-items:flex-end;gap:.4rem}
+.annot span{font-size:1.4rem;color:var(--ink-soft);white-space:nowrap}
+.hero-foot{padding-bottom:2.25rem;min-height:6rem;display:flex;align-items:flex-end}
+.hint{display:none;align-items:flex-start;gap:.6rem;transition:opacity .4s}
+.hint span{font-size:1.5rem;color:var(--ink-soft);margin-top:.1rem}
+.hint.gone{opacity:0}
+@media (min-width:1024px) and (min-height:700px){.hint{display:flex}}
+.draw{stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset .9s ease-out .3s}
+.draw.on{stroke-dashoffset:0}
+
+/* ---------- Mur de thèmes ---------- */
+.sec{padding-top:var(--section)}
+.sec h2{margin:0;font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:1.75rem;line-height:2rem}
+.sec .lead{margin:.5rem 0 0;font-family:'Caveat',cursive;font-size:1.45rem;color:var(--ink-soft)}
+.tapes{margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:1.4rem 1.6rem;align-items:center}
+.strip{display:inline-flex;align-items:center;max-width:34rem;padding:.55rem 1.4rem;font-family:'Caveat',cursive;font-size:1.45rem;line-height:1.25;color:var(--ink)}
+
+/* ---------- Comment ça marche ---------- */
+.band{margin-top:2.5rem;padding:2rem 2rem 2rem 4rem}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto auto auto;gap:0 2.25rem;position:relative;z-index:2}
+/* Sous-grille : les titres et les éléments de chaque étape restent alignés d'une colonne à l'autre, même si un titre passe sur plusieurs lignes */
+.step{min-width:0;display:grid;grid-row:span 3;grid-template-rows:subgrid;align-content:start}
+.step .num{justify-self:start}
+.num{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:2.75rem;height:2rem;padding:0 .8rem;font-family:'Caveat',cursive;font-size:1.625rem;background:var(--page)}
+/* Le cercle s'adapte à la taille réelle du chiffre : il ne peut pas le couper, quelle que soit la police affichée */
+.num svg{position:absolute;left:-.15rem;right:-.15rem;top:-.2rem;bottom:-.2rem;width:calc(100% + .3rem);height:calc(100% + .4rem);overflow:visible}
+.step-title{margin:0;font-family:'Caveat',cursive;font-size:1.5625rem;line-height:2rem}
+.step-obj{padding-top:2rem}
+.step-obj .line{font-size:.9375rem}
+.mini{display:flex;align-items:center;width:fit-content;max-width:100%;min-height:1.5rem;margin:.25rem 0;padding:0 .7rem;font-family:'Caveat',cursive;font-size:1.1rem;line-height:1.2;color:var(--ink)}
+.seg{display:inline-block;width:1.125rem;height:.4375rem;border-radius:3px;border:1px solid var(--pencil);margin-right:.2rem;vertical-align:middle}
+#pathSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1;pointer-events:none}
+#path{stroke-dasharray:2 7}
+
+/* ---------- Pied de page ---------- */
+.foot{margin-top:var(--section);padding-bottom:2rem}
+.foot div{border-top:1px dashed #D9CDB5;padding-top:1.1rem;display:flex;justify-content:space-between;align-items:center;font-size:.875rem;color:var(--ink-faint)}
+
+/* ---------- Tablette et mobile ---------- */
+@media (max-width:1023px){
+:root{--section:clamp(4.5rem,14vw,6rem)}
+.hero-main{grid-template-columns:1fr;gap:3rem}
+.hero-foot{min-height:0;padding-bottom:0}
+.visual{max-width:29rem;height:28rem;margin-bottom:4rem}
+.steps{grid-template-columns:1fr;gap:2rem 0}
+.steps{grid-template-rows:none}
+.step{display:grid;grid-row:auto;grid-template-rows:auto auto;grid-template-columns:2.75rem minmax(0,1fr);column-gap:1rem}
+.num{grid-row:1 / span 2}
+.step-title{min-height:0}
+.step-obj{padding-top:0;grid-column:2}
+.band{padding-left:3.5rem}
+}
+@media (max-width:640px){
+.hero{min-height:auto}
+.visual{height:27.5rem}
+.card-back{width:88%}
+.card-front{width:94%;top:10rem}
+.annot{right:0;bottom:-3.5rem}
+.band{padding:2rem 1rem 2rem 3rem}
+.margin-line{left:1.75rem}
+}
+@media (max-width:360px){.mini{font-size:1rem;padding:0 .5rem}}
+@media (prefers-reduced-motion:reduce){.draw{transition:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="wrap top">
+<div><span class="fr logo">grasp</span><svg viewBox="0 0 60 8" preserveAspectRatio="none" style="width:4.4rem;height:.45rem;display:block" aria-hidden="true"><path d="M2 5 C 18 2, 38 7, 58 3" stroke="var(--lilas)" stroke-width="4" fill="none" stroke-linecap="round"/></svg></div>
+<nav class="lang" aria-label="Langue"><span class="on">FR</span><span class="off">/ EN</span><span class="login">Se connecter</span></nav>
+</div>
+
+<div class="wrap hero-main">
+<div>
+<span class="badge">Bientôt disponible</span>
+<h1 class="fr display">Un thème par semaine, quelques minutes par jour, et <span class="mk" style="background:var(--beurre)">tu t'en souviens vraiment.</span></h1>
+<p class="fr sub">Grasp apprend à te connaître, te raconte des thèmes précis en courtes leçons, et t'aide à retenir chaque idée.</p>
+<p class="hd soon">La démo jouable arrive bientôt.</p>
+</div>
+
+<div class="visual" aria-hidden="true">
+<div class="card-back">
+<div class="tape" style="top:-.875rem;left:50%;transform:translateX(-50%) rotate(2.5deg);width:9.2rem;height:1.75rem;background:var(--ciel);font-size:1.3rem;clip-path:polygon(3% 0,97% 0,100% 30%,97% 70%,100% 100%,2% 100%,0 50%)">Psychologie</div>
+<div class="ruled card"><div class="margin-line" style="background:var(--ciel)"></div>
+<p class="meta">Leçon 2 sur 4</p>
+<p class="fr" style="font-size:1.125rem">Pourquoi on procrastine, même quand on sait</p>
+<p class="fr" style="font-size:.9375rem">Ton cerveau <span class="mk" style="background:var(--ciel)">préfère une récompense immédiate</span> à une plus grande plus tard.</p>
+</div></div>
+<div class="card-front">
+<div class="tape" style="top:-.875rem;left:1.75rem;transform:rotate(-3deg);width:7rem;height:1.75rem;background:var(--lilas);font-size:1.3rem;clip-path:polygon(4% 0,95% 0,100% 30%,96% 55%,100% 100%,3% 100%,0 60%,4% 35%)">Sakoku</div>
+<div class="ruled card"><div class="margin-line" style="background:var(--lilas)"></div>
+<div style="display:flex;justify-content:space-between" class="meta"><span>Vrai ou faux ?</span><span>1 / 3</span></div>
+<p class="fr" style="font-size:1.0625rem">Pendant le sakoku, le Japon a coupé tout contact avec l'étranger.</p>
+<div class="fr" style="display:flex;gap:2rem;padding:2rem 0 0 .4rem;height:4rem;font-size:1.3rem">
+<span style="position:relative;padding:0 .6rem;color:var(--ink-faint)">Vrai<span style="position:absolute;left:.4rem;right:.4rem;top:1.05rem;height:2px;background:var(--ink)"></span></span>
+<span style="position:relative;padding:0 .6rem"><span style="position:absolute;left:0;right:0;bottom:.35rem;height:1rem;background:var(--lilas);border-radius:2px"></span><span style="position:relative">Faux</span><svg viewBox="0 0 100 40" preserveAspectRatio="none" style="position:absolute;left:-.55rem;top:-.3rem;width:calc(100% + 1.1rem);height:calc(100% + .6rem);overflow:visible"><path d="M10 24 C 6 8, 90 2, 95 18 C 99 34, 20 40, 6 22" fill="none" stroke="var(--ink)" stroke-width="1.7" vector-effect="non-scaling-stroke"/></svg></span>
+</div>
+<p class="hd" style="font-size:1.5625rem">Exactement. Cette idée tient mieux.</p>
+</div></div>
+<div class="annot">
+<span class="hd">une vraie carte de révision</span>
+<svg width="48" height="48" viewBox="0 0 56 52" style="width:3rem;height:3rem"><path class="draw" d="M3 46 C 22 48, 40 36, 48 10 M40 14 L49 7 L53 18" fill="none" stroke="var(--ink-soft)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</div>
+</div>
+
+<div class="wrap hero-foot">
+<div class="hint" id="hint">
+<svg width="44" height="70" viewBox="0 0 44 70" style="width:2.75rem;height:4.375rem" aria-hidden="true"><path class="draw" d="M30 4 C 10 8, 6 26, 14 38 C 20 48, 18 58, 12 64 M6 56 L12 65 L20 58" fill="none" stroke="var(--ink-soft)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span class="hd">la suite, par ici</span>
+</div>
+</div>
+</header>
+
+<main>
+<section class="wrap sec" aria-labelledby="t-wall">
+<h2 id="t-wall">Chaque semaine, un thème choisi pour toi</h2>
+<p class="lead">Des angles précis, jamais des sujets fourre-tout.</p>
+<div class="tapes">
+<span class="strip" style="background:var(--lilas);transform:rotate(-1.5deg);clip-path:polygon(2% 0,98% 0,100% 30%,98% 60%,100% 100%,1% 100%,0 70%,2% 35%)">Comment le Japon s'est fermé au monde pendant 200 ans</span>
+<span class="strip" style="background:var(--ciel);transform:rotate(1.2deg);clip-path:polygon(3% 0,97% 0,100% 45%,97% 100%,2% 100%,0 55%)">Pourquoi on procrastine, même quand on sait</span>
+<span class="strip" style="background:var(--miel);transform:rotate(-.8deg);clip-path:polygon(2% 0,97% 0,100% 35%,98% 65%,100% 100%,3% 100%,0 60%,2% 25%)">Edison contre Tesla : la guerre des courants</span>
+<span class="strip" style="background:var(--sauge);transform:rotate(2deg);clip-path:polygon(3% 0,96% 0,100% 40%,97% 100%,2% 100%,0 50%)">Comment les Vikings ont atteint l'Amérique</span>
+<span class="strip" style="background:var(--rose);transform:rotate(-2.2deg);clip-path:polygon(2% 0,98% 0,100% 30%,97% 60%,99% 100%,2% 100%,0 65%,3% 30%)">Pourquoi le jazz est né à La Nouvelle-Orléans</span>
+<span class="strip" style="background:var(--lagon);transform:rotate(1deg);clip-path:polygon(3% 0,97% 0,100% 50%,97% 100%,3% 100%,0 50%)">Ce que les champignons se disent sous la forêt</span>
+<span class="strip" style="background:var(--sable);transform:rotate(-1deg);clip-path:polygon(2% 0,98% 0,100% 35%,97% 70%,100% 100%,1% 100%,0 60%,3% 30%)">Comment le café a conquis l'Europe</span>
+<span class="strip" style="background:var(--lavande);transform:rotate(1.8deg);clip-path:polygon(3% 0,96% 0,100% 40%,98% 100%,2% 100%,0 45%)">Ce que ton cerveau fait pendant que tu dors</span>
+</div>
+</section>
+
+<section class="wrap sec" aria-labelledby="t-how">
+<h2 id="t-how">Comment ça marche</h2>
+<p class="lead">Quatre étapes, puis ça tourne tout seul.</p>
+<div class="ruled band" id="band">
+<div class="margin-line" style="background:var(--beurre)"></div>
+<svg id="pathSvg" aria-hidden="true"><defs><clipPath id="reveal"><rect id="rv" x="0" y="0" width="0" height="0"/></clipPath></defs><path id="path" d="" fill="none" stroke="var(--ink-faint)" stroke-width="2" stroke-linecap="round" clip-path="url(#reveal)"/></svg>
+<ol class="steps">
+<li class="step">
+<span class="num">1<svg viewBox="0 0 44 32" preserveAspectRatio="none" aria-hidden="true"><path d="M8 18 C 5 5, 38 3, 40 15 C 42 28, 10 30, 5 16" fill="none" stroke="var(--ink)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></span>
+<p class="step-title">Tu réponds à quelques questions</p>
+<div class="step-obj">
+<p class="fr line"><span class="mk" style="background:var(--lilas)">Histoire</span>&nbsp; <span class="mk" style="background:var(--ciel)">Psychologie</span>&nbsp; <span style="color:var(--ink-faint)">Arts</span></p>
+<p class="hd" style="font-size:1.3rem;color:var(--ink-soft)">« les samouraïs, le jazz… »</p>
+</div>
+</li>
+<li class="step">
+<span class="num">2<svg viewBox="0 0 44 32" preserveAspectRatio="none" aria-hidden="true"><path d="M7 17 C 4 4, 39 4, 40 16 C 41 29, 9 29, 5 14" fill="none" stroke="var(--ink)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></span>
+<p class="step-title">Tu choisis un thème parmi trois</p>
+<div class="step-obj">
+<span class="mini" style="background:var(--lilas);transform:rotate(-2deg);opacity:.5">Le sakoku</span>
+<span class="mini" style="background:var(--ciel);transform:rotate(1.5deg)">Pourquoi on procrastine&nbsp;<svg width="16" height="14" viewBox="0 0 16 14" style="width:1rem;height:.875rem" aria-hidden="true"><path d="M2 7.5 L6 11.5 L14 2" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+<span class="mini" style="background:var(--sable);transform:rotate(-1deg);opacity:.5">Edison contre Tesla</span>
+</div>
+</li>
+<li class="step">
+<span class="num">3<svg viewBox="0 0 44 32" preserveAspectRatio="none" aria-hidden="true"><path d="M9 18 C 6 6, 37 2, 40 14 C 43 27, 11 31, 6 17" fill="none" stroke="var(--ink)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></span>
+<p class="step-title">Une leçon de 3 minutes par jour</p>
+<div class="step-obj">
+<p class="meta">Leçon 2 sur 4, 3 min</p>
+<p class="fr line">Ton cerveau <span class="mk" style="background:var(--ciel)">préfère une récompense immédiate</span>…</p>
+</div>
+</li>
+<li class="step">
+<span class="num">4<svg viewBox="0 0 44 32" preserveAspectRatio="none" aria-hidden="true"><path d="M8 17 C 5 5, 38 4, 40 15 C 42 28, 10 30, 5 15" fill="none" stroke="var(--ink)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></span>
+<p class="step-title">Tes révisions reviennent au bon moment</p>
+<div class="step-obj">
+<p class="meta">Mémoire&nbsp; <span class="seg" style="background:var(--ciel)"></span><span class="seg" style="background:var(--ciel)"></span><span class="seg" style="background:var(--ciel)"></span><span class="seg"></span><span class="seg"></span></p>
+<p class="hd" style="font-size:1.35rem">Demain : 8 cartes <svg width="30" height="22" viewBox="0 0 30 22" style="width:1.875rem;height:1.375rem;vertical-align:middle" aria-hidden="true"><path d="M24 6 C 16 -1, 3 3, 4 12 C 5 20, 20 22, 25 13 M25 13 L21 12 M25 13 L27 9" fill="none" stroke="var(--ink-soft)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+</div>
+</li>
+</ol>
+</div>
+</section>
+</main>
+
+<footer class="wrap foot"><div><span class="fr" style="font-size:1rem;color:var(--ink-soft)">grasp</span><span>© 2026</span></div></footer>
+
+<script>
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Flèches du premier écran : tracées une fois à l'arrivée */
+requestAnimationFrame(()=>document.querySelectorAll('.hero .draw').forEach(p=>p.classList.add('on')));
+/* « la suite, par ici » disparaît au premier défilement */
+const hint=document.getElementById('hint');
+addEventListener('scroll',()=>{if(scrollY>24)hint.classList.add('gone');},{passive:true});
+
+/* Chemin de « Comment ça marche » : relie réellement les numéros, à l'horizontale (desktop) ou à la verticale (tablette, mobile) */
+const band=document.getElementById('band'),path=document.getElementById('path'),rv=document.getElementById('rv');
+let drawn=false;
+function build(){
+const br=band.getBoundingClientRect();
+const vertical=matchMedia('(max-width:1023px)').matches;
+const n=[...band.querySelectorAll('.num')].map(e=>{const r=e.getBoundingClientRect();return{l:r.left-br.left,r:r.right-br.left,t:r.top-br.top,b:r.bottom-br.top,cx:(r.left+r.right)/2-br.left,cy:(r.top+r.bottom)/2-br.top};});
+let d='';
+for(let i=0;i<n.length-1;i++){
+const a=n[i],b=n[i+1],s=i%2?1:-1;
+if(!vertical){
+const x1=a.r+6,y1=a.cy,x2=b.l-6,y2=b.cy,k=(x2-x1)*.35,amp=s*18;
+d+=`M${x1} ${y1} C ${x1+k} ${y1+amp}, ${x2-k} ${y2-amp}, ${x2} ${y2} `;
+}else{
+const x=a.cx,y1=a.b+6,y2=b.t-6,k=(y2-y1)*.35,amp=s*9;
+d+=`M${x} ${y1} C ${x+amp} ${y1+k}, ${x-amp} ${y2-k}, ${x} ${y2} `;
+}
+}
+path.setAttribute('d',d);
+rv.setAttribute('height',vertical?(drawn?br.height:0):br.height);
+rv.setAttribute('width',vertical?br.width:(drawn?br.width:0));
+rv.dataset.mode=vertical?'v':'h';
+}
+function reveal(){
+if(drawn)return;drawn=true;
+const br=band.getBoundingClientRect(),v=rv.dataset.mode==='v',full=v?br.height:br.width;
+if(reduce){rv.setAttribute(v?'height':'width',full);return;}
+let t0=null;
+const step=t=>{if(!t0)t0=t;const p=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-p,3);rv.setAttribute(v?'height':'width',full*e);if(p<1)requestAnimationFrame(step);};
+requestAnimationFrame(step);
+}
+build();
+new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){reveal();o.disconnect();}});},{threshold:.35}).observe(band);
+addEventListener('resize',build);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(build);
+</script>
+</body>
+</html>

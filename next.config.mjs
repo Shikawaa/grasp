@@ -1,14 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        remotePatterns: [
+    async headers() {
+        return [
             {
-                protocol: "https",
-                hostname: "**",
+                source: "/(.*)",
+                headers: [
+                    { key: "X-Content-Type-Options", value: "nosniff" },
+                    { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+                    { key: "X-Frame-Options", value: "DENY" },
+                ],
             },
-        ],
+        ];
     },
 };
 
 export default nextConfig;
-
