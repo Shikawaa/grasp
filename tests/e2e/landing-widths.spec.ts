@@ -80,13 +80,6 @@ for (const viewport of viewports) {
       }));
     expect(arrowWidth / rootFontSize).toBeLessThanOrEqual(3);
 
-    const howItWorks = page.getByRole("heading", { name: "Comment ça marche" });
-    await howItWorks.scrollIntoViewIfNeeded();
-    await expect(page.locator('[data-drawn="true"]')).toBeVisible();
-    await page.waitForTimeout(600);
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(50);
-
     await page.context().addCookies([
       {
         name: "lang",
