@@ -4,7 +4,7 @@
 
 ## 1. Principes
 
-- **Développement directement sur `main`.** Chaque push est déployé en production (https://grasp-gold.vercel.app). Si un build échoue, Vercel garde la dernière version fonctionnelle.
+- **Une branche par lot.** Elle part du dernier `main` validé. Aucun push ni aucune fusion dans `main` sans l'accord explicite d'Alexandre ; un push de branche ne sert qu'à obtenir une prévisualisation Vercel demandée. Le lot 2 utilise `lot-2`, fondée sur le commit du logo marqué localement `v2-lot1.1`. Le tag `v2-lot1` reste le marqueur de fin du lot 1.
 - **La V1 est figée avant le lot 1** : un tag Git `v1` sur son dernier commit, et une branche Neon `v1-backup`. Il n'y a ensuite qu'une seule base de données : la base principale Neon, utilisée en local comme en production.
 - **On garde l'infrastructure** issue de la migration vers Neon : la base et Neon Auth. **Le stockage de fichiers n'est plus utilisé** : les captures d'écran sont lues puis supprimées.
 - **Tout le domaine produit est reconstruit.** On repart d'un schéma de base propre, sans reprise des données V1.
@@ -18,7 +18,7 @@
 | Couche | Choix | Remarque |
 |---|---|---|
 | Framework | Next.js 16 (App Router), React 19, TypeScript strict | Montée depuis 14.2 au lot 1, si Neon Auth est compatible (vérifié pendant l'audit). Sinon : rester en 14.2 et le noter dans `AGENTS.md` |
-| Style | Tailwind CSS 3 | Pas de passage à Tailwind 4 dans cette refonte |
+| Style | CSS Modules sémantiques, tokens CSS globaux | Seuls les tokens, le reset minimal et les styles de base sont globaux ; pas de Tailwind |
 | Primitives accessibles | Radix (déjà installé) | Pour les dialogues et les feuilles ; leur habillage suit `DESIGN.md` |
 | Base | Neon Postgres | Garder l'accès base mis en place par la migration. S'il n'y a pas d'ORM, utiliser Drizzle ORM et drizzle-kit |
 | Auth | Neon Auth (Better Auth managé) | Inscriptions fermées |
@@ -29,12 +29,12 @@
 | Répétition espacée | `ts-fsrs` | Paramètres par défaut, rétention cible de 0,9 |
 | Validation | `zod` | |
 | Traductions | Dictionnaires maison `lib/i18n/fr.ts` et `en.ts`, typés | Sans bibliothèque ; la langue n'apparaît pas dans l'URL |
-| Tests | Vitest et `@playwright/test` | Vitest pour la logique pure ; Playwright pour les tests de largeur et les futurs tests visuels |
+| Tests | Vitest, `@playwright/test`, axe et Stylelint | Logique pure, structure multi-navigateurs, références visuelles et accessibilité automatisée |
 | Hébergement | Vercel, avec une tâche planifiée (Cron) | Limites de l'offre gratuite à vérifier pendant l'audit |
 
 **À supprimer** : `unpdf`, `msedge-tts`, `@google/generative-ai`, les paquets `@supabase/*` s'il en reste, `react-markdown` s'il n'est plus utilisé, et tout le code lié à l'import de PDF et d'articles, à YouTube, à Supadata, à ElevenLabs, au podcast, au chat, au partage, à l'inscription et au stockage de fichiers.
 
-**Nouvelles dépendances autorisées** : `@google/genai`, `zod`, `ts-fsrs`, `vitest`, `@playwright/test`, et `drizzle-orm` avec `drizzle-kit` si aucun ORM n'est en place. `@playwright/test` sert aux tests de largeur et aux futurs tests visuels. Toute autre dépendance doit être demandée.
+**Nouvelles dépendances autorisées** : `@google/genai`, `zod`, `ts-fsrs`, `vitest`, `@playwright/test`, `@axe-core/playwright`, `stylelint`, les plugins PostCSS nécessaires à `@custom-media` et aux données globales, et `drizzle-orm` avec `drizzle-kit` si aucun ORM n'est en place. Autoprefixer reste configuré explicitement. Toute autre dépendance doit être demandée.
 
 **Polices** : Fraunces et Caveat via `next/font/google`, et Geist (déjà installé). Voir `DESIGN.md`, section 3.
 
@@ -55,7 +55,7 @@
 | `/review` | Privé | Révisions du jour |
 | `/capture` | Privé | Nouvelle capture et liste des captures |
 | `/settings` | Privé | Langue, fuseau horaire, refaire le questionnaire, déconnexion |
-| `/styleguide` | Privé | Vitrine des composants du carnet (lot 2) |
+| `/styleguide` | Public, non indexé | Vitrine des composants du carnet (lot 2), avec métadonnée `noindex, nofollow` et sans blocage dans `robots.txt` |
 | `/api/themes/[id]/generate` | Privé | Exécute l'étape suivante de la préparation d'un parcours |
 | `/api/proposals` | Privé | Prépare un nouveau lot de 3 propositions |
 | `/api/captures` | Privé | Traite une capture (lien, texte ou image) |
@@ -65,7 +65,7 @@
 
 **Proxy** (`proxy.ts` en Next.js 16, `middleware.ts` sinon) :
 - Un visiteur non connecté sur `/` est réécrit vers `/welcome`.
-- Routes publiques : `/welcome`, `/demo`, `/sign-in`, les callbacks de Neon Auth, `/opengraph-image`, `/api/cron/*` (protégée par son secret) et les fichiers statiques.
+- Routes publiques : `/welcome`, `/demo`, `/sign-in`, `/styleguide`, les callbacks de Neon Auth, `/opengraph-image`, `/api/cron/*` (protégée par son secret) et les fichiers statiques.
 - Un visiteur non connecté ailleurs est redirigé vers `/sign-in`. Les routes `/api/*` privées renvoient une erreur 401.
 - Un utilisateur connecté sur `/sign-in` est redirigé vers `/`.
 - Lors d'un rewrite ou d'une redirection, les cookies de session sont recopiés sur la réponse.
@@ -155,7 +155,7 @@ L'identifiant utilisateur est celui de Neon Auth (vérifier son type pendant l'a
   1. Gemini propose 10 angles candidats, en JSON validé.
   2. Le code en sélectionne 3 : des domaines différents si possible, au moins un issu des intérêts déclarés, et un issu d'une capture s'il en existe une récente. Les angles trop proches d'un thème passé sont écartés.
   3. Chaque proposition reçoit son pitch, sa raison et un nombre de leçons estimé (3 à 7), selon la richesse du sujet.
-- **Règle des angles** : un titre précis, formulé comme une question ou un récit, qui promet une histoire. Jamais un sujet large.
+- **Règle des angles** : un titre précis, formulé comme une question ou un récit, qui promet une histoire. Jamais un sujet large. Le titre affiché sur un ruban de thème contient au plus 55 caractères, espaces compris.
 
 ### 6.2 Préparation d'un parcours
 
@@ -170,6 +170,7 @@ L'identifiant utilisateur est celui de Neon Auth (vérifier son type pendant l'a
 - Chaque étape est idempotente : elle remplace sa sortie précédente, dans une transaction.
 - `lock_until` empêche deux exécutions simultanées.
 - En cas d'erreur 429 ou 5xx de Gemini : 3 nouvelles tentatives au maximum, avec une attente croissante. Ensuite : `status = failed`, avec un message lisible et « Réessayer », qui reprend à l'étape échouée.
+- Les sorties structurées utilisent les schémas zod communs de `lib/content`. Un titre de thème de plus de 55 caractères invalide toute la sortie concernée. Le code effectue une seule nouvelle tentative corrective en transmettant la contrainte échouée. Si cette seconde sortie reste invalide, aucune valeur n'est tronquée ni enregistrée : l'étape passe à `failed` avec un code stable, et « Réessayer » reprend uniquement cette étape. Cette tentative de correction de contenu est distincte des nouvelles tentatives réseau sur 429 ou 5xx.
 
 **`research`** :
 1. Chercher d'abord les articles pertinents avec l'API publique de Wikipédia, dans la langue du thème, avec l'anglais en repli si les résultats sont insuffisants.
@@ -185,7 +186,7 @@ L'identifiant utilisateur est celui de Neon Auth (vérifier son type pendant l'a
 - JSON validé : `{ lessons: [{ title, keyIdea, passageRefs[] }] }`, de 3 à 7 leçons.
 - La leçon 1 accroche, chaque leçon porte une seule idée et s'appuie sur la précédente, et la dernière fait la synthèse.
 - **Vérifications dans le code** : des idées clés distinctes, au moins un passage par leçon, et un nombre de leçons conforme.
-- **Les titres sont des accroches** : une question intrigante ou une scène, jamais un intitulé plat.
+- **Les titres sont des accroches** : une question intrigante ou une scène, jamais un intitulé plat. Le prompt exige un titre assez court pour tenir sur deux lignes ; le rendu est vérifié en français et en anglais aux largeurs de référence.
 
 **`lesson:k`** :
 - Rédaction selon la charte (section 7), en JSON : `{ title, paragraphs: [{ segments: [{ text, highlight? }] }] }`.
@@ -317,27 +318,34 @@ Les variables se renseignent dans l'environnement **Production** de Vercel, et d
 
 - **Scripts** : `lint`, `typecheck` (`tsc --noEmit`), `test` (Vitest) et `build`. Les quatre passent à la fin de chaque lot.
 - **Tests unitaires** : `lib/srs`, `lib/progress`, `lib/usage`, `lib/profile/signals`, les vérifications de contenu de `lib/ai`, et la résolution de la langue.
-- **Vérification manuelle** en local (`npm run dev`) et en production après chaque push, à 375 px, à 1024 px et à 1440 px, au clavier, et avec les animations réduites.
-- **Performance** : Lighthouse mobile de 90 ou plus sur `/welcome` et `/demo`, vérifié aux lots 8 et 9.
+- **Styles** : Stylelint refuse toute nouvelle couleur, longueur de design, espacement ou durée hors de `tokens.css`. Le lot 2a inventorie et fige les violations héritées dans une liste d'exceptions ; elles sont supprimées au lot 2b au fil du remplacement par les composants. Aucun nouveau token sans validation d'Alexandre.
+- **PostCSS** : `@custom-media` est compilé et ses définitions sont injectées dans chaque CSS Module. Autoprefixer reste explicitement configuré, car la configuration PostCSS personnalisée remplace celle de Next.js.
+- **Références visuelles** : Playwright compare la landing et `/styleguide` sur un build de production (`build`, puis `start`), jamais sur le serveur de développement. Les références Chromium sont produites sur le Mac d'Alexandre à 375, 768 et 1440 px avec version, langue, polices, DPR et mouvement figés. Leur mise à jour est une commande volontaire, exécutée uniquement après validation visuelle. Le lot 2a exige zéro pixel différent sur la landing.
+- **Navigateurs** : les contrôles structurels couvrent Chromium aux largeurs prévues et WebKit à 375 px, sans snapshot WebKit.
+- **Accessibilité** : la batterie finale du lot 2b exécute axe sur la landing et `/styleguide`, en français et en anglais, puis vérifie directement les contrastes texte/surligneur.
+- **Vérification manuelle** en local et, après un push demandé, sur la prévisualisation Vercel à 375 px, à 1024 px et à 1440 px, au clavier et avec les animations réduites.
+- **Performance** : LCP inférieur ou égal à 2,5 s sur la landing en build de production au lot 2b ; Lighthouse mobile de 90 ou plus sur `/welcome` et `/demo`, revérifié aux lots 8 et 9.
 
 ## 14. Lots de livraison
 
 Chaque lot se termine par :
 1. les quatre scripts au vert ;
-2. un push sur `main` ;
+2. des commits locaux séparés par sujet ;
 3. un résumé en langage simple ;
 4. la mise à jour de la section « État » d'`AGENTS.md` ;
-5. un arrêt, en attente de la validation d'Alexandre.
+5. un arrêt, en attente de la validation d'Alexandre ;
+6. le tag du lot après validation, puis un push ou une fusion uniquement sur demande explicite.
 
 | Lot | Contenu | Terminé quand |
 |---|---|---|
 | 0. Audit | Lecture du code sans modification (voir le prompt de refonte) | Rapport et plan du lot 1 validés |
 | 1. Socle | Vérification du tag `v1` et de la branche Neon `v1-backup`, suppression de l'ancien produit et de ses dépendances, montée de version si compatible, `@google/genai`, nouvelles dépendances, scripts, inscriptions fermées, `requireUser()`, proxy, langue et dictionnaires, en-têtes, `.env.local.example` | Build OK ; `/` non connecté affiche une page d'accueil provisoire dans l'esprit du carnet (le nom, l'accroche, « Bientôt disponible », les liens Portfolio et LinkedIn) ; `/sign-up` renvoie une 404 ; le bouton FR / EN fonctionne |
-| 2. Design system | Tokens, polices, tous les composants `carnet/` et `cards/` avec leurs animations, page `/styleguide` en mobile et en desktop | **Validation visuelle d'Alexandre** |
+| 2a. Fondations visuelles | Documents, références Playwright de la landing, reset minimal, retrait de Tailwind, PostCSS explicite, Stylelint avec exceptions héritées, migration des styles existants vers les CSS Modules | Zéro différence sur les snapshots de la landing ; quatre scripts au vert ; **validation d'Alexandre**, puis tag `v2-lot2a` |
+| 2b. Design system | Polices, fonction d'imperfections déterministes, module de tracés, traductions et typographie, tous les composants `carnet/` et `cards/` avec leurs états et animations, page publique `/styleguide`, axe et batterie visuelle finale. La landing adopte les tracés communs comme changement visuel présenté avant toute mise à jour de référence | **Validation visuelle d'Alexandre**, puis tag `v2-lot2` |
 | 3. Données | Vérification de la branche Neon `v1-backup`, suppression des tables V1 (avec l'accord d'Alexandre), nouveau schéma et migrations sur la base principale, couche `lib/db` filtrée par utilisateur | Migrations appliquées ; requêtes typées |
 | 4. Questionnaire et profil | `/onboarding`, `profiles`, signaux, réglages (langue, refaire le questionnaire) | Questionnaire complet enregistré, en FR et en EN |
 | 5. Propositions et parcours | Propositions, recherche, plan, leçons, relecture, cartes, écran d'attente, démarrage anticipé, tâche planifiée, erreurs | **Alexandre juge la qualité de 5 parcours réels** et valide la liste des domaines fiables et les leçons modèles |
 | 6. Leçon et révisions | `/lessons/[id]` (« J'ai lu », cartes, gestes, balayage, avis, « Demain »), FSRS, `/review`, Aujourd'hui, semaine, objectif, `/themes` | Une journée complète fonctionne ; tests au vert |
 | 7. Capture et explique-moi | `/capture` (lien, texte, image), explique-moi, signalement, adaptation du profil | Une capture apparaît dans les propositions suivantes |
 | 8. Landing et démo | Landing FR/EN, aperçus, `/demo`, script `demo:set`, métadonnées et image d'aperçu | Démo complète sans aucun appel externe, dans les deux langues |
-| 9. Finitions et lancement | États vides et erreurs, accessibilité, performance, README, nettoyage des variables inutiles, création des deux thèmes de démo | Liste finale de vérification au vert en production |
+| 9. Finitions et lancement | Revue finale des états, de l'accessibilité et de la performance, README, nettoyage des variables inutiles, création des deux thèmes de démo | Liste finale de vérification au vert en production |

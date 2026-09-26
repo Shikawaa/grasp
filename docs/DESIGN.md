@@ -13,12 +13,22 @@
    - **entouré** = ton choix ;
    - **coché** = une tâche faite.
 3. **Les rubans ont deux rôles** : le ruban **coloré étiquette** (un thème, un domaine, une rubrique), le ruban **noir agit** (le bouton principal).
-4. **Une imperfection contrôlée.** Légères inclinaisons, découpes de ruban variées, traits un peu irréguliers. Chaque variation est tirée au hasard une fois, puis fixée pour l'élément : rien ne bouge d'un affichage à l'autre.
+4. **Une imperfection contrôlée.** Légères inclinaisons, découpes de ruban variées, traits un peu irréguliers. Une fonction pure calcule chaque variation depuis un identifiant métier stable (identifiant de leçon ou de thème, clé de dictionnaire), jamais depuis un index de liste. Aucun hasard ne s'exécute pendant l'affichage : un même identifiant produit le même rendu côté serveur et côté navigateur.
 5. **Le charme sans sacrifier la lecture.** L'écriture manuscrite reste partout où elle a sa place, mais toujours assez grande et assez contrastée.
 6. **Encourager sans culpabiliser.** Une erreur se barre, elle ne se punit pas. Une absence ne se perd pas.
 7. **Mobile d'abord pour réviser, desktop en carnet ouvert.**
 
 **À éviter** : fond sombre, violet ou indigo, dégradés, lueurs, ombres grises sous les cartes, vert pour « juste », rouge pour « faux », emoji, confettis, animations d'entrée sur chaque bloc, étiquettes en majuscules.
+
+### 1.1 Fondations techniques
+
+- **Une seule méthode de style** : chaque composant possède un CSS Module aux classes sémantiques. Seuls `tokens.css`, `reset.css` et `base.css` sont globaux. Tailwind et son reset Preflight ne sont pas utilisés.
+- **Tokens obligatoires** : couleurs, longueurs de design, espacements, angles, opacités et durées viennent de `tokens.css`. Aucun token n'est ajouté sans validation d'Alexandre. Stylelint fige les valeurs historiques dans une liste d'exceptions et refuse toute nouvelle valeur brute. Les valeurs structurelles sans portée graphique (`0`, `auto`, `inherit`, `currentColor` et certaines coordonnées en pourcentage) restent autorisées.
+- **PostCSS explicite** : les media queries utilisent des `@custom-media` définies avec les tokens et rendues disponibles dans chaque CSS Module. La configuration conserve explicitement Autoprefixer, car une configuration PostCSS personnalisée désactive les traitements par défaut de Next.js.
+- **Tracés uniques** : cercle, flèche, coche, trait barré, boucle et soulignement viennent d'un seul module avec des variantes nommées. Aucun écran ne contient son propre SVG de tracé. Le SVG de marque du logo est la seule exception.
+- **Deux primitives de mouvement** : `DrawOnce` trace une seule fois à l'apparition et ne se rejoue pas pendant la visite ; `LoadingStroke` boucle uniquement pendant un chargement, en CSS et sans JavaScript. Avec `prefers-reduced-motion`, les deux sont statiques et le chargement conserve un texte accessible.
+- **Traductions** : les dictionnaires français et anglais ont exactement les mêmes clés, vérifiées par TypeScript. Aucune phrase n'est obtenue par concaténation de fragments traduits ; les libellés courts restent des entrées courtes. Les pluriels passent par `Intl.PluralRules`.
+- **Performance** : Server Components par défaut, JavaScript client limité aux interactions, LCP cible inférieur ou égal à 2,5 s sur un build de production mobile et aucun décalage visuel causé par le chargement des polices.
 
 ## 2. Couleurs
 
@@ -76,6 +86,8 @@
 | `note-small` | 18/24 | 22/32 | Caveat 500 |
 | `meta` | 12/24 | 14/32 | Geist 400 |
 
+**Typographie française** : les textes français passent par une fonction commune qui remplace l'apostrophe droite par `’`, insère une espace insécable normale U+00A0 avant `:`, une espace fine insécable U+202F avant `;`, `!` et `?`, ainsi qu'après `«` et avant `»`. Les URL, adresses e-mail et contenus techniques ne sont pas transformés.
+
 ## 4. Grille, pages et espacements
 
 - **Grille de page** : 24 px en mobile, 32 px en desktop. La landing fait exception et conserve une grille de 32 px à toutes les tailles. À l'intérieur d'une page, **tout est un multiple de la grille** : marges internes, hauteurs de lignes, hauteurs des composants, écarts. Les lignes de cahier démarrent exactement au début du texte. **Le texte doit toujours reposer sur une ligne.** À vérifier visuellement sur chaque écran.
@@ -130,6 +142,7 @@
 - **Attente** : les étapes se cochent au fil de l'eau. Les anecdotes s'enchaînent avec un fondu de 350 ms. Chacune reste affichée au moins 6 secondes, plus 1 seconde par tranche de 12 mots, et un toucher passe à la suivante.
 - **Aucune animation spontanée**, en dehors de l'écran d'attente, de la mise à jour de la jauge et des tracés au crayon décrits ci-dessous.
 - **Tracé au crayon à l'apparition** : le chemin de « Comment ça marche » et la flèche « la suite, par ici » peuvent se dessiner une seule fois lorsqu'ils apparaissent dans la fenêtre. L'animation utilise le token `--dur-circle` et ne se rejoue pas pendant la même visite de la page.
+- **Chargement** : `LoadingStroke` dessine puis efface un trait en boucle. Il est réservé à une attente réelle, accompagné d'un texte accessible, et ne sert jamais d'animation décorative. En mouvement réduit, le trait reste fixe.
 - **`prefers-reduced-motion`** : les tracés au crayon, cercles et balayages s'affichent directement. Les envols et pages qui tournent deviennent des fondus de 150 ms.
 
 **Balayage (mobile)** : une fois la réponse donnée, glisser la carte horizontalement de plus de 70 px la fait passer à la suivante. En dessous, elle revient en place avec un léger rebond. Le geste ne démarre pas à moins de 24 px des bords de l'écran, pour ne pas entrer en conflit avec le retour arrière du système. Le bouton « Continuer » reste toujours disponible.
@@ -165,6 +178,14 @@
 | `BottomNav` | Navigation mobile : Aujourd'hui, Thèmes, Capturer. Icônes au trait et labels, séparés du contenu par un trait en pointillés `--edge` |
 | `ErrorPage` | Page raturée : un titre barré, l'explication en manuscrit, et un bouton ruban « Réessayer » |
 | `EmptyState` | Une invitation en manuscrit, et un bouton ruban |
+
+### 6.1 Fiches de `/styleguide`
+
+- `/styleguide` est publique pour permettre des contrôles visuels déterministes, mais porte une métadonnée `noindex, nofollow`. Elle n'est pas bloquée dans `robots.txt`, afin que les robots puissent lire cette directive.
+- Chaque composant apparaît dans ses dispositions téléphone (moins de 640 px), tablette (640 à 1023 px) et desktop (1024 px et plus).
+- Chaque fiche indique l'usage, les propriétés, les variantes et les états applicables. Les contrôles montrent repos, survol, focus, appui, chargement et erreur. Un état sans sens pour un élément statique est explicitement noté « sans objet », jamais simulé artificiellement.
+- Tout composant dépendant de données montre ses états normal, chargement, vide et erreur. Le chargement utilise `LoadingStroke`, jamais un rectangle gris.
+- Un ruban de thème accepte au plus 55 caractères, espaces compris. Un titre d'étape ou de leçon tient sur deux lignes au maximum aux largeurs de référence. Un contenu invalide n'est ni tronqué ni enregistré silencieusement.
 
 ## 7. Écrans
 
@@ -323,6 +344,9 @@ Après la dernière carte : « Top / Bof / Il y a une erreur » en manuscrit, pu
 - [ ] Clavier, focus visible et `prefers-reduced-motion` testés.
 - [ ] Textes en français et en anglais, sans formulation culpabilisante.
 - [ ] L'écran utilise les composants de `/styleguide`, sans rien redessiner.
+- [ ] Les dictionnaires FR et EN ont les mêmes clés, sans concaténation de fragments ; la typographie française est normalisée.
+- [ ] Les rubans de thème respectent 55 caractères et les titres d'étape ou de leçon tiennent sur deux lignes.
+- [ ] Les états de chargement, vide et erreur sont présents lorsqu'ils ont un sens.
 
 ### Robustesse, quels que soient l'écran et l'appareil
 
@@ -335,6 +359,8 @@ Après la dernière carte : « Top / Bof / Il y a une erreur » en manuscrit, pu
 - [ ] **Zoom et texte agrandi** : à 200 % de zoom et avec une grande taille de texte, aucun élément ne se chevauche.
 - [ ] **Variations de texte** : les textes français et anglais, plus courts ou plus longs, passent correctement à la ligne dans les titres, les annotations et les rubans.
 - [ ] **Traits fins** : aucune ligne de 1 px n'est rendue floue sur un écran non Retina.
+- [ ] **Références visuelles** : la landing et `/styleguide` sont comparées sur un build de production à 375, 768 et 1440 px. Une référence n'est mise à jour qu'après validation visuelle d'Alexandre.
+- [ ] **Accessibilité automatisée** : axe passe sur la landing et `/styleguide`, en français et en anglais ; les couples texte/surligneur sont aussi contrôlés directement.
 
 ## Logo
 

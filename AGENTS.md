@@ -26,7 +26,7 @@ En cas de contradiction entre ces documents, signale-la et demande, plutôt que 
 
 ## Stack
 
-Next.js (App Router), React, TypeScript strict, Tailwind CSS 3, primitives Radix, Neon Postgres, Neon Auth, Gemini via `@google/genai` (outil `google_search`), API Wikipédia, Jina Reader, `ts-fsrs`, `zod`, Vitest, Vercel avec une tâche planifiée. Les versions exactes sont dans `package.json`, et le détail dans `docs/SPEC.md` (section 2).
+Next.js (App Router), React, TypeScript strict, CSS Modules sémantiques, tokens CSS, primitives Radix, Neon Postgres, Neon Auth, Gemini via `@google/genai` (outil `google_search`), API Wikipédia, Jina Reader, `ts-fsrs`, `zod`, Vitest, Playwright, Vercel avec une tâche planifiée. Les versions exactes sont dans `package.json`, et le détail dans `docs/SPEC.md` (section 2).
 
 ## Commandes
 
@@ -52,11 +52,11 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
 ## Règles
 
 **Méthode de travail**
-1. Travaille directement sur `main`. **Chaque push est déployé en production** sur https://grasp-gold.vercel.app : ne pousse que du code dont lint, typecheck, test et build passent. La V1 est figée sous le tag Git `v1` et dans la branche Neon `v1-backup`.
+1. Un lot = une branche dédiée créée depuis le `main` validé. Aucun push ni aucune fusion dans `main` sans l'accord explicite d'Alexandre. Un push de branche sert uniquement à obtenir une prévisualisation Vercel demandée. Le lot 2 vit sur `lot-2`, fondée sur le commit du logo marqué localement `v2-lot1.1` ; `v2-lot1` reste le marqueur de fin du lot 1.
 2. Un lot à la fois, dans l'ordre de `docs/SPEC.md` (section 14). Propose un plan court avant de coder, puis attends la validation. Si ton outil propose un mode plan ou lecture seule, utilise-le pour l'audit et au début de chaque lot.
 3. En fin de lot :
    - lint, typecheck, test et build passent ;
-   - push sur `main` ;
+   - un commit local par sujet, puis un tag après validation (`v2-lot2a`, puis `v2-lot2`) ;
    - résumé simple : ce qui a changé, comment le tester en production, ce qu'Alexandre doit faire ;
    - mise à jour de la section « État » ci-dessous ;
    - arrêt, en attente de validation.
@@ -71,15 +71,17 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
 - TypeScript strict, sans `any`. Server Components par défaut, Client Components seulement quand c'est nécessaire.
 - Validation zod à chaque frontière : formulaires, API, sorties de Gemini, pages lues.
 - Aucune nouvelle dépendance hors de la liste de `docs/SPEC.md` (section 2) sans le demander.
+- Styles de composants en CSS Modules sémantiques. Seuls `tokens.css`, le reset et les styles de base sont globaux. Aucun nouveau token sans validation d'Alexandre ; Stylelint interdit toute nouvelle valeur visuelle brute.
 - Les prompts IA vivent dans `lib/ai/prompts/`, avec une constante `PROMPT_VERSION`.
 - Toute la logique métier pure vit dans `lib/`, avec ses tests.
 - Messages de commit courts, en anglais (`feat:`, `fix:`, `chore:`).
 
 **Interface**
-- Toutes les chaînes passent par `lib/i18n` (français par défaut, anglais). Aucun texte en dur dans les composants.
+- Toutes les chaînes passent par `lib/i18n` (français par défaut, anglais), sans concaténation de fragments. Aucun texte en dur dans les composants.
 - Documentation et échanges avec Alexandre en français.
 - Couleurs, polices, tailles, grilles et durées : uniquement via les tokens de `docs/DESIGN.md`.
 - Chaque écran utilise les composants de `components/carnet` et `components/cards`, sans rien redessiner.
+- Tous les tracés viennent du module commun. Les imperfections dérivent d'un identifiant métier stable, jamais d'un index ni d'un hasard pendant l'affichage.
 - Avant de construire un écran, ouvre la maquette correspondante dans `docs/mockups/` pour en retrouver l'esprit exact.
 - Le texte repose sur les lignes du carnet : grille de 24 px en mobile et 32 px en desktop, sauf la landing qui conserve une grille de 32 px à toutes les tailles conformément à `docs/DESIGN.md`.
 - Vérifie chaque écran à 375 px, à 1024 px et à 1440 px, au clavier, et avec `prefers-reduced-motion`.
@@ -91,13 +93,14 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
 3. Aucun écart silencieux : si une règle ou une maquette semble impossible ou mauvaise à appliquer, explique pourquoi et propose une alternative. Une fois validée, mets à jour `docs/DESIGN.md` dans la foulée, pour qu’il reste la seule référence.
 4. Aucune valeur en dur : couleurs, polices, tailles, espacements, durées et grilles passent uniquement par les tokens. Un contrôle lancé avec `npm run lint` échoue si une couleur hexadécimale apparaît dans le code d’interface en dehors du fichier des tokens.
 5. Composants uniques : les éléments du carnet listés en section 6 de `docs/DESIGN.md` (`Page`, `Tape`, `TapeButton`, `Highlight`, `PenCircle`, `PenStrike`, `CheckBox`, `Note`, etc.) n’existent qu’une fois, dans `components/carnet`, et chaque écran les réutilise.
-6. Avant de montrer un écran : fais des captures à 375, 768, 1024 et 1440 px, compare-les à la maquette, corrige les écarts, puis parcours la checklist de la section 10 de `docs/DESIGN.md`. Dans le résumé, donne le résultat point par point, y compris ce qui n’est pas encore conforme.
+6. En contrôle intermédiaire, trois captures suffisent (375, 768 et 1440 px). Avant validation finale : 375, 768, 1024 et 1440 px, comparaison aux références Playwright sur build de production, puis checklist de la section 10. Toute mise à jour volontaire d'une référence attend la validation visuelle d'Alexandre.
 
 ## État
 
 - [ ] Lot 0 : audit
 - [x] Lot 1 : socle et nettoyage
-- [ ] Lot 2 : design system du carnet et `/styleguide`
+- [ ] Lot 2a : documents, références visuelles et migration CSS
+- [ ] Lot 2b : design system du carnet et `/styleguide`
 - [ ] Lot 3 : données
 - [ ] Lot 4 : questionnaire et profil
 - [ ] Lot 5 : propositions et préparation des parcours
@@ -114,8 +117,9 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
 - 2026-09-26 : français par défaut et anglais, un seul réglage pour l'interface et les contenus.
 - 2026-09-26 : direction artistique « Le carnet », avec le ruban noir comme bouton principal.
 - 2026-09-26 : Next.js 16, sous réserve de la compatibilité avec Neon Auth.
-- 2026-09-26 : développement directement sur `main`, avec une seule base de données. La V1 est figée (tag Git `v1`, branche Neon `v1-backup`).
+- 2026-09-26 : une branche dédiée par lot, sans push ni fusion dans `main` sans accord, avec une seule base de données. La V1 est figée (tag Git `v1`, branche Neon `v1-backup`).
 - 2026-09-26 : adoption du nouveau logo Grasp. Le symbole « demi-G + point » est la source graphique stable de la marque ; ses règles d'usage sont intégrées à `docs/DESIGN.md`. Le composant Logo sera validé au lot 2, puis utilisé par la landing, la démo et l'image Open Graph au lot 8.
+- 2026-09-26 : le design system utilise des CSS Modules sémantiques ; les images Open Graph restent au lot 8.
 
 ## Pièges connus
 
