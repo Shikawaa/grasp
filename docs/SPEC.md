@@ -77,6 +77,10 @@
 - Le bouton FR / EN pose le cookie `lang`.
 - La balise `<html lang>` suit la langue active.
 
+**Actions du questionnaire** :
+- Les questions obligatoires ne passent à l'étape suivante qu'après une réponse valide. Leur `TapeButton` reste désactivé jusque-là et affiche aussi un libellé barré, afin que l'état ne repose pas sur la couleur seule.
+- `TapeButton` reste l'unique action principale de l'écran. Une erreur de données utilise l'action secondaire manuscrite « Réessayer », jamais un ruban noir.
+
 ## 4. Structure du code
 
 ```
@@ -153,7 +157,7 @@ L'identifiant utilisateur est celui de Neon Auth (vérifier son type pendant l'a
 - **Entrées** : les réponses au questionnaire, les signaux du profil, les idées des captures récentes non utilisées, et les titres des thèmes déjà suivis.
 - **Méthode** :
   1. Gemini propose 10 angles candidats, en JSON validé.
-  2. Le code en sélectionne 3 : des domaines différents si possible, au moins un issu des intérêts déclarés, et un issu d'une capture s'il en existe une récente. Les angles trop proches d'un thème passé sont écartés.
+  2. Le code en sélectionne 3 : des domaines différents si possible, au moins un issu des intérêts déclarés, et un issu d'une capture s'il en existe une récente. Les angles trop proches d'un thème passé sont écartés. Les trois couleurs attribuées appartiennent à trois familles différentes ; la même règle vaut dès que plusieurs thèmes sont affichés ensemble.
   3. Chaque proposition reçoit son pitch, sa raison et un nombre de leçons estimé (3 à 7), selon la richesse du sujet.
 - **Règle des angles** : un titre précis, formulé comme une question ou un récit, qui promet une histoire. Jamais un sujet large. Le titre affiché sur un ruban de thème contient au plus 55 caractères, espaces compris.
 
