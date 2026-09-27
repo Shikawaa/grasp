@@ -1,8 +1,8 @@
 import clsx from "clsx";
+import { PenCircle, PenStrike } from "@/components/carnet/drawings";
 import { Highlight } from "@/components/carnet/highlight";
 import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
-import { PenCircle, PenStrike } from "@/components/carnet/pen-gestures";
 import { Tape } from "@/components/carnet/tape";
 import styles from "@/styles/components.module.css";
 

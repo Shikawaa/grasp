@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CardTrueFalse } from "@/components/carnet/card-true-false";
-import { DrawOnce, HandDrawnArrow } from "@/components/carnet/drawings";
+import { DrawOnce } from "@/components/carnet/draw-once";
+import { HandDrawnArrow } from "@/components/carnet/drawings";
 import { Highlight } from "@/components/carnet/highlight";
 import { HowItWorks } from "@/components/carnet/how-it-works";
 import { LessonPreviewCard } from "@/components/carnet/lesson-preview-card";
@@ -51,7 +52,10 @@ export function ProvisionalHome({
                 data-testid="scroll-annotation"
               >
                 <DrawOnce id="landing-scroll-annotation">
-                  <HandDrawnArrow direction="down" />
+                  <HandDrawnArrow
+                    className={styles["welcome-scroll-arrow"]}
+                    direction="down"
+                  />
                 </DrawOnce>
                 <Note small>{dictionary.welcome.scrollNote}</Note>
               </div>
@@ -74,7 +78,10 @@ export function ProvisionalHome({
                   </div>
                   <div className={styles["welcome-callout"]} data-testid="welcome-callout">
                     <Note small>{dictionary.welcome.arrowNote}</Note>
-                    <HandDrawnArrow direction="up" />
+                    <HandDrawnArrow
+                      className={styles["welcome-callout-arrow"]}
+                      direction="up"
+                    />
                   </div>
                 </div>
               </div>

@@ -1,13 +1,17 @@
-import styles from "@/styles/components.module.css";
+import clsx from "clsx";
+import { CheckMark } from "@/components/carnet/drawings";
+import styles from "@/components/carnet/check-box.module.css";
 
-export function CheckBox({ checked = false }: { checked?: boolean }) {
+export function CheckBox({
+  checked = false,
+  className,
+}: {
+  checked?: boolean;
+  className?: string;
+}) {
   return (
-    <span className={styles["carnet-checkbox"]} aria-hidden="true">
-      {checked ? (
-        <svg viewBox="0 0 24 24">
-          <path d="M4 12 C 8 15, 9 18, 11 19 C 14 12, 17 7, 21 4" />
-        </svg>
-      ) : null}
+    <span className={clsx(styles.checkbox, className)} aria-hidden="true">
+      {checked ? <CheckMark className={styles.check} /> : null}
     </span>
   );
 }

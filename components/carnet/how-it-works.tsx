@@ -2,11 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
+import {
+  CheckMark,
+  HandDrawnLoop,
+  JourneyPath,
+  PenCircle,
+} from "@/components/carnet/drawings";
 import { Highlight } from "@/components/carnet/highlight";
 import { MemoryMeter } from "@/components/carnet/memory-meter";
 import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
-import { PenCircle } from "@/components/carnet/pen-gestures";
 import { Tape } from "@/components/carnet/tape";
 import styles from "@/styles/components.module.css";
 
@@ -160,32 +165,23 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
       <Page className={styles["how-it-works__page"]} ref={bandRef}>
         {geometry.d ? (
-          <svg
+          <JourneyPath
             className={clsx(
               styles["journey-path"],
               geometry.vertical && styles["journey-path--vertical"],
             )}
-            viewBox={`0 0 ${geometry.width} ${geometry.height}`}
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <defs>
-              <clipPath id="journey-path-reveal">
-                <rect
-                  className={styles["journey-path__reveal"]}
-                  width={geometry.width}
-                  height={geometry.height}
-                />
-              </clipPath>
-            </defs>
-            <path clipPath="url(#journey-path-reveal)" d={geometry.d} />
-          </svg>
+            clipId="journey-path-reveal"
+            d={geometry.d}
+            height={geometry.height}
+            revealClassName={styles["journey-path__reveal"]}
+            width={geometry.width}
+          />
         ) : null}
 
         <ol className={styles["how-it-works__steps"]}>
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle>1</PenCircle>
+              <PenCircle className={styles["step-number-circle"]}>1</PenCircle>
             </div>
             <h3>{copy.interests.title}</h3>
             <div
@@ -202,7 +198,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle>2</PenCircle>
+              <PenCircle className={styles["step-number-circle"]}>2</PenCircle>
             </div>
             <h3>{copy.choice.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-proposals"]}`}>
@@ -214,9 +210,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
               <span className={`${styles["mini-proposal"]} ${styles["is-chosen"]}`}>
                 <Tape seed={2} tone="sky">
                   <span>{copy.choice.chosen}</span>
-                  <svg className={styles["mini-check"]} viewBox="0 0 24 20" aria-hidden="true">
-                    <path d="M2 10 C 5 12, 7 15, 9 17 C 13 11, 17 6, 22 2" />
-                  </svg>
+                  <CheckMark className={styles["mini-check"]} variant="long" />
                 </Tape>
               </span>
               <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
@@ -229,7 +223,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle>3</PenCircle>
+              <PenCircle className={styles["step-number-circle"]}>3</PenCircle>
             </div>
             <h3>{copy.lesson.title}</h3>
             <div
@@ -245,7 +239,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle>4</PenCircle>
+              <PenCircle className={styles["step-number-circle"]}>4</PenCircle>
             </div>
             <h3>{copy.review.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-review"]}`}>
@@ -255,10 +249,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
               </div>
               <div className={styles["mini-tomorrow"]}>
                 <Note small>{copy.review.tomorrow}</Note>
-                <svg viewBox="0 0 48 32" aria-hidden="true">
-                  <path d="M6 19 C 9 5, 35 4, 40 16 C 43 25, 31 29, 22 25" />
-                  <path d="M27 21 L 21 25 L 27 29" />
-                </svg>
+                <HandDrawnLoop />
               </div>
             </div>
           </li>
