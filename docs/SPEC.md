@@ -45,7 +45,7 @@
 | `/` | Public et privé | Visiteur : rewrite vers `/welcome`. Connecté : Aujourd'hui (ou `/onboarding` si le profil n'existe pas) |
 | `/welcome` | Public | Landing (l'URL affichée reste `/`) |
 | `/demo` | Public | Démo : leçon 1 et cartes du thème de démo, dans la langue du visiteur |
-| `/sign-in` | Public | Connexion, sans lien d'inscription |
+| `/sign-in` | Public | Connexion, sans lien d'inscription ; accès privé et lien vers `/demo` au lot 8 |
 | `/onboarding` | Privé | Questionnaire d'accueil |
 | `/themes` | Privé | Thème en cours et thèmes passés |
 | `/themes/new` | Privé | Les 3 propositions et « Me proposer 3 autres idées » |
@@ -272,6 +272,8 @@ Ces règles figurent dans les prompts, avec deux leçons modèles validées par 
 
 - **Thèmes de démo** : deux thèmes générés normalement (un en français, un en anglais), puis marqués avec `npm run demo:set -- <themeId> --locale fr|en`. Le script retire la marque de l'ancien thème de démo de la même langue.
 - **`/demo`** : lecture seule de la leçon 1 et de ses cartes, dans la langue du visiteur.
+- **`/sign-in`** : conserve le formulaire et ajoute un court message vers la démo. En français : « Grasp est en accès privé pour l'instant. » puis le lien « Essayer la démo ». En anglais : “Grasp is currently private.” puis le lien “Try the demo”. Ces quatre textes vivent dans les dictionnaires.
+- **Lien depuis la landing** : dès que `/demo` existe, « La démo jouable arrive bientôt. » et son équivalent anglais deviennent un lien vers `/demo`. Le lien « Se connecter » reste visible dans l'en-tête.
   - L'état reste dans React, sans aucune écriture en base ni appel externe.
   - L'explique-moi n'affiche que l'explication préparée.
   - Les sources et leurs licences sont affichées.
@@ -347,5 +349,5 @@ Chaque lot se termine par :
 | 5. Propositions et parcours | Propositions, recherche, plan, leçons, relecture, cartes, écran d'attente, démarrage anticipé, tâche planifiée, erreurs | **Alexandre juge la qualité de 5 parcours réels** et valide la liste des domaines fiables et les leçons modèles |
 | 6. Leçon et révisions | `/lessons/[id]` (« J'ai lu », cartes, gestes, balayage, avis, « Demain »), FSRS, `/review`, Aujourd'hui, semaine, objectif, `/themes` | Une journée complète fonctionne ; tests au vert |
 | 7. Capture et explique-moi | `/capture` (lien, texte, image), explique-moi, signalement, adaptation du profil | Une capture apparaît dans les propositions suivantes |
-| 8. Landing et démo | Landing FR/EN, aperçus, `/demo`, script `demo:set`, métadonnées et image d'aperçu | Démo complète sans aucun appel externe, dans les deux langues |
+| 8. Landing et démo | Landing FR/EN, aperçus, `/demo`, script `demo:set`, lien de la landing vers la démo, message d'accès privé et lien `/demo` sur `/sign-in`, métadonnées et image d'aperçu | Démo complète sans aucun appel externe, dans les deux langues ; « Se connecter » reste visible dans l'en-tête |
 | 9. Finitions et lancement | Revue finale des états, de l'accessibilité et de la performance, README, nettoyage des variables inutiles, création des deux thèmes de démo | Liste finale de vérification au vert en production |
