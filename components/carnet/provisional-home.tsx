@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { CardTrueFalse } from "@/components/carnet/card-true-false";
-import { HandDrawnArrow } from "@/components/carnet/hand-drawn-arrow";
+import { DrawOnce, HandDrawnArrow } from "@/components/carnet/drawings";
 import { Highlight } from "@/components/carnet/highlight";
 import { HowItWorks } from "@/components/carnet/how-it-works";
-import { LandingScrollHint } from "@/components/carnet/landing-scroll-hint";
 import { LessonPreviewCard } from "@/components/carnet/lesson-preview-card";
 import { Logo } from "@/components/carnet/logo";
 import { Note } from "@/components/carnet/note";
@@ -39,13 +38,23 @@ export function ProvisionalHome({
             <div className={styles["welcome-copy"]}>
               <Tape>{dictionary.welcome.eyebrow}</Tape>
               <h1 className={styles["welcome-title"]}>
-                {dictionary.welcome.lead}{" "}
+                {dictionary.welcome.lead}
                 <Highlight>{dictionary.welcome.highlight}</Highlight>
               </h1>
               <p className={styles["welcome-description"]} data-testid="welcome-description">
                 {dictionary.welcome.description}
               </p>
               <Note>{dictionary.welcome.accountNote}</Note>
+              <div
+                className={styles["welcome-scroll-annotation"]}
+                aria-hidden="true"
+                data-testid="scroll-annotation"
+              >
+                <DrawOnce id="landing-scroll-annotation">
+                  <HandDrawnArrow direction="down" />
+                </DrawOnce>
+                <Note small>{dictionary.welcome.scrollNote}</Note>
+              </div>
             </div>
 
             <div className={styles["hero-visual"]}>
@@ -72,9 +81,6 @@ export function ProvisionalHome({
             </div>
           </div>
 
-          <div className={styles["welcome-hero__foot"]}>
-            <LandingScrollHint>{dictionary.welcome.scrollNote}</LandingScrollHint>
-          </div>
         </article>
       </section>
 

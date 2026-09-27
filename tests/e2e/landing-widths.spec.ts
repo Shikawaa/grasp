@@ -39,7 +39,7 @@ for (const viewport of viewports) {
     expect(widths.document).toBe(widths.viewport);
     expect(widths.body).toBe(widths.viewport);
 
-    if (viewport.width < 640) {
+    if ([375, 768, 1440].includes(viewport.width)) {
       const rearHighlight = page.getByTestId("hero-card-back").locator("[data-highlight]");
       const frontCard = page.getByTestId("hero-card-front");
       const [highlightBox, frontBox] = await Promise.all([
@@ -50,6 +50,13 @@ for (const viewport of viewports) {
       expect(highlightBox).not.toBeNull();
       expect(frontBox).not.toBeNull();
       expect(highlightBox!.y + highlightBox!.height).toBeLessThanOrEqual(frontBox!.y);
+
+      const frenchText = await page.locator("body").textContent();
+      expect(frenchText).toContain("et\u00A0tu");
+      expect(frenchText).toContain("3\u00A0minutes");
+      expect(frenchText).toContain("2\u00A0sur 4");
+      expect(frenchText).toContain("200\u00A0ans");
+      expect(frenchText).toContain("8\u00A0cartes");
     }
 
     if (viewport.width === 1440) {
@@ -59,9 +66,23 @@ for (const viewport of viewports) {
         page.getByRole("img", { name: "grasp" }).last().boundingBox(),
       ]);
 
-      expect(heroBox?.height).toBe(viewport.height);
+      expect(heroBox?.height).toBeLessThan(viewport.height);
+      expect(heroBox?.height).toBe(652);
       expect(headerLogoBox?.width).toBeCloseTo(footerLogoBox?.width ?? 0, 1);
       expect(headerLogoBox?.height).toBeCloseTo(footerLogoBox?.height ?? 0, 1);
+    }
+
+    if (viewport.width === 768) {
+      const heroBox = await page.getByTestId("welcome-hero").boundingBox();
+      expect(heroBox?.height).toBeLessThan(viewport.height);
+    }
+
+    const scrollAnnotation = page.getByTestId("scroll-annotation");
+    await expect(scrollAnnotation).toHaveAttribute("aria-hidden", "true");
+    if (viewport.width >= 1024) {
+      await expect(scrollAnnotation).toBeVisible();
+    } else {
+      await expect(scrollAnnotation).toBeHidden();
     }
 
     if (viewport.width === 320 || viewport.width === 2560) {
@@ -98,6 +119,13 @@ for (const viewport of viewports) {
     }));
     expect(englishWidths.document).toBe(englishWidths.viewport);
     expect(englishWidths.body).toBe(englishWidths.viewport);
+
+    if ([375, 768, 1440].includes(viewport.width)) {
+      const englishText = await page.locator("body").textContent();
+      expect(englishText).toContain("2\u00A0of 4");
+      expect(englishText).toContain("200\u00A0years");
+      expect(englishText).toContain("8\u00A0cards");
+    }
   });
 }
 

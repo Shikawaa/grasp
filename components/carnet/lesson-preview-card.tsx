@@ -7,10 +7,29 @@ export type LessonPreviewCopy = {
   theme: string;
   progress: string;
   title: string;
-  sentenceBefore: string;
+  sentence: string;
   sentenceHighlight: string;
-  sentenceAfter: string;
 };
+
+function HighlightedSentence({
+  highlight,
+  sentence,
+}: {
+  highlight: string;
+  sentence: string;
+}) {
+  const highlightStart = sentence.indexOf(highlight);
+  if (highlightStart < 0) return sentence;
+
+  const highlightEnd = highlightStart + highlight.length;
+  return (
+    <>
+      {sentence.slice(0, highlightStart)}
+      <Highlight tone="sky">{highlight}</Highlight>
+      {sentence.slice(highlightEnd)}
+    </>
+  );
+}
 
 export function LessonPreviewCard({ copy }: { copy: LessonPreviewCopy }) {
   return (
@@ -23,8 +42,10 @@ export function LessonPreviewCard({ copy }: { copy: LessonPreviewCopy }) {
       <p className={styles["lesson-preview__meta"]}>{copy.progress}</p>
       <h2 className={styles["lesson-preview__title"]}>{copy.title}</h2>
       <p className={styles["lesson-preview__sentence"]}>
-        {copy.sentenceBefore} <Highlight tone="sky">{copy.sentenceHighlight}</Highlight>{" "}
-        {copy.sentenceAfter}
+        <HighlightedSentence
+          highlight={copy.sentenceHighlight}
+          sentence={copy.sentence}
+        />
       </p>
     </Page>
   );

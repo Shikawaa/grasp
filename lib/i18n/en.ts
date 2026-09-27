@@ -1,4 +1,7 @@
-export const en = {
+import type { DictionaryShape } from "@/lib/i18n/fr";
+import { applyTypography } from "@/lib/i18n/typography";
+
+const rawEn = {
   brand: "grasp",
   metadata: {
     title: "Grasp — One topic at a time",
@@ -17,7 +20,7 @@ export const en = {
   },
   welcome: {
     eyebrow: "Coming soon",
-    lead: "One topic a week, a few minutes a day, and",
+    lead: "One topic a week, a few minutes a day, and ",
     highlight: "it actually sticks.",
     description:
       "Grasp gets to know you, tells you precise topics through short lessons, and helps every idea stick.",
@@ -37,9 +40,8 @@ export const en = {
       theme: "Psychology",
       progress: "Lesson 2 of 4",
       title: "Why we procrastinate, even when we know better",
-      sentenceBefore: "Your brain",
-      sentenceHighlight: "prefers an immediate reward",
-      sentenceAfter: "over a bigger one later.",
+      sentence: "Your brain chooses the immediate.",
+      sentenceHighlight: "chooses the immediate",
     },
     themeWall: {
       title: "Every week, a topic chosen for you",
@@ -128,4 +130,6 @@ export const en = {
     title: "This page does not exist.",
     note: "It may have been removed from the notebook.",
   },
-} as const;
+} as const satisfies DictionaryShape;
+
+export const en = applyTypography(rawEn, "en");

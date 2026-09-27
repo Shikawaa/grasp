@@ -1,4 +1,9 @@
-export const fr = {
+import {
+  applyTypography,
+  type TypographyDictionary,
+} from "@/lib/i18n/typography";
+
+const rawFr = {
   brand: "grasp",
   metadata: {
     title: "Grasp — Un thème à la fois",
@@ -17,8 +22,8 @@ export const fr = {
   },
   welcome: {
     eyebrow: "Bientôt disponible",
-    lead: "Un thème par semaine, quelques minutes par jour, et",
-    highlight: "tu t’en souviens vraiment.",
+    lead: "Un thème par semaine, quelques minutes par jour, et ",
+    highlight: "tu t’en souviens vraiment.",
     description:
       "Grasp apprend à te connaître, te raconte des thèmes précis en courtes leçons et t’aide à retenir chaque idée.",
     accountNote: "La démo jouable arrive bientôt.",
@@ -37,9 +42,8 @@ export const fr = {
       theme: "Psychologie",
       progress: "Leçon 2 sur 4",
       title: "Pourquoi on procrastine, même quand on sait",
-      sentenceBefore: "Ton cerveau",
-      sentenceHighlight: "préfère une récompense immédiate",
-      sentenceAfter: "à une plus grande plus tard.",
+      sentence: "Ton cerveau choisit l’immédiat.",
+      sentenceHighlight: "choisit l’immédiat",
     },
     themeWall: {
       title: "Chaque semaine, un thème choisi pour toi",
@@ -49,7 +53,7 @@ export const fr = {
         "Pourquoi on procrastine, même quand on sait",
         "Edison contre Tesla : la guerre des courants",
         "Comment les Vikings ont atteint l’Amérique",
-        "Pourquoi le jazz est né à La Nouvelle-Orléans",
+        "Pourquoi le jazz est né à La Nouvelle‑Orléans",
         "Ce que les champignons se disent sous la forêt",
         "Comment le café a conquis l’Europe",
         "Ce que ton cerveau fait pendant que tu dors",
@@ -129,3 +133,7 @@ export const fr = {
     note: "Elle a peut-être été retirée du carnet.",
   },
 } as const;
+
+export type DictionaryShape = TypographyDictionary<typeof rawFr>;
+
+export const fr = applyTypography(rawFr, "fr");
