@@ -3,7 +3,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
-  maxFailures: 1,
+  maxFailures: process.env.PLAYWRIGHT_MAX_FAILURES === "1" ? 1 : 0,
   workers: 1,
   reporter: "list",
   snapshotPathTemplate: "{testDir}/__snapshots__/darwin/{projectName}/{arg}{ext}",
@@ -29,10 +29,13 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: "npm run build && npm run start -- --hostname 127.0.0.1 --port 3100",
-    url: "http://127.0.0.1:3100",
-    reuseExistingServer: false,
-    timeout: 120_000,
-  },
+  webServer:
+    process.env.PLAYWRIGHT_EXTERNAL_SERVER === "1"
+      ? undefined
+      : {
+          command: "npm run build && npm run start -- --hostname 127.0.0.1 --port 3100",
+          url: "http://127.0.0.1:3100",
+          reuseExistingServer: false,
+          timeout: 120_000,
+        },
 });

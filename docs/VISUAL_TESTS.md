@@ -4,6 +4,8 @@ Les références Playwright sont créées sur le Mac d'Alexandre avec le Chromiu
 
 Le serveur Playwright exécute toujours `npm run build`, puis `npm run start`. Les références ne sont jamais produites avec `next dev`.
 
+Dans un environnement agent isolé, seuls les processus navigateur Playwright sont lancés hors du bac à sable. Le build et le serveur de production restent dans le bac à sable ; Playwright les réutilise avec `PLAYWRIGHT_EXTERNAL_SERVER=1`. Chromium est celui embarqué par Playwright, jamais l'application Google Chrome installée. Pour un contrôle intermédiaire, `PLAYWRIGHT_MAX_FAILURES=1` arrête une cascade si le navigateur ne démarre pas. La batterie finale omet cette variable et exécute donc tous les tests, même après un échec.
+
 ## Vérifier
 
 ```bash
