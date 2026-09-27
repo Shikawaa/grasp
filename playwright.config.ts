@@ -3,6 +3,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
+  maxFailures: 1,
   workers: 1,
   reporter: "list",
   snapshotPathTemplate: "{testDir}/__snapshots__/darwin/{projectName}/{arg}{ext}",
