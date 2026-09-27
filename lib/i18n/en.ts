@@ -89,6 +89,80 @@ const rawEn = {
       copyright: "© 2026",
     },
   },
+  styleguide: {
+    metadataTitle: "Style guide — Grasp",
+    title: "The notebook, piece by piece",
+    intro:
+      "The living reference for Grasp drawings and components. Each sheet shows its use, variants, and useful states.",
+    backHome: "Back home",
+    sections: {
+      drawings: "Drawings",
+      primitives: "Notebook primitives",
+    },
+    labels: {
+      usage: "Usage",
+      variants: "Variants",
+      states: "States",
+      staticState: "Static, with no interactive state",
+      loadingState: "Looping loading state",
+      drawOnceState: "Drawn once when it appears",
+      normal: "Rest",
+      hover: "Hover",
+      focus: "Focus",
+      pressed: "Pressed",
+      loading: "Loading",
+      error: "Error",
+      empty: "Empty",
+      notApplicable: "Not applicable",
+    },
+    drawings: {
+      description:
+        "One module provides every gesture. Decorative drawings are ignored by screen readers.",
+      arrow: {
+        name: "Arrow",
+        usage: "Connect an annotation to what it describes.",
+        variants: "Up, right, and down",
+      },
+      circle: {
+        name: "Pen circle",
+        usage: "Mark a choice or the active item.",
+        variants: "Loose and round",
+      },
+      check: {
+        name: "Check mark",
+        usage: "Mark a task or step as complete.",
+        variants: "Compact and long",
+      },
+      strike: {
+        name: "Pen strike",
+        usage: "Show a wrong answer without punishing it.",
+        variants: "Single and double",
+      },
+      loop: {
+        name: "Loop",
+        usage: "Suggest returning or repeating.",
+        variants: "Left and right",
+      },
+      underline: {
+        name: "Underline",
+        usage: "Anchor a title in the topic color.",
+        variants: "Butter, lavender, and sky",
+      },
+      drawOnce: {
+        name: "DrawOnce",
+        usage: "Draw a gesture once when it enters the viewport.",
+        variants: "Static with reduced motion",
+      },
+      loadingStroke: {
+        name: "LoadingStroke",
+        usage: "Show a real wait without a gray rectangle.",
+        variants: "CSS loop, static with reduced motion",
+        label: "The notebook is getting ready",
+      },
+      sampleChoice: "My choice",
+      sampleWrong: "Answer to review",
+    },
+  },
   privateHome: {
     title: "The new notebook is coming.",
     description: "Your learning space will be built here, one delivery at a time.",

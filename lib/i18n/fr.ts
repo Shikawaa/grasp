@@ -91,6 +91,80 @@ const rawFr = {
       copyright: "© 2026",
     },
   },
+  styleguide: {
+    metadataTitle: "Guide de style — Grasp",
+    title: "Le carnet, pièce par pièce",
+    intro:
+      "La référence vivante des tracés et composants de Grasp. Chaque fiche montre son usage, ses variantes et ses états utiles.",
+    backHome: "Retour à l’accueil",
+    sections: {
+      drawings: "Tracés",
+      primitives: "Primitives du carnet",
+    },
+    labels: {
+      usage: "Usage",
+      variants: "Variantes",
+      states: "États",
+      staticState: "Statique, sans état interactif",
+      loadingState: "Chargement en boucle",
+      drawOnceState: "Tracé une fois à l’apparition",
+      normal: "Repos",
+      hover: "Survol",
+      focus: "Focus",
+      pressed: "Appui",
+      loading: "Chargement",
+      error: "Erreur",
+      empty: "Vide",
+      notApplicable: "Sans objet",
+    },
+    drawings: {
+      description:
+        "Un seul module fournit tous les gestes. Les dessins décoratifs sont ignorés par les lecteurs d’écran.",
+      arrow: {
+        name: "Flèche",
+        usage: "Relier une annotation à ce qu’elle désigne.",
+        variants: "Haut, droite et bas",
+      },
+      circle: {
+        name: "Cercle au stylo",
+        usage: "Marquer un choix ou l’élément actif.",
+        variants: "Libre et rond",
+      },
+      check: {
+        name: "Coche",
+        usage: "Indiquer une tâche ou une étape terminée.",
+        variants: "Compacte et longue",
+      },
+      strike: {
+        name: "Trait barré",
+        usage: "Montrer une réponse fausse sans la punir.",
+        variants: "Simple et double",
+      },
+      loop: {
+        name: "Boucle",
+        usage: "Suggérer un retour ou une répétition.",
+        variants: "Gauche et droite",
+      },
+      underline: {
+        name: "Soulignement",
+        usage: "Ancrer un titre dans la couleur du thème.",
+        variants: "Beurre, lavande et ciel",
+      },
+      drawOnce: {
+        name: "DrawOnce",
+        usage: "Tracer une seule fois lorsqu’un geste entre dans la fenêtre.",
+        variants: "Statique avec mouvement réduit",
+      },
+      loadingStroke: {
+        name: "LoadingStroke",
+        usage: "Signaler une attente réelle sans rectangle gris.",
+        variants: "Boucle CSS, statique avec mouvement réduit",
+        label: "Le carnet se prépare",
+      },
+      sampleChoice: "Mon choix",
+      sampleWrong: "Réponse à revoir",
+    },
+  },
   privateHome: {
     title: "Le nouveau carnet arrive.",
     description: "Ton espace d’apprentissage sera construit ici, lot après lot.",

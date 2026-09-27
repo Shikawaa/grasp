@@ -1,0 +1,97 @@
+.sheet {
+  display: grid;
+  overflow: hidden;
+  border: var(--border-thin) solid var(--edge);
+  border-radius: var(--radius-page);
+  background: var(--page);
+}
+
+.header {
+  padding: var(--space-4) var(--space-4) 0;
+}
+
+.header h3 {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--font-title-mobile);
+  font-weight: 500;
+  line-height: var(--line-title-mobile);
+}
+
+.preview {
+  display: flex;
+  min-height: calc(var(--grid-mobile) * 6);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--grid-mobile) - var(--border-thin)),
+    var(--rule) calc(var(--grid-mobile) - var(--border-thin)),
+    var(--rule) var(--grid-mobile)
+  );
+}
+
+.details {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-4);
+  border-top: var(--border-thin) dashed var(--edge);
+}
+
+.details div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.details dt {
+  color: var(--ink-soft);
+  font-size: var(--font-meta-mobile);
+  line-height: var(--line-meta-mobile);
+}
+
+.details dd {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--font-form-mobile);
+  line-height: var(--grid-mobile);
+}
+
+@media (--desktop) {
+  .header {
+    padding: var(--space-6) var(--space-6) 0;
+  }
+
+  .header h3 {
+    font-size: var(--font-title-desktop);
+    line-height: var(--line-title-desktop);
+  }
+
+  .preview {
+    min-height: calc(var(--grid-desktop) * 5);
+    padding: var(--space-8) var(--space-6);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--grid-desktop) - var(--border-thin)),
+      var(--rule) calc(var(--grid-desktop) - var(--border-thin)),
+      var(--rule) var(--grid-desktop)
+    );
+  }
+
+  .details {
+    padding: var(--space-6);
+  }
+
+  .details dt {
+    font-size: var(--font-meta-desktop);
+    line-height: var(--line-meta-desktop);
+  }
+
+  .details dd {
+    font-size: var(--font-question-desktop);
+    line-height: var(--grid-desktop);
+  }
+}
