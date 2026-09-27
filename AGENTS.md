@@ -99,7 +99,7 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
 
 - [ ] Lot 0 : audit
 - [x] Lot 1 : socle et nettoyage
-- [ ] Lot 2a : documents, références visuelles et migration CSS
+- [x] Lot 2a : documents, références visuelles et migration CSS
 - [ ] Lot 2b : design system du carnet et `/styleguide`
 - [ ] Lot 3 : données
 - [ ] Lot 4 : questionnaire et profil
