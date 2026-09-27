@@ -13,6 +13,7 @@ C'est un projet personnel d'Alexandre Andurand, qui sert aussi de vitrine pour d
 - `docs/SPEC.md` : comment (stack, routes, données, génération IA, sécurité, lots).
 - `docs/DESIGN.md` : direction « Le carnet » (tokens, composants, gestes, écrans, micro-copie).
 - `docs/mockups/` : les maquettes validées, en HTML interactif (voir `docs/mockups/README.md`). En cas de différence, `DESIGN.md` fait foi.
+- `docs/STATUS.md` : état de reprise court du lot en cours.
 
 En cas de contradiction entre ces documents, signale-la et demande, plutôt que de trancher seul.
 
@@ -61,6 +62,16 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
    - mise à jour de la section « État » ci-dessous ;
    - arrêt, en attente de validation.
 
+**Budget de consommation**
+1. Générer les captures demandées sans jamais les ouvrir ; donner leurs chemins à Alexandre. La justesse se vérifie par les tests, pas à l’œil.
+2. Si un test ou une mesure révèle un défaut, le signaler en une ligne sans le corriger en boucle ; Alexandre décide.
+3. Pendant le travail, lancer uniquement les tests unitaires concernés. Lancer Playwright une seule fois par point d’étape et la batterie complète seulement en fin de lot.
+4. Après deux essais infructueux sur un même point, arrêter et demander à Alexandre.
+5. Respecter strictement le périmètre demandé ; lister les autres défauts repérés sans les corriger.
+6. Pour une tâche qui semble nécessiter beaucoup d’itérations, proposer d’abord un plan court et attendre l’accord.
+7. Limiter chaque compte rendu à 10 lignes, sans répéter ce qui n’a pas changé.
+8. À la fin de chaque point d’étape, mettre à jour `docs/STATUS.md` en moins de 40 lignes : lot et étape, décisions du lot, validations en attente et prochaine action. Une reprise doit nécessiter seulement `AGENTS.md`, `docs/STATUS.md` et les références qu’ils indiquent.
+
 **Sécurité**
 - Jamais de secret dans le code, les logs, les commits ou le chat. Les clés restent côté serveur, jamais dans une variable `NEXT_PUBLIC_`.
 - `requireUser()` dans chaque page privée, action serveur et route API. Toutes les requêtes sont filtrées par `user_id`.
@@ -97,17 +108,7 @@ docs/         PRD.md, SPEC.md, DESIGN.md, mockups/
 
 ## État
 
-- [ ] Lot 0 : audit
-- [x] Lot 1 : socle et nettoyage
-- [x] Lot 2a : documents, références visuelles et migration CSS
-- [ ] Lot 2b : design system du carnet et `/styleguide`
-- [ ] Lot 3 : données
-- [ ] Lot 4 : questionnaire et profil
-- [ ] Lot 5 : propositions et préparation des parcours
-- [ ] Lot 6 : leçon, cartes, révisions et Aujourd'hui
-- [ ] Lot 7 : capture, explique-moi et signalement
-- [ ] Lot 8 : landing et démo
-- [ ] Lot 9 : finitions et lancement
+Lire `docs/STATUS.md`. Il remplace la checklist détaillée afin de rester court et directement reprenable.
 
 ## Journal des décisions
 
