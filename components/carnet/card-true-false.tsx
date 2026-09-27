@@ -39,10 +39,12 @@ export function CardTrueFalse({
         <span
           className={`${styles["review-preview__answer"]} ${styles["review-preview__answer--wrong"]}`}
         >
-          <PenStrike>{copy.wrongAnswer}</PenStrike>
+          <PenStrike id="dictionary:welcome:preview:wrong-answer">
+            {copy.wrongAnswer}
+          </PenStrike>
         </span>
         <span className={styles["review-preview__answer"]}>
-          <PenCircle>
+          <PenCircle id="dictionary:welcome:preview:right-answer">
             <Highlight tone="lavender">{copy.rightAnswer}</Highlight>
           </PenCircle>
         </span>

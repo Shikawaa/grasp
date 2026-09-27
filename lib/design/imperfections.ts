@@ -10,6 +10,7 @@ export type Imperfection = Readonly<{
   angle: ImperfectionAngle;
   cut: ImperfectionCut;
   length: ImperfectionLength;
+  samples: readonly number[];
 }>;
 
 function hashIdentifier(identifier: string): number {
@@ -36,10 +37,19 @@ export function getImperfection(identifier: string): Imperfection {
   }
 
   const hash = hashIdentifier(normalizedIdentifier);
+  let sampleHash = hash;
+  const samples = Array.from({ length: 16 }, (_, index) => {
+    sampleHash ^= index + 0x9e3779b9;
+    sampleHash = Math.imul(sampleHash ^ (sampleHash >>> 16), 0x21f0aaad);
+    sampleHash = Math.imul(sampleHash ^ (sampleHash >>> 15), 0x735a2d97);
+    sampleHash ^= sampleHash >>> 15;
+    return ((sampleHash >>> 0) / 0xffffffff) * 2 - 1;
+  });
 
   return {
     angle: pick(imperfectionAngleVariants, hash, 0),
     cut: pick(imperfectionCutVariants, hash, 0),
     length: pick(imperfectionLengthVariants, hash, 8),
+    samples,
   };
 }

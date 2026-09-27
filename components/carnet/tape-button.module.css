@@ -49,6 +49,11 @@
   opacity: var(--disabled-opacity);
 }
 
+.button[data-state="disabled"] {
+  text-decoration: line-through;
+  text-decoration-thickness: var(--border-thin);
+}
+
 .button[data-state="loading"] {
   cursor: wait;
   opacity: var(--visible-opacity);

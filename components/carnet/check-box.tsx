@@ -8,12 +8,14 @@ type CheckBoxState = "focus" | "hover" | "pressed" | "rest";
 export function CheckBox({
   checked = false,
   className,
+  id,
   label,
   state = "rest",
   ...props
 }: {
   checked?: boolean;
   className?: string;
+  id: string;
   label: string;
   state?: CheckBoxState;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "aria-label">) {
@@ -28,7 +30,7 @@ export function CheckBox({
       type={props.type ?? "button"}
     >
       <span className={styles.checkbox} aria-hidden="true">
-        {checked ? <CheckMark className={styles.check} /> : null}
+        {checked ? <CheckMark className={styles.check} id={`${id}:mark`} /> : null}
       </span>
     </button>
   );

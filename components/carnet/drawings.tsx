@@ -1,50 +1,33 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
+import {
+  getArrowGeometry,
+  getCheckGeometry,
+  getCircleGeometry,
+  getLoadingStrokeGeometry,
+  getLoopGeometry,
+  getStrikeGeometry,
+  getUnderlineGeometry,
+  type ArrowDirection,
+  type CheckVariant,
+  type CircleVariant,
+  type LoopDirection,
+  type StrikeVariant,
+} from "@/lib/design/drawing-geometry";
 import styles from "@/components/carnet/drawings.module.css";
 
-type ArrowDirection = "down" | "right" | "up";
-type CircleVariant = "loose" | "round";
-type StrikeVariant = "double" | "single";
-type CheckVariant = "compact" | "long";
-type LoopDirection = "left" | "right";
 type UnderlineTone = "butter" | "lavender" | "sky";
-
-const arrows: Record<ArrowDirection, { paths: readonly string[]; viewBox: string }> = {
-  down: {
-    paths: [
-      "M30 4 C10 8, 6 26, 14 38 C20 48, 18 58, 12 64",
-      "M6 56 L12 65 L20 58",
-    ],
-    viewBox: "0 0 44 70",
-  },
-  right: {
-    paths: ["M4 25 C34 8, 72 30, 108 15", "M96 10 L110 15 L102 27"],
-    viewBox: "0 0 120 40",
-  },
-  up: {
-    paths: ["M3 46 C22 48, 40 36, 48 10", "M40 14 L49 7 L53 18"],
-    viewBox: "0 0 56 52",
-  },
-};
-
-const circles: Record<CircleVariant, string> = {
-  loose: "M10 24 C6 8, 90 2, 95 18 C99 34, 20 40, 6 22",
-  round: "M8 21 C8 5, 88 3, 94 18 C99 34, 18 38, 7 22",
-};
-
-const checks: Record<CheckVariant, string> = {
-  compact: "M4 12 C8 15, 9 18, 11 19 C14 12, 17 7, 21 4",
-  long: "M2 10 C5 12, 7 15, 9 17 C13 11, 17 6, 22 2",
-};
 
 export function HandDrawnArrow({
   className,
   direction = "right",
+  id,
 }: {
   className?: string;
   direction?: ArrowDirection;
+  id: string;
 }) {
-  const arrow = arrows[direction];
+  const arrow = getArrowGeometry(id, direction);
 
   return (
     <span
@@ -52,7 +35,10 @@ export function HandDrawnArrow({
       aria-hidden="true"
       data-hand-arrow
     >
-      <svg viewBox={arrow.viewBox} preserveAspectRatio="xMidYMid meet">
+      <svg
+        viewBox={`0 0 ${arrow.viewBox.width} ${arrow.viewBox.height}`}
+        preserveAspectRatio="xMidYMid meet"
+      >
         {arrow.paths.map((path) => (
           <path key={path} pathLength="1" d={path} />
         ))}
@@ -64,17 +50,28 @@ export function HandDrawnArrow({
 export function PenCircle({
   children,
   className,
+  id,
   variant = "loose",
 }: {
   children: ReactNode;
   className?: string;
+  id: string;
   variant?: CircleVariant;
 }) {
+  const circle = getCircleGeometry(id, variant);
+
   return (
-    <span className={clsx(styles.gesture, styles.circle, className)}>
+    <span
+      className={clsx(styles.gesture, styles.circle, className)}
+      data-pen-circle
+    >
       <span>{children}</span>
-      <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
-        <path pathLength="1" d={circles[variant]} />
+      <svg
+        viewBox={`0 0 ${circle.viewBox.width} ${circle.viewBox.height}`}
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path pathLength="1" d={circle.path} />
       </svg>
     </span>
   );
@@ -83,22 +80,21 @@ export function PenCircle({
 export function PenStrike({
   children,
   className,
+  id,
   variant = "single",
 }: {
   children: ReactNode;
   className?: string;
+  id: string;
   variant?: StrikeVariant;
 }) {
-  const paths =
-    variant === "double"
-      ? ["M4 11 C30 8, 68 14, 96 9", "M5 16 C34 12, 70 19, 95 14"]
-      : ["M4 14 C30 10, 68 17, 96 11"];
+  const strike = getStrikeGeometry(id, variant);
 
   return (
     <span className={clsx(styles.gesture, styles.strike, className)}>
       <span>{children}</span>
       <svg viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
-        {paths.map((path) => (
+        {strike.paths.map((path) => (
           <path key={path} pathLength="1" d={path} />
         ))}
       </svg>
@@ -108,19 +104,23 @@ export function PenStrike({
 
 export function CheckMark({
   className,
+  id,
   variant = "compact",
 }: {
   className?: string;
+  id: string;
   variant?: CheckVariant;
 }) {
+  const check = getCheckGeometry(id, variant);
+
   return (
     <svg
       className={clsx(styles.check, className)}
-      viewBox={variant === "long" ? "0 0 24 20" : "0 0 24 24"}
+      viewBox={`0 0 ${check.viewBox.width} ${check.viewBox.height}`}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
-      <path pathLength="1" d={checks[variant]} />
+      <path pathLength="1" d={check.path} />
     </svg>
   );
 }
@@ -128,29 +128,38 @@ export function CheckMark({
 export function HandDrawnLoop({
   className,
   direction = "left",
+  id,
 }: {
   className?: string;
   direction?: LoopDirection;
+  id: string;
 }) {
+  const loop = getLoopGeometry(id, direction);
+
   return (
     <svg
       className={clsx(styles.loop, direction === "right" && styles["loop--right"], className)}
       viewBox="0 0 48 32"
       aria-hidden="true"
     >
-      <path pathLength="1" d="M6 19 C9 5, 35 4, 40 16 C43 25, 31 29, 22 25" />
-      <path pathLength="1" d="M27 21 L21 25 L27 29" />
+      {loop.paths.map((path) => (
+        <path d={path} key={path} pathLength="1" />
+      ))}
     </svg>
   );
 }
 
 export function MarkerUnderline({
   className,
+  id,
   tone = "butter",
 }: {
   className?: string;
+  id: string;
   tone?: UnderlineTone;
 }) {
+  const underline = getUnderlineGeometry(id);
+
   return (
     <svg
       className={clsx(styles.underline, styles[`underline--${tone}`], className)}
@@ -158,18 +167,22 @@ export function MarkerUnderline({
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      <path pathLength="1" d="M3 5 C27 2, 67 7, 97 3" />
+      <path pathLength="1" d={underline.path} />
     </svg>
   );
 }
 
 export function LoadingStroke({
+  id,
   label,
   tone = "ink",
 }: {
+  id: string;
   label: string;
   tone?: "ink" | "on-ink";
 }) {
+  const loading = getLoadingStrokeGeometry(id);
+
   return (
     <span
       className={clsx(styles.loading, styles[`loading--${tone}`])}
@@ -177,7 +190,7 @@ export function LoadingStroke({
     >
       <span className={styles["visually-hidden"]}>{label}</span>
       <svg viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true">
-        <path pathLength="1" d="M3 9 C25 4, 68 13, 97 6" />
+        <path pathLength="1" d={loading.path} />
       </svg>
     </span>
   );

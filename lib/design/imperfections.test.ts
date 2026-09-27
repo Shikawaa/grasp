@@ -11,6 +11,14 @@ describe("getImperfection", () => {
     expect(getImperfection("theme:sakoku")).toEqual(getImperfection("theme:sakoku"));
   });
 
+  it("keeps every geometric sample inside the documented deterministic range", () => {
+    for (let index = 0; index < 500; index += 1) {
+      const samples = getImperfection(`lesson:sample-${index}`).samples;
+      expect(samples).toHaveLength(16);
+      expect(samples.every((sample) => sample >= -1 && sample <= 1)).toBe(true);
+    }
+  });
+
   it("selects only documented variants", () => {
     const imperfection = getImperfection("lesson:procrastination-02");
 

@@ -59,6 +59,7 @@ export function ProvisionalHome({
                   <HandDrawnArrow
                     className={styles["welcome-scroll-arrow"]}
                     direction="down"
+                    id="dictionary:welcome:scroll-arrow"
                   />
                 </DrawOnce>
                 <Note small>{dictionary.welcome.scrollNote}</Note>
@@ -85,6 +86,7 @@ export function ProvisionalHome({
                     <HandDrawnArrow
                       className={styles["welcome-callout-arrow"]}
                       direction="up"
+                      id="dictionary:welcome:review-card-arrow"
                     />
                   </div>
                 </div>

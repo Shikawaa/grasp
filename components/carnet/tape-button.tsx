@@ -4,7 +4,13 @@ import { LoadingStroke } from "@/components/carnet/drawings";
 import { getImperfection } from "@/lib/design/imperfections";
 import styles from "@/components/carnet/tape-button.module.css";
 
-export type TapeButtonState = "focus" | "hover" | "loading" | "pressed" | "rest";
+export type TapeButtonState =
+  | "disabled"
+  | "focus"
+  | "hover"
+  | "loading"
+  | "pressed"
+  | "rest";
 
 type TapeButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   children: ReactNode;
@@ -24,6 +30,7 @@ export function TapeButton({
 }: TapeButtonProps) {
   const imperfection = getImperfection(id);
   const loading = state === "loading";
+  const disabledState = state === "disabled" || Boolean(disabled && !loading);
 
   if (loading && !loadingLabel) {
     throw new Error("TapeButton requires an accessible loading label.");
@@ -39,8 +46,8 @@ export function TapeButton({
         styles[`tilt--${imperfection.angle}`],
         className,
       )}
-      data-state={state}
-      disabled={disabled || loading}
+      data-state={disabledState ? "disabled" : state}
+      disabled={disabledState || loading}
       type={props.type ?? "button"}
     >
       {loading ? (
@@ -49,7 +56,11 @@ export function TapeButton({
             {children}
           </span>
           <span className={styles.loadingDrawing}>
-            <LoadingStroke label={accessibleLoadingLabel} tone="on-ink" />
+            <LoadingStroke
+              id={`${id}:loading`}
+              label={accessibleLoadingLabel}
+              tone="on-ink"
+            />
           </span>
         </>
       ) : (

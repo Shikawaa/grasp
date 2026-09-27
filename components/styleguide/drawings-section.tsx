@@ -30,9 +30,9 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
           variants={copy.drawings.arrow.variants}
         >
           <div className={styles.row}>
-            <HandDrawnArrow direction="up" />
-            <HandDrawnArrow direction="right" />
-            <HandDrawnArrow direction="down" />
+            <HandDrawnArrow direction="up" id="dictionary:drawings:arrow:up" />
+            <HandDrawnArrow direction="right" id="dictionary:drawings:arrow:right" />
+            <HandDrawnArrow direction="down" id="dictionary:drawings:arrow:down" />
           </div>
         </ComponentSheet>
 
@@ -45,8 +45,12 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
           variants={copy.drawings.circle.variants}
         >
           <div className={styles.words}>
-            <PenCircle>{copy.drawings.sampleChoice}</PenCircle>
-            <PenCircle variant="round">{copy.drawings.sampleChoice}</PenCircle>
+            <PenCircle id="dictionary:drawings:circle:short">
+              {copy.drawings.sampleChoice}
+            </PenCircle>
+            <PenCircle id="dictionary:drawings:circle:long" variant="round">
+              {copy.drawings.sampleChoiceLong}
+            </PenCircle>
           </div>
         </ComponentSheet>
 
@@ -59,8 +63,8 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
           variants={copy.drawings.check.variants}
         >
           <div className={styles.row}>
-            <CheckMark />
-            <CheckMark variant="long" />
+            <CheckMark id="dictionary:drawings:check:compact" />
+            <CheckMark id="dictionary:drawings:check:long" variant="long" />
           </div>
         </ComponentSheet>
 
@@ -73,8 +77,12 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
           variants={copy.drawings.strike.variants}
         >
           <div className={styles.words}>
-            <PenStrike>{copy.drawings.sampleWrong}</PenStrike>
-            <PenStrike variant="double">{copy.drawings.sampleWrong}</PenStrike>
+            <PenStrike id="dictionary:drawings:strike:single">
+              {copy.drawings.sampleWrong}
+            </PenStrike>
+            <PenStrike id="dictionary:drawings:strike:double" variant="double">
+              {copy.drawings.sampleWrong}
+            </PenStrike>
           </div>
         </ComponentSheet>
 
@@ -87,8 +95,8 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
           variants={copy.drawings.loop.variants}
         >
           <div className={styles.row}>
-            <HandDrawnLoop />
-            <HandDrawnLoop direction="right" />
+            <HandDrawnLoop id="dictionary:drawings:loop:left" />
+            <HandDrawnLoop direction="right" id="dictionary:drawings:loop:right" />
           </div>
         </ComponentSheet>
 
@@ -101,9 +109,15 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
           variants={copy.drawings.underline.variants}
         >
           <div className={styles.underlines}>
-            <MarkerUnderline />
-            <MarkerUnderline tone="lavender" />
-            <MarkerUnderline tone="sky" />
+            {(["butter", "lavender", "sky"] as const).map((tone) => (
+              <div className={styles.underlineTitle} key={tone}>
+                <h4>{copy.drawings.sampleTitle}</h4>
+                <MarkerUnderline
+                  id={`dictionary:drawings:underline:${tone}`}
+                  tone={tone}
+                />
+              </div>
+            ))}
           </div>
         </ComponentSheet>
 

@@ -42,7 +42,7 @@ export default async function StyleguidePage() {
 
       <DrawingsSection copy={dictionary.styleguide} />
       <ThemeColorsSection copy={dictionary.styleguide} locale={locale} />
-      <PrimitivesSection copy={dictionary.styleguide} />
+      <PrimitivesSection copy={dictionary.styleguide} locale={locale} />
     </main>
   );
 }

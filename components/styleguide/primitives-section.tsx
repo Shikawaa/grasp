@@ -3,12 +3,18 @@ import { Highlight } from "@/components/carnet/highlight";
 import { MemoryMeter } from "@/components/carnet/memory-meter";
 import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
+import {
+  SecondaryAction,
+  type SecondaryActionState,
+} from "@/components/carnet/secondary-action";
 import { Tally } from "@/components/carnet/tally";
 import { Tape } from "@/components/carnet/tape";
 import { TapeButton, type TapeButtonState } from "@/components/carnet/tape-button";
 import { WeekStrip, type WeekDay } from "@/components/carnet/week-strip";
 import { ComponentSheet } from "@/components/styleguide/component-sheet";
 import type { Dictionary } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/config";
+import { formatCardinalMessage } from "@/lib/i18n/plural";
 import styles from "@/components/styleguide/primitives-section.module.css";
 
 const weekDayDefinitions = [
@@ -21,11 +27,18 @@ const weekDayDefinitions = [
   { done: false, id: "sunday", isToday: false },
 ] as const;
 
-export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) {
+export function PrimitivesSection({
+  copy,
+  locale,
+}: {
+  copy: Dictionary["styleguide"];
+  locale: Locale;
+}) {
   const labels = copy.labels;
   const primitives = copy.primitives;
   const weekDays = weekDayDefinitions.map((day, index) => ({
     ...day,
+    accessibleLabel: primitives.weekStrip.accessibleWeekdays[index] ?? "",
     label: primitives.weekStrip.weekdays[index] ?? "",
   })) satisfies WeekDay[];
   const buttonStates: readonly { label: string; state: TapeButtonState }[] = [
@@ -34,7 +47,20 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
     { label: labels.focus, state: "focus" },
     { label: labels.pressed, state: "pressed" },
     { label: labels.loading, state: "loading" },
+    { label: labels.disabled, state: "disabled" },
   ];
+  const secondaryActionStates: readonly {
+    label: string;
+    state: SecondaryActionState;
+  }[] = [
+    { label: labels.normal, state: "rest" },
+    { label: labels.hover, state: "hover" },
+    { label: labels.focus, state: "focus" },
+    { label: labels.pressed, state: "pressed" },
+  ];
+  const tallyLabels = [0, 5, 8].map((count) =>
+    formatCardinalMessage(primitives.tally.progress, count, locale, { total: 9 }),
+  );
 
   return (
     <section className={styles.section} aria-labelledby="styleguide-primitives">
@@ -55,6 +81,25 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
           <Page color="rose" id="styleguide:page:sample">
             <p className={styles.pageText}>{primitives.page.sample}</p>
           </Page>
+        </ComponentSheet>
+
+        <ComponentSheet
+          codeName={primitives.secondaryAction.codeName}
+          labels={labels}
+          name={primitives.secondaryAction.name}
+          states={primitives.secondaryAction.states}
+          usage={primitives.secondaryAction.usage}
+          variants={primitives.secondaryAction.variants}
+        >
+          <div className={styles.stateGrid}>
+            {secondaryActionStates.map(({ label, state }) => (
+              <StateSample key={state} label={label}>
+                <SecondaryAction state={state}>
+                  {primitives.secondaryAction.label}
+                </SecondaryAction>
+              </StateSample>
+            ))}
+          </div>
         </ComponentSheet>
 
         <ComponentSheet
@@ -141,6 +186,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
                     >
                       <CheckBox
                         checked={checked}
+                        id={`dictionary:styleguide:checkbox:${checked ? "checked" : "empty"}:${state}`}
                         label={primitives.checkBox.label}
                         state={state}
                       />
@@ -170,13 +216,28 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         >
           <div className={styles.stateGrid}>
             <StateSample label={labels.normal}>
-              <Tally count={5} label={primitives.tally.five} />
+              <Tally
+                count={5}
+                id="dictionary:styleguide:tally:five"
+                label={tallyLabels[1] ?? ""}
+              />
             </StateSample>
-            <StateSample label={primitives.tally.eight}>
-              <Tally count={8} label={primitives.tally.eight} />
+            <StateSample label={tallyLabels[2] ?? ""}>
+              <Tally
+                count={8}
+                id="dictionary:styleguide:tally:eight"
+                label={tallyLabels[2] ?? ""}
+              />
             </StateSample>
             <StateSample label={labels.empty}>
-              <Tally count={0} label={primitives.tally.empty} />
+              <div className={styles.tallyEmpty}>
+                <Tally
+                  count={0}
+                  id="dictionary:styleguide:tally:empty"
+                  label={tallyLabels[0] ?? ""}
+                />
+                <Note small>{tallyLabels[0]}</Note>
+              </div>
             </StateSample>
           </div>
         </ComponentSheet>
@@ -220,10 +281,18 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         >
           <div className={styles.stateGrid}>
             <StateSample label={labels.normal}>
-              <MemoryMeter filled={4} tone="lavender" />
+              <MemoryMeter
+                filled={4}
+                label={primitives.memoryMeter.normalLabel}
+                tone="lavender"
+              />
             </StateSample>
             <StateSample label={labels.empty}>
-              <MemoryMeter filled={0} tone="sky" />
+              <MemoryMeter
+                filled={0}
+                label={primitives.memoryMeter.emptyLabel}
+                tone="sky"
+              />
             </StateSample>
           </div>
         </ComponentSheet>

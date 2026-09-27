@@ -7,6 +7,8 @@
 }
 
 .header {
+  display: grid;
+  gap: var(--space-1);
   padding: var(--space-4) var(--space-4) 0;
 }
 
@@ -19,6 +21,7 @@
 }
 
 .header code {
+  display: block;
   color: var(--ink-soft);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--font-meta-mobile);

@@ -4,6 +4,10 @@ import { describe, expect, it } from "vitest";
 import { themeColors } from "@/lib/design/theme-colors";
 
 const tokenSource = readFileSync(resolve(process.cwd(), "styles/tokens.css"), "utf8");
+const meterStyles = readFileSync(
+  resolve(process.cwd(), "components/carnet/memory-meter.module.css"),
+  "utf8",
+);
 
 function tokenHex(name: string): string {
   const match = tokenSource.match(new RegExp(`${name}:\\s*(#[0-9a-f]{6})`, "i"));
@@ -47,5 +51,16 @@ describe("theme colors", () => {
 
     expect(contrast(ink, tokenHex("--paper"))).toBeGreaterThanOrEqual(3);
     expect(contrast(ink, tokenHex("--page"))).toBeGreaterThanOrEqual(3);
+  });
+
+  it("outlines every memory segment at 3:1 or more against paper", () => {
+    const ink = tokenHex("--ink");
+    const paper = tokenHex("--paper");
+
+    expect(meterStyles).toMatch(/\.segment\s*\{[^}]*border:[^;]*var\(--ink\)/s);
+    for (const definition of themeColors) {
+      expect(definition.tone).toBeTruthy();
+      expect(contrast(ink, paper)).toBeGreaterThanOrEqual(3);
+    }
   });
 });

@@ -5,7 +5,15 @@ import styles from "@/components/carnet/drawings.module.css";
 
 const drawnIds = new Set<string>();
 
-export function DrawOnce({ children, id }: { children: ReactNode; id: string }) {
+export function DrawOnce({
+  children,
+  id,
+  immediate = false,
+}: {
+  children: ReactNode;
+  id: string;
+  immediate?: boolean;
+}) {
   const containerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -16,6 +24,11 @@ export function DrawOnce({ children, id }: { children: ReactNode; id: string }) 
       container.dataset.drawn = "true";
       drawnIds.add(id);
     };
+
+    if (immediate) {
+      reveal();
+      return;
+    }
 
     if (drawnIds.has(id) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       reveal();
@@ -32,10 +45,14 @@ export function DrawOnce({ children, id }: { children: ReactNode; id: string }) 
     );
     observer.observe(container);
     return () => observer.disconnect();
-  }, [id]);
+  }, [id, immediate]);
 
   return (
-    <span className={styles["draw-once"]} ref={containerRef}>
+    <span
+      className={styles["draw-once"]}
+      data-drawn={immediate ? "true" : undefined}
+      ref={containerRef}
+    >
       {children}
     </span>
   );

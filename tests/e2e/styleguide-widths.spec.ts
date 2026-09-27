@@ -18,7 +18,7 @@ for (const viewport of viewports) {
     expect(dimensions.scrollWidth).toBe(dimensions.clientWidth);
 
     const sheets = page.locator("[data-component-sheet]");
-    await expect(sheets).toHaveCount(17);
+    await expect(sheets).toHaveCount(18);
 
     const firstRowTops = await sheets.evaluateAll((elements, columns) =>
       elements.slice(0, columns).map((element) => element.getBoundingClientRect().top),
@@ -38,6 +38,13 @@ test("le chargement dessiné devient statique en mouvement réduit", async ({ pa
 
   const loadingPath = page.locator('[role="status"] path').first();
   await expect(loadingPath).toHaveCSS("animation-name", "none");
+
+  const drawOnceSheet = page.locator("[data-component-sheet]").filter({
+    has: page.locator("code", { hasText: "DrawOnce" }),
+  });
+  for (const path of await drawOnceSheet.locator("path").all()) {
+    await expect(path).toHaveCSS("stroke-dashoffset", "0px");
+  }
 });
 
 test("les états interactifs et de données restent distincts", async ({ page }) => {
@@ -49,6 +56,7 @@ test("les états interactifs et de données restent distincts", async ({ page })
   });
   const restButton = tapeButtonSheet.locator('button[data-state="rest"]');
   const loadingButton = tapeButtonSheet.locator('button[data-state="loading"]');
+  const disabledButton = tapeButtonSheet.locator('button[data-state="disabled"]');
   const buttonMetrics = await Promise.all(
     [restButton, loadingButton].map((locator) =>
       locator.evaluate((element) => {
@@ -62,6 +70,8 @@ test("les états interactifs et de données restent distincts", async ({ page })
   );
   expect(buttonMetrics[1]).toEqual(buttonMetrics[0]);
   await expect(loadingButton.locator('[role="status"]')).toHaveCount(1);
+  await expect(disabledButton).toBeDisabled();
+  await expect(disabledButton).toHaveCSS("text-decoration-line", "line-through");
 
   const buttonFocus = tapeButtonSheet.locator('button[data-state="focus"]');
   await expect(buttonFocus).toHaveCSS("outline-color", "rgb(31, 27, 22)");
@@ -92,7 +102,31 @@ test("les états interactifs et de données restent distincts", async ({ page })
   });
   await expect(weekStripSheet.locator("[data-highlight]")).toHaveCount(4);
   await expect(weekStripSheet).toContainText("4 sur 7 cette semaine");
-  await expect(weekStripSheet.getByRole("button", { name: "Réessayer" })).toBeVisible();
+  await expect(weekStripSheet.getByLabel("mardi, fait")).toBeVisible();
+  await expect(weekStripSheet.getByLabel("jeudi, aujourd’hui")).toBeVisible();
+  const retry = weekStripSheet.getByRole("button", { name: "Réessayer" });
+  await expect(retry).toBeVisible();
+  await expect(retry).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+
+  const tallySheet = page.locator("[data-component-sheet]").filter({
+    has: page.locator("code", { hasText: "Tally" }),
+  });
+  const tallies = tallySheet.locator("[data-tally]");
+  await expect(tallies.nth(0).locator("line")).toHaveCount(5);
+  await expect(tallies.nth(0).locator("line").last()).toHaveAttribute(
+    "data-tally-diagonal",
+    "true",
+  );
+  const tallyStrokeStyles = await tallies.nth(0).locator("line").evaluateAll((lines) =>
+    lines.map((line) => ({
+      stroke: getComputedStyle(line).stroke,
+      width: getComputedStyle(line).strokeWidth,
+    })),
+  );
+  expect(new Set(tallyStrokeStyles.map(({ stroke }) => stroke)).size).toBe(1);
+  expect(new Set(tallyStrokeStyles.map(({ width }) => width)).size).toBe(1);
+  await expect(tallies.nth(1).locator("line")).toHaveCount(8);
+  await expect(tallySheet).toContainText("0 réponse sur 9");
 });
 
 test("les couleurs et contrôles réservés au guide sont complets", async ({ page }) => {
@@ -101,14 +135,78 @@ test("les couleurs et contrôles réservés au guide sont complets", async ({ pa
 
   const colors = page.locator("[data-theme-color]");
   await expect(colors).toHaveCount(16);
+  await expect(page.locator("[data-theme-color-family]")).toHaveCount(6);
   const ratios = await colors.evaluateAll((elements) =>
     elements.map((element) => Number(element.getAttribute("data-contrast-with-ink"))),
   );
   expect(ratios.every((ratio) => ratio >= 4.5)).toBe(true);
 
-  await expect(page.locator("[data-component-sheet] code")).toHaveCount(17);
+  await expect(page.locator("[data-component-sheet] code")).toHaveCount(18);
+  const technicalNamesFollowTitles = await page
+    .locator("[data-component-sheet] header")
+    .evaluateAll((headers) =>
+      headers.every((header) => {
+        const title = header.querySelector("h3")?.getBoundingClientRect();
+        const code = header.querySelector("code")?.getBoundingClientRect();
+        return Boolean(title && code && code.top >= title.bottom);
+      }),
+    );
+  expect(technicalNamesFollowTitles).toBe(true);
+
+  const memoryMeters = page.getByRole("img", { name: /Mémoire.*4.*5/ });
+  await expect(memoryMeters).toHaveCount(17);
+  for (const meter of await memoryMeters.all()) {
+    await expect(meter.locator("span").first()).toHaveCSS(
+      "border-color",
+      "rgb(31, 27, 22)",
+    );
+  }
+
+  const circleSheet = page.locator("[data-component-sheet]").filter({
+    has: page.locator("code", { hasText: "PenCircle" }),
+  });
+  const circleTextMargins = await circleSheet.locator("[data-pen-circle]").evaluateAll(
+    (circles) =>
+      circles.map((circle) => {
+        const text = circle.querySelector(":scope > span")?.getBoundingClientRect();
+        const drawing = circle.querySelector("svg")?.getBoundingClientRect();
+        if (!text || !drawing) return null;
+        return {
+          bottom: drawing.bottom - text.bottom,
+          left: text.left - drawing.left,
+          right: drawing.right - text.right,
+          top: text.top - drawing.top,
+        };
+      }),
+  );
+  for (const margins of circleTextMargins) {
+    expect(margins).not.toBeNull();
+    if (!margins) continue;
+    expect(margins.left).toBeGreaterThanOrEqual(8);
+    expect(margins.right).toBeGreaterThanOrEqual(8);
+    expect(margins.top).toBeGreaterThanOrEqual(8);
+    expect(margins.bottom).toBeGreaterThanOrEqual(8);
+  }
   const replayButtons = page.getByRole("button", { name: "Rejouer" });
   await expect(replayButtons).toHaveCount(2);
   await replayButtons.first().click();
   await replayButtons.last().click();
+});
+
+test("les libellés accessibles et les pluriels restent complets en anglais", async ({
+  page,
+}) => {
+  await page.context().addCookies([
+    { name: "lang", url: "http://127.0.0.1:3100", value: "en" },
+  ]);
+  await page.setViewportSize({ height: 812, width: 375 });
+  await page.goto("/styleguide", { waitUntil: "networkidle" });
+
+  await expect(page.getByLabel("Tuesday, done")).toBeVisible();
+  await expect(page.getByLabel("Thursday, today")).toBeVisible();
+  await expect(page.locator('[id="styleguide:week-strip:retry"]')).toHaveAccessibleName(
+    "Try again",
+  );
+  await expect(page.getByText("0 answers out of 9", { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: /Memory.*4.*5/ })).toHaveCount(17);
 });

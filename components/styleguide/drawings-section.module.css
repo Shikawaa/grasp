@@ -55,8 +55,16 @@
   line-height: var(--grid-mobile);
 }
 
-.underlines > * {
-  width: 60%;
+.underlineTitle {
+  width: 80%;
+}
+
+.underlineTitle h4 {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--font-answer-mobile);
+  font-weight: 500;
+  line-height: var(--grid-mobile);
 }
 
 @media (--tablet-only) {
@@ -86,6 +94,11 @@
   }
 
   .words {
+    font-size: var(--font-answer-desktop);
+    line-height: var(--grid-desktop);
+  }
+
+  .underlineTitle h4 {
     font-size: var(--font-answer-desktop);
     line-height: var(--grid-desktop);
   }

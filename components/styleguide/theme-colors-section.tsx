@@ -3,7 +3,7 @@ import { MemoryMeter } from "@/components/carnet/memory-meter";
 import { Tape } from "@/components/carnet/tape";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
-import { themeColors } from "@/lib/design/theme-colors";
+import { themeColorFamilies } from "@/lib/design/theme-colors";
 import styles from "@/components/styleguide/theme-colors-section.module.css";
 
 export function ThemeColorsSection({
@@ -24,42 +24,53 @@ export function ThemeColorsSection({
         <h2 id="styleguide-theme-colors">{copy.sections.colors}</h2>
         <p>{copy.themeColors.description}</p>
       </header>
-      <div className={styles.grid}>
-        {themeColors.map(({ contrastWithInk, tone }) => {
-          const name = copy.themeColors.names[tone];
+      <div className={styles.families}>
+        {themeColorFamilies.map(({ colors, family }) => (
+          <section className={styles.family} data-theme-color-family={family} key={family}>
+            <h3>{copy.themeColors.families[family]}</h3>
+            <div className={styles.grid}>
+              {colors.map(({ contrastWithInk, tone }) => {
+                const name = copy.themeColors.names[tone];
 
-          return (
-            <article
-              className={styles.color}
-              data-contrast-with-ink={contrastWithInk}
-              data-theme-color={tone}
-              key={tone}
-            >
-              <header>
-                <h3>{name}</h3>
-                <code>{`--highlight-${tone}`}</code>
-              </header>
-              <div className={styles.samples}>
-                <Tape id={`styleguide:theme-color:${tone}`} tone={tone}>
-                  {name}
-                </Tape>
-                <Highlight tone={tone}>{name}</Highlight>
-                <div className={styles.meter}>
-                  <span>{copy.themeColors.memorySample}</span>
-                  <MemoryMeter filled={4} tone={tone} />
-                </div>
-              </div>
-              <dl>
-                <dt>{copy.themeColors.contrastLabel}</dt>
-                <dd>
-                  <data value={contrastWithInk}>
-                    {numberFormat.format(contrastWithInk)}:1
-                  </data>
-                </dd>
-              </dl>
-            </article>
-          );
-        })}
+                return (
+                  <article
+                    className={styles.color}
+                    data-contrast-with-ink={contrastWithInk}
+                    data-theme-color={tone}
+                    key={tone}
+                  >
+                    <header>
+                      <h4>{name}</h4>
+                      <code>{`--highlight-${tone}`}</code>
+                    </header>
+                    <div className={styles.samples}>
+                      <Tape id={`styleguide:theme-color:${tone}`} tone={tone}>
+                        {name}
+                      </Tape>
+                      <Highlight tone={tone}>{name}</Highlight>
+                      <div className={styles.meter}>
+                        <span>{copy.themeColors.memorySample}</span>
+                        <MemoryMeter
+                          filled={4}
+                          label={copy.themeColors.memoryLabel}
+                          tone={tone}
+                        />
+                      </div>
+                    </div>
+                    <dl>
+                      <dt>{copy.themeColors.contrastLabel}</dt>
+                      <dd>
+                        <data value={contrastWithInk}>
+                          {numberFormat.format(contrastWithInk)}:1
+                        </data>
+                      </dd>
+                    </dl>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </section>
   );

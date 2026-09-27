@@ -111,6 +111,12 @@
   align-items: flex-start;
 }
 
+.tallyEmpty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+}
+
 @media (--tablet-only) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

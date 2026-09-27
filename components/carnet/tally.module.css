@@ -1,26 +1,26 @@
 .tally {
-  display: inline-flex;
+  display: inline-block;
   min-height: var(--tap-min);
-  align-items: center;
-  gap: var(--space-2);
   padding: 0 var(--space-2);
 }
 
-.mark {
+.drawing {
   display: block;
-  width: var(--border-thin);
   height: var(--grid-mobile);
-  background: var(--ink);
-  transform: rotate(var(--tilt-tape));
+  margin-block: calc((var(--tap-min) - var(--grid-mobile)) / 2);
+  overflow: visible;
 }
 
-.fifth {
-  margin-left: calc(var(--space-3) * -1);
-  transform: rotate(var(--tilt-tape-active)) scaleY(1.25);
+.mark {
+  stroke: var(--ink);
+  stroke-linecap: round;
+  stroke-width: var(--pen-circle-width);
+  vector-effect: non-scaling-stroke;
 }
 
 @media (--desktop) {
-  .mark {
+  .drawing {
     height: var(--grid-desktop);
+    margin-block: calc((var(--tap-min) - var(--grid-desktop)) / 2);
   }
 }

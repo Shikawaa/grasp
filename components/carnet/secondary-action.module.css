@@ -1,0 +1,42 @@
+.action {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-family: var(--font-caveat), cursive;
+  font-size: var(--font-note-small-mobile);
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+  transition: transform var(--dur-press) var(--ease-pop);
+}
+
+.action:hover,
+.action[data-state="hover"] {
+  color: var(--ink);
+}
+
+.action:focus-visible,
+.action[data-state="focus"] {
+  outline: calc(var(--border-thin) * 2) dashed var(--ink);
+  outline-offset: var(--focus-offset);
+}
+
+.action:active,
+.action[data-state="pressed"] {
+  transform: translateY(calc(var(--space-1) * -1));
+}
+
+@media (--desktop) {
+  .action {
+    font-size: var(--font-note-small-desktop);
+  }
+}
+
+@media (--reduced-motion) {
+  .action {
+    transition: none;
+  }
+}

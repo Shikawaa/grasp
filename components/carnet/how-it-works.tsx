@@ -38,6 +38,7 @@ export type HowItWorksCopy = {
     sentenceHighlight: string;
   };
   review: {
+    memoryLabel: string;
     title: string;
     memory: string;
     tomorrow: string;
@@ -181,7 +182,12 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
         <ol className={styles["how-it-works__steps"]}>
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle className={styles["step-number-circle"]}>1</PenCircle>
+              <PenCircle
+                className={styles["step-number-circle"]}
+                id="dictionary:welcome:how-it-works:step-1"
+              >
+                1
+              </PenCircle>
             </div>
             <h3>{copy.interests.title}</h3>
             <div
@@ -200,7 +206,12 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle className={styles["step-number-circle"]}>2</PenCircle>
+              <PenCircle
+                className={styles["step-number-circle"]}
+                id="dictionary:welcome:how-it-works:step-2"
+              >
+                2
+              </PenCircle>
             </div>
             <h3>{copy.choice.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-proposals"]}`}>
@@ -220,7 +231,11 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
                   tone="sky"
                 >
                   <span>{copy.choice.chosen}</span>
-                  <CheckMark className={styles["mini-check"]} variant="long" />
+                  <CheckMark
+                    className={styles["mini-check"]}
+                    id="dictionary:welcome:how-it-works:chosen-topic"
+                    variant="long"
+                  />
                 </Tape>
               </span>
               <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
@@ -237,7 +252,12 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle className={styles["step-number-circle"]}>3</PenCircle>
+              <PenCircle
+                className={styles["step-number-circle"]}
+                id="dictionary:welcome:how-it-works:step-3"
+              >
+                3
+              </PenCircle>
             </div>
             <h3>{copy.lesson.title}</h3>
             <div
@@ -253,19 +273,24 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
 
           <li className={styles["how-step"]}>
             <div className={styles["how-step__number"]}>
-              <PenCircle className={styles["step-number-circle"]}>4</PenCircle>
+              <PenCircle
+                className={styles["step-number-circle"]}
+                id="dictionary:welcome:how-it-works:step-4"
+              >
+                4
+              </PenCircle>
             </div>
             <h3>{copy.review.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-review"]}`}>
               <div className={styles["mini-memory"]}>
                 <span>{copy.review.memory}</span>
-                <MemoryMeter filled={3} />
+                <MemoryMeter filled={3} label={copy.review.memoryLabel} />
               </div>
               <div className={styles["mini-tomorrow"]}>
                 <Note className={styles["mini-tomorrow-note"]} small>
                   {copy.review.tomorrow}
                 </Note>
-                <HandDrawnLoop />
+                <HandDrawnLoop id="dictionary:welcome:how-it-works:tomorrow-loop" />
               </div>
             </div>
           </li>

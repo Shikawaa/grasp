@@ -1,10 +1,11 @@
 import { LoadingStroke, PenCircle } from "@/components/carnet/drawings";
 import { Highlight } from "@/components/carnet/highlight";
 import { Note } from "@/components/carnet/note";
-import { TapeButton } from "@/components/carnet/tape-button";
+import { SecondaryAction } from "@/components/carnet/secondary-action";
 import styles from "@/components/carnet/week-strip.module.css";
 
 export type WeekDay = {
+  accessibleLabel: string;
   done: boolean;
   id: string;
   isToday: boolean;
@@ -30,7 +31,7 @@ type WeekStripProps =
 
 export function WeekStrip(props: WeekStripProps) {
   if (props.state === "loading") {
-    return <LoadingStroke label={props.label} />;
+    return <LoadingStroke id="dictionary:week-strip:loading" label={props.label} />;
   }
 
   if (props.state === "empty") {
@@ -41,7 +42,7 @@ export function WeekStrip(props: WeekStripProps) {
     return (
       <div className={styles.error} role="alert">
         <Note>{props.label}</Note>
-        <TapeButton id={props.retryId}>{props.retryLabel}</TapeButton>
+        <SecondaryAction id={props.retryId}>{props.retryLabel}</SecondaryAction>
       </div>
     );
   }
@@ -50,14 +51,20 @@ export function WeekStrip(props: WeekStripProps) {
     <div className={styles.wrapper}>
       <ol className={styles.days}>
         {props.days.map((day) => (
-          <li className={!day.done && !day.isToday ? styles.future : undefined} key={day.id}>
-            {day.isToday ? (
-              <PenCircle variant="round">
-                {day.done ? <Highlight>{day.label}</Highlight> : day.label}
-              </PenCircle>
-            ) : day.done ? (
-              <Highlight>{day.label}</Highlight>
-            ) : day.label}
+          <li
+            aria-label={day.accessibleLabel}
+            className={!day.done && !day.isToday ? styles.future : undefined}
+            key={day.id}
+          >
+            <span aria-hidden="true">
+              {day.isToday ? (
+                <PenCircle id={`weekday:${day.id}`} variant="round">
+                  {day.done ? <Highlight>{day.label}</Highlight> : day.label}
+                </PenCircle>
+              ) : day.done ? (
+                <Highlight>{day.label}</Highlight>
+              ) : day.label}
+            </span>
           </li>
         ))}
       </ol>
