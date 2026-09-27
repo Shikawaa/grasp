@@ -1,10 +1,18 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
-import styles from "@/styles/components.module.css";
+import styles from "@/components/carnet/note.module.css";
 
-export function Note({ children, small = false }: { children: ReactNode; small?: boolean }) {
+export function Note({
+  children,
+  className,
+  small = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  small?: boolean;
+}) {
   return (
-    <p className={clsx(styles["carnet-note"], small && styles["carnet-note--small"])}>
+    <p className={clsx(styles.note, small && styles["note--small"], className)}>
       {children}
     </p>
   );

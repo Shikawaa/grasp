@@ -26,7 +26,9 @@ export function CardTrueFalse({
   return (
     <Page className={clsx(styles["review-preview"], className)}>
       <div className={styles["review-preview__tape"]}>
-        <Tape tone="lavender">{copy.theme}</Tape>
+        <Tape id="theme:sakoku-review" tone="lavender">
+          {copy.theme}
+        </Tape>
       </div>
       <header className={styles["review-preview__meta"]}>
         <span>{copy.label}</span>
@@ -45,7 +47,7 @@ export function CardTrueFalse({
           </PenCircle>
         </span>
       </div>
-      <Note>{copy.feedback}</Note>
+      <Note className={styles["review-feedback"]}>{copy.feedback}</Note>
     </Page>
   );
 }

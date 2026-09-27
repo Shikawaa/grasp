@@ -1,15 +1,19 @@
 import clsx from "clsx";
-import styles from "@/styles/components.module.css";
+import type { TapeTone } from "@/components/carnet/tape";
+import styles from "@/components/carnet/memory-meter.module.css";
 
-export function MemoryMeter({ filled }: { filled: 0 | 1 | 2 | 3 | 4 | 5 }) {
+export function MemoryMeter({
+  filled,
+  tone = "lavender",
+}: {
+  filled: 0 | 1 | 2 | 3 | 4 | 5;
+  tone?: TapeTone;
+}) {
   return (
-    <span className={styles["memory-meter"]} aria-hidden="true">
+    <span className={clsx(styles.meter, styles[`meter--${tone}`])} aria-hidden="true">
       {Array.from({ length: 5 }, (_, index) => (
         <span
-          className={clsx(
-            styles["memory-meter__segment"],
-            index < filled && styles["is-filled"],
-          )}
+          className={clsx(styles.segment, index < filled && styles.filled)}
           key={index}
         />
       ))}

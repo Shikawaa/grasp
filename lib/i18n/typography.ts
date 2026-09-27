@@ -38,7 +38,10 @@ export function applyTypography<T>(
 
   if (value !== null && typeof value === "object") {
     return Object.fromEntries(
-      Object.entries(value).map(([key, item]) => [key, applyTypography(item, locale)]),
+      Object.entries(value).map(([key, item]) => [
+        key,
+        key === "id" ? item : applyTypography(item, locale),
+      ]),
     ) as TypographyDictionary<T>;
   }
 

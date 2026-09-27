@@ -35,7 +35,7 @@ export function LessonPreviewCard({ copy }: { copy: LessonPreviewCopy }) {
   return (
     <Page className={styles["lesson-preview"]}>
       <div className={styles["lesson-preview__tape"]}>
-        <Tape seed={2} tone="sky">
+        <Tape id="landing:psychology" tone="sky">
           {copy.theme}
         </Tape>
       </div>

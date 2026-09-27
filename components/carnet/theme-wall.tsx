@@ -1,25 +1,16 @@
 import { Note } from "@/components/carnet/note";
-import { Tape, type TapeTone } from "@/components/carnet/tape";
+import { isTapeTone, Tape } from "@/components/carnet/tape";
 import styles from "@/styles/components.module.css";
 
 export type ThemeWallCopy = {
   title: string;
   note: string;
-  topics: readonly string[];
+  topics: readonly {
+    id: string;
+    label: string;
+    tone: string;
+  }[];
 };
-
-const tapeTones: readonly TapeTone[] = [
-  "lavender",
-  "sky",
-  "honey",
-  "sage",
-  "rose",
-  "lagoon",
-  "apricot",
-  "mauve",
-];
-
-const tapeSeeds = [1, 2, 3, 4, 5, 6, 7, 8] as const;
 
 export function ThemeWall({ copy }: { copy: ThemeWallCopy }) {
   return (
@@ -29,13 +20,23 @@ export function ThemeWall({ copy }: { copy: ThemeWallCopy }) {
         <Note>{copy.note}</Note>
       </div>
       <ul className={styles["theme-wall__list"]}>
-        {copy.topics.map((topic, index) => (
-          <li key={topic}>
-            <Tape seed={tapeSeeds[index]} tone={tapeTones[index]}>
-              {topic}
-            </Tape>
-          </li>
-        ))}
+        {copy.topics.map((topic) => {
+          if (!isTapeTone(topic.tone)) {
+            throw new Error(`Unknown tape tone for topic ${topic.id}`);
+          }
+
+          return (
+            <li key={topic.id}>
+              <Tape
+                className={styles["theme-tape"]}
+                id={topic.id}
+                tone={topic.tone}
+              >
+                {topic.label}
+              </Tape>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

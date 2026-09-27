@@ -1,6 +1,6 @@
-export const imperfectionAngleVariants = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+export const imperfectionAngleVariants = ["base", 1, 2, 3, 4, 5, 6, 7, 8] as const;
 export const imperfectionLengthVariants = ["compact", "regular", "wide"] as const;
-export const imperfectionCutVariants = ["soft", "notched", "torn"] as const;
+export const imperfectionCutVariants = imperfectionAngleVariants;
 
 export type ImperfectionAngle = (typeof imperfectionAngleVariants)[number];
 export type ImperfectionLength = (typeof imperfectionLengthVariants)[number];
@@ -39,7 +39,7 @@ export function getImperfection(identifier: string): Imperfection {
 
   return {
     angle: pick(imperfectionAngleVariants, hash, 0),
-    cut: pick(imperfectionCutVariants, hash, 16),
+    cut: pick(imperfectionCutVariants, hash, 0),
     length: pick(imperfectionLengthVariants, hash, 8),
   };
 }

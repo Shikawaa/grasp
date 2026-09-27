@@ -1,19 +1,28 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
-import styles from "@/styles/components.module.css";
+import styles from "@/components/carnet/highlight.module.css";
 
 type HighlightTone = "butter" | "lavender" | "sky";
 
 export function Highlight({
+  animated = false,
   children,
+  className,
   tone = "butter",
 }: {
+  animated?: boolean;
   children: ReactNode;
+  className?: string;
   tone?: HighlightTone;
 }) {
   return (
     <span
-      className={clsx(styles["carnet-highlight"], styles[`carnet-highlight--${tone}`])}
+      className={clsx(
+        styles.highlight,
+        styles[`highlight--${tone}`],
+        animated && styles.animated,
+        className,
+      )}
       data-highlight
     >
       {children}

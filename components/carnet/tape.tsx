@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
-import styles from "@/styles/components.module.css";
+import { getImperfection } from "@/lib/design/imperfections";
+import styles from "@/components/carnet/tape.module.css";
 
 export type TapeTone =
   | "apricot"
@@ -20,24 +21,54 @@ export type TapeTone =
   | "sand"
   | "sky";
 
-type TapeSeed = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+const tapeTones: readonly TapeTone[] = [
+  "apricot",
+  "brick",
+  "butter",
+  "glacier",
+  "honey",
+  "lagoon",
+  "lavender",
+  "lavender-gray",
+  "lemon",
+  "mauve",
+  "mint",
+  "periwinkle",
+  "rose",
+  "sage",
+  "sand",
+  "sky",
+];
+
+export function isTapeTone(value: string): value is TapeTone {
+  return tapeTones.some((tone) => tone === value);
+}
 
 export function Tape({
   children,
-  seed,
+  className,
+  id,
   tone = "butter",
 }: {
   children: ReactNode;
-  seed?: TapeSeed;
+  className?: string;
+  id: string;
   tone?: TapeTone;
 }) {
+  const imperfection = getImperfection(id);
+
   return (
     <span
       className={clsx(
-        styles["carnet-tape"],
-        styles[`carnet-tape--${tone}`],
-        seed && styles[`carnet-tape--seed-${seed}`],
+        styles.tape,
+        styles[`tape--${tone}`],
+        styles[`angle--${imperfection.angle}`],
+        styles[`cut--${imperfection.cut}`],
+        styles[`length--${imperfection.length}`],
+        className,
       )}
+      data-cut={imperfection.cut}
+      data-length={imperfection.length}
     >
       {children}
     </span>

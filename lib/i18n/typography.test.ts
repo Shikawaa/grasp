@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatTypography } from "@/lib/i18n/typography";
+import { applyTypography, formatTypography } from "@/lib/i18n/typography";
 
 describe("formatTypography", () => {
   it("keeps French numbers with what they count", () => {
@@ -25,5 +25,15 @@ describe("formatTypography", () => {
       "https://example.com?q=3 minutes",
     );
     expect(formatTypography("toi@example.com", "fr")).toBe("toi@example.com");
+  });
+
+  it("keeps business identifiers byte-for-byte stable", () => {
+    const value = applyTypography(
+      { id: "theme:sakoku", label: "Thème : Sakoku" },
+      "fr",
+    );
+
+    expect(value.id).toBe("theme:sakoku");
+    expect(value.label).toBe("Thème\u00A0: Sakoku");
   });
 });

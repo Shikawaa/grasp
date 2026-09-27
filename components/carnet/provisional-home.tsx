@@ -37,7 +37,9 @@ export function ProvisionalHome({
 
           <div className={styles["welcome-layout"]}>
             <div className={styles["welcome-copy"]}>
-              <Tape>{dictionary.welcome.eyebrow}</Tape>
+              <Tape className={styles["welcome-eyebrow"]} id="landing:tape:eyebrow">
+                {dictionary.welcome.eyebrow}
+              </Tape>
               <h1 className={styles["welcome-title"]}>
                 {dictionary.welcome.lead}
                 <Highlight>{dictionary.welcome.highlight}</Highlight>
@@ -45,7 +47,9 @@ export function ProvisionalHome({
               <p className={styles["welcome-description"]} data-testid="welcome-description">
                 {dictionary.welcome.description}
               </p>
-              <Note>{dictionary.welcome.accountNote}</Note>
+              <Note className={styles["welcome-account-note"]}>
+                {dictionary.welcome.accountNote}
+              </Note>
               <div
                 className={styles["welcome-scroll-annotation"]}
                 aria-hidden="true"

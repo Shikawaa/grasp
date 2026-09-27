@@ -1,0 +1,87 @@
+.meter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.segment {
+  width: var(--meter-segment-width-mobile);
+  height: var(--meter-segment-height-mobile);
+  border: var(--border-thin) solid var(--pencil);
+}
+
+.filled {
+  border-color: var(--meter-color);
+  background: var(--meter-color);
+}
+
+.meter--butter {
+  --meter-color: var(--highlight-butter);
+}
+
+.meter--lemon {
+  --meter-color: var(--highlight-lemon);
+}
+
+.meter--honey {
+  --meter-color: var(--highlight-honey);
+}
+
+.meter--sand {
+  --meter-color: var(--highlight-sand);
+}
+
+.meter--apricot {
+  --meter-color: var(--highlight-apricot);
+}
+
+.meter--rose {
+  --meter-color: var(--highlight-rose);
+}
+
+.meter--brick {
+  --meter-color: var(--highlight-brick);
+}
+
+.meter--sky {
+  --meter-color: var(--highlight-sky);
+}
+
+.meter--glacier {
+  --meter-color: var(--highlight-glacier);
+}
+
+.meter--lagoon {
+  --meter-color: var(--highlight-lagoon);
+}
+
+.meter--periwinkle {
+  --meter-color: var(--highlight-periwinkle);
+}
+
+.meter--lavender {
+  --meter-color: var(--highlight-lavender);
+}
+
+.meter--mauve {
+  --meter-color: var(--highlight-mauve);
+}
+
+.meter--lavender-gray {
+  --meter-color: var(--highlight-lavender-gray);
+}
+
+.meter--sage {
+  --meter-color: var(--highlight-sage);
+}
+
+.meter--mint {
+  --meter-color: var(--highlight-mint);
+}
+
+@media (--desktop) {
+  .segment {
+    width: var(--meter-segment-width-desktop);
+    height: var(--meter-segment-height-desktop);
+  }
+}

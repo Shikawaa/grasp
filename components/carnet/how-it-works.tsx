@@ -192,7 +192,9 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
                 <Highlight tone="sky">{copy.interests.psychology}</Highlight>
                 <span>{copy.interests.arts}</span>
               </div>
-              <Note small>{copy.interests.examples}</Note>
+              <Note className={styles["mini-interests-note"]} small>
+                {copy.interests.examples}
+              </Note>
             </div>
           </li>
 
@@ -203,18 +205,30 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             <h3>{copy.choice.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-proposals"]}`}>
               <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
-                <Tape seed={1} tone="lavender">
+                <Tape
+                  className={styles["mini-tape"]}
+                  id="topic:proposal-sakoku:label"
+                  tone="lavender"
+                >
                   {copy.choice.alternativeOne}
                 </Tape>
               </span>
               <span className={`${styles["mini-proposal"]} ${styles["is-chosen"]}`}>
-                <Tape seed={2} tone="sky">
+                <Tape
+                  className={styles["mini-tape"]}
+                  id="proposal:proposal-procrastination"
+                  tone="sky"
+                >
                   <span>{copy.choice.chosen}</span>
                   <CheckMark className={styles["mini-check"]} variant="long" />
                 </Tape>
               </span>
               <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
-                <Tape seed={3} tone="sage">
+                <Tape
+                  className={styles["mini-tape"]}
+                  id="tape:proposal-currents-war"
+                  tone="sage"
+                >
                   {copy.choice.alternativeTwo}
                 </Tape>
               </span>
@@ -248,7 +262,9 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
                 <MemoryMeter filled={3} />
               </div>
               <div className={styles["mini-tomorrow"]}>
-                <Note small>{copy.review.tomorrow}</Note>
+                <Note className={styles["mini-tomorrow-note"]} small>
+                  {copy.review.tomorrow}
+                </Note>
                 <HandDrawnLoop />
               </div>
             </div>

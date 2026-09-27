@@ -1,3 +1,32 @@
+.control {
+  display: inline-flex;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.control:focus-visible,
+.control[data-state="focus"] {
+  outline: var(--border-thin) dashed var(--ink);
+  outline-offset: var(--focus-offset);
+}
+
+.control:hover .checkbox,
+.control[data-state="hover"] .checkbox {
+  transform: rotate(var(--tilt-tape-2));
+}
+
+.control:active .checkbox,
+.control[data-state="pressed"] .checkbox {
+  transform: rotate(var(--tilt-tape-active));
+}
+
 .checkbox {
   display: inline-flex;
   width: var(--grid-mobile);
@@ -7,6 +36,7 @@
   transform: rotate(var(--tilt-tape));
   border: var(--border-thin) solid var(--ink);
   background: var(--page);
+  transition: transform var(--dur-press) var(--ease-press);
 }
 
 .check {
@@ -18,5 +48,11 @@
   .checkbox {
     width: var(--grid-desktop);
     height: var(--grid-desktop);
+  }
+}
+
+@media (--reduced-motion) {
+  .checkbox {
+    transition: none;
   }
 }

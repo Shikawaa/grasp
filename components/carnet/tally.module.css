@@ -1,0 +1,26 @@
+.tally {
+  display: inline-flex;
+  min-height: var(--tap-min);
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
+.mark {
+  display: block;
+  width: var(--border-thin);
+  height: var(--grid-mobile);
+  background: var(--ink);
+  transform: rotate(var(--tilt-tape));
+}
+
+.fifth {
+  margin-left: calc(var(--space-3) * -1);
+  transform: rotate(var(--tilt-tape-active)) scaleY(1.25);
+}
+
+@media (--desktop) {
+  .mark {
+    height: var(--grid-desktop);
+  }
+}

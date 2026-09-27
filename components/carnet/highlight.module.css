@@ -1,0 +1,46 @@
+.highlight {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-highlight);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.highlight--butter {
+  --highlight-color: var(--highlight-butter);
+}
+
+.highlight--lavender {
+  --highlight-color: var(--highlight-lavender);
+}
+
+.highlight--sky {
+  --highlight-color: var(--highlight-sky);
+}
+
+.highlight {
+  background-image: linear-gradient(
+    transparent 42%,
+    var(--highlight-color) 42%,
+    var(--highlight-color) 88%,
+    transparent 88%
+  );
+}
+
+.animated {
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  animation: marker-sweep var(--dur-sweep) var(--ease-press) forwards;
+}
+
+@keyframes marker-sweep {
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+@media (--reduced-motion) {
+  .animated {
+    animation: none;
+    background-size: 100% 100%;
+  }
+}

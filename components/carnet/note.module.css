@@ -1,0 +1,23 @@
+.note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-caveat), cursive;
+  font-size: var(--font-note-mobile);
+  font-weight: 500;
+  line-height: var(--line-note-mobile);
+}
+
+.note--small {
+  font-size: var(--font-note-small-mobile);
+}
+
+@media (--desktop) {
+  .note {
+    font-size: var(--font-note-desktop);
+    line-height: var(--line-note-desktop);
+  }
+
+  .note--small {
+    font-size: var(--font-note-small-desktop);
+  }
+}
