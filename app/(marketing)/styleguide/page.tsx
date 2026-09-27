@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LanguageSwitch } from "@/components/carnet/language-switch";
 import { Logo } from "@/components/carnet/logo";
 import { DrawingsSection } from "@/components/styleguide/drawings-section";
+import { PrimitivesSection } from "@/components/styleguide/primitives-section";
 import { getServerDictionary } from "@/lib/i18n/server";
 import styles from "@/app/(marketing)/styleguide/styleguide.module.css";
 
@@ -39,6 +40,7 @@ export default async function StyleguidePage() {
       </div>
 
       <DrawingsSection copy={dictionary.styleguide} />
+      <PrimitivesSection copy={dictionary.styleguide} />
     </main>
   );
 }

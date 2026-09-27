@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "npm run test:unit && npm run test:responsive && npm run test:visual",
     "test:unit": "vitest run",
-    "test:responsive": "playwright test tests/e2e/landing-widths.spec.ts tests/e2e/landing-webkit.spec.ts",
+    "test:responsive": "playwright test tests/e2e/landing-widths.spec.ts tests/e2e/styleguide-widths.spec.ts tests/e2e/landing-webkit.spec.ts",
     "test:visual": "playwright test tests/e2e/landing-visual.spec.ts --project=chromium",
     "test:visual:update": "playwright test tests/e2e/landing-visual.spec.ts --project=chromium --update-snapshots"
   },

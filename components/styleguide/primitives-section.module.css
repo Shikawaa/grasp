@@ -1,0 +1,133 @@
+.section {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.heading {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.heading h2,
+.heading p,
+.pageText {
+  margin: 0;
+}
+
+.heading h2 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--font-title-mobile);
+  font-weight: 500;
+  line-height: var(--line-title-mobile);
+}
+
+.heading p {
+  max-width: var(--single-page-width);
+  color: var(--ink-soft);
+  font-family: var(--font-caveat), cursive;
+  font-size: var(--font-note-mobile);
+  line-height: var(--line-note-mobile);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+.pageText {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--font-form-mobile);
+  line-height: var(--grid-mobile);
+}
+
+.tapes,
+.highlights,
+.notes,
+.weekStates {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.highlights {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: var(--font-answer-mobile);
+  line-height: var(--grid-mobile);
+}
+
+.stateGrid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.stateSample {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+.stateLabel {
+  color: var(--ink-soft);
+  font-size: var(--font-meta-mobile);
+  line-height: var(--line-meta-mobile);
+}
+
+.statePreview {
+  display: flex;
+  min-width: 0;
+  min-height: var(--tap-min);
+  align-items: center;
+  justify-content: center;
+}
+
+.weekStates .stateSample,
+.weekStates .statePreview {
+  width: 100%;
+}
+
+.notes {
+  align-items: flex-start;
+}
+
+@media (--tablet-only) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (--desktop) {
+  .section {
+    gap: var(--space-12);
+  }
+
+  .heading h2 {
+    font-size: var(--font-title-desktop);
+    line-height: var(--line-title-desktop);
+  }
+
+  .heading p {
+    font-size: var(--font-note-desktop);
+    line-height: var(--line-note-desktop);
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  .pageText,
+  .highlights {
+    font-size: var(--font-question-desktop);
+    line-height: var(--grid-desktop);
+  }
+
+  .stateLabel {
+    font-size: var(--font-meta-desktop);
+    line-height: var(--line-meta-desktop);
+  }
+}
