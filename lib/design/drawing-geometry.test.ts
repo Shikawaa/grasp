@@ -70,15 +70,24 @@ describe("drawing geometry invariants", () => {
     }
   });
 
-  it("keeps pen circles outside short and long normalized text boxes", () => {
+  it("keeps pen circles outside accented and descending text boxes with a smooth overlap", () => {
     for (const identifier of identifiers) {
       for (const variant of ["loose", "round"] as const) {
-        const { bounds, end, safeTextBounds, start } = getCircleGeometry(identifier, variant);
-        expect(safeTextBounds.left - bounds.left).toBeGreaterThanOrEqual(4);
-        expect(bounds.right - safeTextBounds.right).toBeGreaterThanOrEqual(4);
-        expect(safeTextBounds.top - bounds.top).toBeGreaterThanOrEqual(5);
-        expect(bounds.bottom - safeTextBounds.bottom).toBeGreaterThanOrEqual(5);
-        expect(distance(start, end)).toBeLessThanOrEqual(4);
+        const { bounds, curves, end, safeTextBounds, start } = getCircleGeometry(
+          identifier,
+          variant,
+        );
+        expect(safeTextBounds.left - bounds.left).toBeGreaterThanOrEqual(6);
+        expect(bounds.right - safeTextBounds.right).toBeGreaterThanOrEqual(6);
+        expect(safeTextBounds.top - bounds.top).toBeGreaterThanOrEqual(7);
+        expect(bounds.bottom - safeTextBounds.bottom).toBeGreaterThanOrEqual(7);
+        expect(curves.lowerRight.start).toEqual(curves.upper.end);
+        expect(curves.lowerLeft.start).toEqual(curves.lowerRight.end);
+        expect(curves.overlap.start).toEqual(curves.lowerLeft.end);
+        expect(curves.lowerLeft.end).toEqual(curves.upper.start);
+        expect(distance(curves.overlap.start, curves.overlap.end)).toBeGreaterThanOrEqual(6);
+        expect(distance(start, end)).toBeGreaterThanOrEqual(6);
+        expect(distance(start, end)).toBeLessThanOrEqual(10);
       }
     }
   });

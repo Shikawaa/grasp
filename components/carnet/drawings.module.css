@@ -60,12 +60,26 @@
 }
 
 .circle svg {
-  top: calc(var(--space-3) * -1);
-  right: calc(var(--space-3) * -1);
-  bottom: calc(var(--space-3) * -1);
-  left: calc(var(--space-3) * -1);
-  width: calc(100% + var(--space-6));
-  height: calc(100% + var(--space-6));
+  top: calc(var(--space-6) * -1);
+  right: calc(var(--space-4) * -1);
+  bottom: calc(var(--space-6) * -1);
+  left: calc(var(--space-4) * -1);
+  width: calc(100% + var(--space-8));
+  height: calc(100% + var(--space-12));
+}
+
+.circle--round {
+  padding-right: var(--space-1);
+  padding-left: var(--space-1);
+}
+
+.circle--round svg {
+  top: calc(var(--space-2) * -1);
+  right: calc(var(--space-2) * -1);
+  bottom: calc(var(--space-2) * -1);
+  left: calc(var(--space-2) * -1);
+  width: calc(100% + var(--space-4));
+  height: calc(100% + var(--space-4));
 }
 
 .circle path,

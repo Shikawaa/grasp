@@ -1,0 +1,9 @@
+.steps.steps {
+  row-gap: 0;
+}
+
+@media (--desktop) {
+  .steps.steps {
+    row-gap: var(--space-4);
+  }
+}

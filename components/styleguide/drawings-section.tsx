@@ -48,8 +48,14 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
             <PenCircle id="dictionary:drawings:circle:short">
               {copy.drawings.sampleChoice}
             </PenCircle>
-            <PenCircle id="dictionary:drawings:circle:long" variant="round">
+            <PenCircle id="dictionary:drawings:circle:long">
               {copy.drawings.sampleChoiceLong}
+            </PenCircle>
+            <PenCircle id="dictionary:drawings:circle:accents">
+              {copy.drawings.sampleChoiceAccents}
+            </PenCircle>
+            <PenCircle id="dictionary:drawings:circle:number" variant="round">
+              {copy.drawings.sampleNumber}
             </PenCircle>
           </div>
         </ComponentSheet>

@@ -13,6 +13,8 @@ import { MemoryMeter } from "@/components/carnet/memory-meter";
 import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
 import { Tape } from "@/components/carnet/tape";
+import { getJourneyPath } from "@/lib/design/journey-path";
+import layoutStyles from "./how-it-works.module.css";
 import styles from "@/styles/components.module.css";
 
 export type HowItWorksCopy = {
@@ -76,7 +78,9 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
     if (numbers.length < 2) return;
 
     const points = numbers.map((number) => {
-      const box = number.getBoundingClientRect();
+      const box =
+        number.querySelector<SVGGraphicsElement>("path")?.getBoundingClientRect() ??
+        number.getBoundingClientRect();
       return {
         bottom: box.bottom - bandBox.top,
         left: box.left - bandBox.left,
@@ -87,28 +91,7 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
       };
     });
     const vertical = window.matchMedia("(max-width: 63.999rem)").matches;
-    const d = points.slice(0, -1).reduce((path, point, index) => {
-      const next = points[index + 1];
-      if (!next) return path;
-
-      if (vertical) {
-        const startY = point.bottom;
-        const endY = next.top;
-        const distance = endY - startY;
-        return `${path} M ${point.x} ${startY} C ${point.x - distance * 0.18} ${
-          startY + distance * 0.35
-        }, ${next.x + distance * 0.18} ${endY - distance * 0.35}, ${next.x} ${endY}`;
-      }
-
-      const startX = point.right;
-      const endX = next.left;
-      const distance = endX - startX;
-      const bend = Math.min(Math.abs(distance) * 0.18, bandBox.height * 0.08);
-      const direction = index % 2 === 0 ? -1 : 1;
-      return `${path} M ${startX} ${point.y} C ${startX + distance * 0.35} ${
-        point.y + bend * direction
-      }, ${endX - distance * 0.35} ${next.y - bend * direction}, ${endX} ${next.y}`;
-    }, "");
+    const { d } = getJourneyPath(points, vertical, bandBox.height);
 
     setGeometry({
       d,
@@ -179,17 +162,18 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
           />
         ) : null}
 
-        <ol className={styles["how-it-works__steps"]}>
-          <li className={styles["how-step"]}>
-            <div className={styles["how-step__number"]}>
+        <ol className={clsx(styles["how-it-works__steps"], layoutStyles.steps)}>
+          <li className={styles["how-step"]} data-testid="how-step">
+            <div className={styles["how-step__number"]} data-testid="how-step-circle">
               <PenCircle
                 className={styles["step-number-circle"]}
                 id="dictionary:welcome:how-it-works:step-1"
+                variant="round"
               >
                 1
               </PenCircle>
             </div>
-            <h3>{copy.interests.title}</h3>
+            <h3 data-testid="how-step-title">{copy.interests.title}</h3>
             <div
               className={`${styles["how-step__object"]} ${styles["how-step__object--interests"]}`}
             >
@@ -204,16 +188,17 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             </div>
           </li>
 
-          <li className={styles["how-step"]}>
-            <div className={styles["how-step__number"]}>
+          <li className={styles["how-step"]} data-testid="how-step">
+            <div className={styles["how-step__number"]} data-testid="how-step-circle">
               <PenCircle
                 className={styles["step-number-circle"]}
                 id="dictionary:welcome:how-it-works:step-2"
+                variant="round"
               >
                 2
               </PenCircle>
             </div>
-            <h3>{copy.choice.title}</h3>
+            <h3 data-testid="how-step-title">{copy.choice.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-proposals"]}`}>
               <span className={`${styles["mini-proposal"]} ${styles["is-muted"]}`}>
                 <Tape
@@ -250,16 +235,17 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             </div>
           </li>
 
-          <li className={styles["how-step"]}>
-            <div className={styles["how-step__number"]}>
+          <li className={styles["how-step"]} data-testid="how-step">
+            <div className={styles["how-step__number"]} data-testid="how-step-circle">
               <PenCircle
                 className={styles["step-number-circle"]}
                 id="dictionary:welcome:how-it-works:step-3"
+                variant="round"
               >
                 3
               </PenCircle>
             </div>
-            <h3>{copy.lesson.title}</h3>
+            <h3 data-testid="how-step-title">{copy.lesson.title}</h3>
             <div
               className={`${styles["how-step__object"]} ${styles["how-step__object--lesson"]}`}
             >
@@ -271,16 +257,17 @@ export function HowItWorks({ copy }: { copy: HowItWorksCopy }) {
             </div>
           </li>
 
-          <li className={styles["how-step"]}>
-            <div className={styles["how-step__number"]}>
+          <li className={styles["how-step"]} data-testid="how-step">
+            <div className={styles["how-step__number"]} data-testid="how-step-circle">
               <PenCircle
                 className={styles["step-number-circle"]}
                 id="dictionary:welcome:how-it-works:step-4"
+                variant="round"
               >
                 4
               </PenCircle>
             </div>
-            <h3>{copy.review.title}</h3>
+            <h3 data-testid="how-step-title">{copy.review.title}</h3>
             <div className={`${styles["how-step__object"]} ${styles["mini-review"]}`}>
               <div className={styles["mini-memory"]}>
                 <span>{copy.review.memory}</span>

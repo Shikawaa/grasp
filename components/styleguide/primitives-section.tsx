@@ -135,6 +135,7 @@ export function PrimitivesSection({
             {buttonStates.map(({ label, state }) => (
               <StateSample key={state} label={label}>
                 <TapeButton
+                  disabledReason={primitives.tapeButton.disabledReason}
                   id="styleguide:tape-button:primary"
                   loadingLabel={primitives.tapeButton.loadingLabel}
                   state={state}

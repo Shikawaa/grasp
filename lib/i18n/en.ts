@@ -164,7 +164,7 @@ const rawEn = {
         codeName: "PenCircle",
         name: "Pen circle",
         usage: "Mark a choice or the active item.",
-        variants: "Loose and round",
+        variants: "Loose for words; compact round for a number or day",
       },
       check: {
         codeName: "CheckMark",
@@ -204,7 +204,9 @@ const rawEn = {
         label: "The notebook is getting ready",
       },
       sampleChoice: "My choice",
+      sampleChoiceAccents: "Épigraphic",
       sampleChoiceLong: "Misunderstanding",
+      sampleNumber: "4",
       sampleTitle: "A real heading",
       sampleWrong: "Answer to review",
     },
@@ -235,10 +237,11 @@ const rawEn = {
         codeName: "TapeButton",
         name: "Primary tape button",
         usage: "Trigger the main action, once per screen.",
-        variants: "Black tape; short label; struck disabled state",
+        variants: "Black tape; short label; muted and explained disabled state",
         states:
           "Rest, hover, focus, press, loading, and disabled. Error: not applicable.",
         label: "Continue",
+        disabledReason: "Choose a topic to continue.",
         loadingLabel: "The next step is getting ready",
       },
       secondaryAction: {

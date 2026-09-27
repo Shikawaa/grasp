@@ -123,27 +123,50 @@ export function getCircleGeometry(identifier: string, variant: CircleVariant) {
   const sample = sampler(identifier);
   const roundInset = variant === "round" ? 1 : 0;
   const bounds: DrawingBounds = {
-    bottom: 45 + sample(0, 0.6),
+    bottom: 47.7 + sample(0, 0.2),
     left: 2 + roundInset + sample(1, 0.4),
     right: 98 - roundInset + sample(2, 0.4),
-    top: 3 + sample(3, 0.6),
+    top: 0.3 + sample(3, 0.2),
   };
   const middle = 24 + sample(4, 0.6);
-  const start = point(bounds.left + 1, middle + 1);
-  const end = point(bounds.left + 2, middle - 1);
+  const upper: CubicCurve = {
+    start: point(bounds.left, middle + 3),
+    controlOne: point(bounds.left, bounds.top + 7),
+    controlTwo: point(bounds.right - 8, bounds.top - 1),
+    end: point(bounds.right, middle - 2),
+  };
+  const lowerRight: CubicCurve = {
+    start: upper.end,
+    controlOne: point(bounds.right + 1, bounds.bottom - 8),
+    controlTwo: point(bounds.right - 15, bounds.bottom),
+    end: point(50, bounds.bottom),
+  };
+  const lowerLeft: CubicCurve = {
+    start: lowerRight.end,
+    controlOne: point(bounds.left + 15, bounds.bottom),
+    controlTwo: point(bounds.left, bounds.bottom - 7),
+    end: upper.start,
+  };
+  const overlap: CubicCurve = {
+    start: lowerLeft.end,
+    controlOne: point(bounds.left, middle - 2),
+    controlTwo: point(bounds.left + 1, middle - 5),
+    end: point(bounds.left + 3, middle - 6),
+  };
   const path = [
-    `M${start.x} ${start.y}`,
-    `C${bounds.left - 1} ${bounds.top + 7}, ${bounds.right - 8} ${bounds.top - 1}, ${bounds.right} ${middle - 2}`,
-    `C${bounds.right + 1} ${bounds.bottom - 8}, ${bounds.left + 9} ${bounds.bottom + 1}, ${bounds.left} ${middle}`,
-    `C${bounds.left - 0.5} ${middle - 1}, ${bounds.left + 0.5} ${middle - 2}, ${end.x} ${end.y}`,
+    cubicPath(upper),
+    cubicSegment(lowerRight),
+    cubicSegment(lowerLeft),
+    cubicSegment(overlap),
   ].join(" ");
 
   return {
     bounds,
-    end,
+    curves: { lowerLeft, lowerRight, overlap, upper },
+    end: overlap.end,
     path,
-    safeTextBounds: { bottom: 39, left: 8, right: 92, top: 9 } satisfies DrawingBounds,
-    start,
+    safeTextBounds: { bottom: 37, left: 10, right: 90, top: 11 } satisfies DrawingBounds,
+    start: upper.start,
     viewBox: { height: 48, width: 100 },
   };
 }

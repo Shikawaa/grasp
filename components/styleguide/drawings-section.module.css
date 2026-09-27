@@ -50,6 +50,7 @@
 }
 
 .words {
+  gap: var(--space-8);
   font-family: var(--font-fraunces), Georgia, serif;
   font-size: var(--font-answer-mobile);
   line-height: var(--grid-mobile);

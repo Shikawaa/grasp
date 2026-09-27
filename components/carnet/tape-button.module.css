@@ -1,3 +1,9 @@
+.root {
+  display: inline-grid;
+  justify-items: center;
+  gap: var(--space-1);
+}
+
 .button {
   position: relative;
   isolation: isolate;
@@ -47,11 +53,6 @@
 .button:disabled {
   cursor: not-allowed;
   opacity: var(--disabled-opacity);
-}
-
-.button[data-state="disabled"] {
-  text-decoration: line-through;
-  text-decoration-thickness: var(--border-thin);
 }
 
 .button[data-state="loading"] {
@@ -109,6 +110,14 @@
 
 .loadingDrawing > * {
   max-width: calc(100% - var(--space-6));
+}
+
+.reason {
+  color: var(--ink-soft);
+  font-family: var(--font-caveat), cursive;
+  font-size: var(--font-meta-mobile);
+  line-height: var(--line-meta-mobile);
+  text-align: center;
 }
 
 @media (--desktop) {

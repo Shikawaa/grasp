@@ -4,6 +4,7 @@ import { Highlight } from "@/components/carnet/highlight";
 import { Note } from "@/components/carnet/note";
 import { Page } from "@/components/carnet/page";
 import { Tape } from "@/components/carnet/tape";
+import cardStyles from "@/components/carnet/card-true-false.module.css";
 import styles from "@/styles/components.module.css";
 
 export type CardTrueFalseCopy = {
@@ -44,7 +45,11 @@ export function CardTrueFalse({
           </PenStrike>
         </span>
         <span className={styles["review-preview__answer"]}>
-          <PenCircle id="dictionary:welcome:preview:right-answer">
+          <PenCircle
+            className={cardStyles.rightAnswerCircle}
+            id="dictionary:welcome:preview:right-answer"
+            variant="loose"
+          >
             <Highlight tone="lavender">{copy.rightAnswer}</Highlight>
           </PenCircle>
         </span>

@@ -7,10 +7,11 @@
 .segment {
   width: var(--meter-segment-width-mobile);
   height: var(--meter-segment-height-mobile);
-  border: var(--border-thin) solid var(--ink);
+  border: var(--border-thin) dashed var(--ink);
 }
 
 .filled {
+  border-style: solid;
   background: var(--meter-color);
 }
 

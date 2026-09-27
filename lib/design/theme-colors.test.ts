@@ -57,7 +57,10 @@ describe("theme colors", () => {
     const ink = tokenHex("--ink");
     const paper = tokenHex("--paper");
 
-    expect(meterStyles).toMatch(/\.segment\s*\{[^}]*border:[^;]*var\(--ink\)/s);
+    expect(meterStyles).toMatch(
+      /\.segment\s*\{[^}]*border:[^;]*dashed var\(--ink\)/s,
+    );
+    expect(meterStyles).toMatch(/\.filled\s*\{[^}]*border-style:\s*solid/s);
     for (const definition of themeColors) {
       expect(definition.tone).toBeTruthy();
       expect(contrast(ink, paper)).toBeGreaterThanOrEqual(3);

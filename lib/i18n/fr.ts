@@ -166,7 +166,7 @@ const rawFr = {
         codeName: "PenCircle",
         name: "Cercle au stylo",
         usage: "Marquer un choix ou l’élément actif.",
-        variants: "Libre et rond",
+        variants: "Libre pour les mots ; rond compact pour un chiffre ou un jour",
       },
       check: {
         codeName: "CheckMark",
@@ -206,7 +206,9 @@ const rawFr = {
         label: "Le carnet se prépare",
       },
       sampleChoice: "Mon choix",
+      sampleChoiceAccents: "Épigraphique",
       sampleChoiceLong: "Incompréhensibilité",
+      sampleNumber: "4",
       sampleTitle: "Un vrai titre",
       sampleWrong: "Réponse à revoir",
     },
@@ -237,10 +239,11 @@ const rawFr = {
         codeName: "TapeButton",
         name: "Bouton-ruban",
         usage: "Déclencher l’action principale, une seule fois par écran.",
-        variants: "Ruban noir ; libellé court ; désactivation barrée",
+        variants: "Ruban noir ; libellé court ; désactivation atténuée et expliquée",
         states:
           "Repos, survol, focus, appui, chargement et désactivé. Erreur : sans objet.",
         label: "Continuer",
+        disabledReason: "Choisis un thème pour continuer.",
         loadingLabel: "La suite se prépare",
       },
       secondaryAction: {

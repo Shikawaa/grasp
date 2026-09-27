@@ -78,7 +78,7 @@
 - La balise `<html lang>` suit la langue active.
 
 **Actions du questionnaire** :
-- Les questions obligatoires ne passent à l'étape suivante qu'après une réponse valide. Leur `TapeButton` reste désactivé jusque-là et affiche aussi un libellé barré, afin que l'état ne repose pas sur la couleur seule.
+- Les questions obligatoires ne passent à l'étape suivante qu'après une réponse valide. Leur `TapeButton` reste désactivé jusque-là : le ruban est atténué et une courte phrase visible et accessible explique ce qui manque. Le trait barré reste réservé aux réponses fausses.
 - `TapeButton` reste l'unique action principale de l'écran. Une erreur de données utilise l'action secondaire manuscrite « Réessayer », jamais un ruban noir.
 
 ## 4. Structure du code

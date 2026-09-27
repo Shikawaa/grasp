@@ -16,6 +16,40 @@ const viewports = [
   { width: 2560, height: 1440 },
 ] as const;
 
+test("les cercles des étapes gardent 8 px avec leurs titres", async ({ page }) => {
+  for (const viewport of [
+    { height: 812, width: 375 },
+    { height: 1024, width: 768 },
+    { height: 900, width: 1440 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+
+    const gaps = await page.getByTestId("how-step").evaluateAll((steps) =>
+      steps.map((step) => {
+        const circle = step
+          .querySelector<SVGGraphicsElement>('[data-testid="how-step-circle"] path')
+          ?.getBoundingClientRect();
+        const title = step
+          .querySelector<HTMLElement>('[data-testid="how-step-title"]')
+          ?.getBoundingClientRect();
+
+        if (!circle || !title) throw new Error("Cercle ou titre d’étape introuvable");
+
+        return {
+          horizontal: title.left - circle.right,
+          vertical: title.top - circle.bottom,
+        };
+      }),
+    );
+
+    for (const gap of gaps) {
+      expect(Math.max(gap.horizontal, gap.vertical)).toBeGreaterThanOrEqual(8);
+    }
+  }
+});
+
 for (const viewport of viewports) {
   test(`la landing ne déborde pas à ${viewport.width} px`, async ({ page }) => {
     await page.setViewportSize(viewport);
@@ -57,6 +91,10 @@ for (const viewport of viewports) {
       expect(frenchText).toContain("2\u00A0sur 4");
       expect(frenchText).toContain("200\u00A0ans");
       expect(frenchText).toContain("8\u00A0cartes");
+
+      await expect(
+        page.getByRole("img", { name: "Mémoire : 3 sur 5" }),
+      ).toBeVisible();
     }
 
     if (viewport.width === 1440) {

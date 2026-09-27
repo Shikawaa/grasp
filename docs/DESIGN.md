@@ -153,16 +153,16 @@
 |---|---|
 | `Page` | Page lignée avec sa marge colorée. Props : `color`, `grid` (24 ou 32), `tilt` |
 | `Tape` | Ruban adhésif coloré, avec son texte en manuscrit. Longueur, angle et découpe des bords (`clip-path` en dents irrégulières) sont tirés d'une graine fixe (`seed`). Semi-opaque (opacité de 0,9) |
-| `TapeButton` | Le bouton principal : ruban noir, texte `--on-ink` en Caveat 22 px (26 px en desktop), 44 px de haut minimum, légèrement incliné. États : repos, appui, focus (contour pointillé `--ink` décalé de 3 px), chargement (`LoadingStroke` sans changement de taille), désactivé (libellé barré en plus de l'opacité). Un seul par écran |
+| `TapeButton` | Le bouton principal : ruban noir, texte `--on-ink` en Caveat 22 px (26 px en desktop), 44 px de haut minimum, légèrement incliné. États : repos, appui, focus (contour pointillé `--ink` décalé de 3 px), chargement (`LoadingStroke` sans changement de taille), désactivé (ruban atténué et courte raison visible et accessible). Un seul par écran |
 | `SecondaryAction` | Action secondaire manuscrite soulignée, pour « Rejouer », « Réessayer » et les actions discrètes. Ce n'est jamais un ruban noir |
 | `MarkerUnderline` | Trait de marqueur de 5 px, légèrement ondulé, sous un titre, sur 55 à 62 % de sa largeur, dans la couleur du thème |
 | `Highlight` | Surlignage sur 60 % de la hauteur de la ligne, rayon de 3 px, avec `box-decoration-break: clone` pour qu'un surlignage sur plusieurs lignes garde ses bords sur chaque ligne. Variante animée (balayage) |
-| `PenCircle` | Ellipse tracée à la main autour d'un mot, tracé progressif (`stroke-dasharray`), trait de 1,6 px. Elle contient toute la boîte du texte avec une marge ; seule la reprise volontaire de fin de trait se chevauche |
+| `PenCircle` | Ellipse tracée à la main autour d'un mot ou d'un signe, tracé progressif (`stroke-dasharray`), trait de 1,6 px. La variante libre entoure les mots ; la variante ronde compacte entoure un chiffre ou un jour. Elle contient toute la boîte du texte avec une marge ; seule la reprise volontaire de fin de trait se chevauche |
 | `PenStrike` | Trait qui barre, de 2 px, avec un tracé progressif |
 | `CheckBox` | Case dessinée à la main, un peu de travers, et coche tracée. Zone tactile de 44 × 44 px |
 | `Tally` | Décompte en bâtons par paquets de cinq : quatre bâtons verticaux, puis une diagonale montante qui les croise tous et déborde d'au moins un demi-espacement. Un groupe incomplet n'a pas de diagonale |
 | `WeekStrip` | L à D : jours réussis surlignés, aujourd'hui entouré, jours à venir en `--ink-faint`, avec « 4 sur 7 cette semaine » en manuscrit. Chaque jour expose son nom complet et son état aux technologies d'assistance |
-| `MemoryMeter` | 5 segments de 16 × 7 px (20 × 8 en desktop) : pleins dans la couleur du thème, tous délimités par un contour `--ink` d'au moins 3:1 sur le papier. La valeur complète est fournie en texte accessible |
+| `MemoryMeter` | 5 segments de 16 × 7 px (20 × 8 en desktop) : pleins dans la couleur du thème avec contour `--ink` continu, vides avec contour `--ink` pointillé. Le contour garde au moins 3:1 sur le papier et l'état reste lisible sans couleur. La valeur complète est fournie en texte accessible |
 | `Note` | Annotation manuscrite (tailles `note` et `note-small`) |
 | `ReadCover` | Transition « J'ai lu » : page qui tourne (mobile) ou rabat (desktop). « Revoir le passage » le relève |
 | `CardMcq`, `CardCloze`, `CardTrueFalse` | Cartes-pages : un en-tête (type de carte à gauche, « 1 / 3 » à droite, en `meta`), la question, les réponses, puis le retour manuscrit dans la carte. Chaque réponse a une zone tactile de 44 px minimum. Les réponses ne sont pas des boîtes : ce sont des lignes de texte, qu'on entoure, surligne ou barre |
@@ -187,14 +187,14 @@
 - Chaque fiche indique l'usage, les propriétés, les variantes et les états applicables. Les contrôles montrent repos, survol, focus, appui, chargement et erreur. Un état sans sens pour un élément statique est explicitement noté « sans objet », jamais simulé artificiellement.
 - Tout composant dépendant de données montre ses états normal, chargement, vide et erreur. Le chargement utilise `LoadingStroke`, jamais un rectangle gris.
 - Chaque état d'erreur d'un composant dépendant de données garde son message entièrement lisible et propose l'action secondaire manuscrite « Réessayer », dans le même style que « Rejouer ». « Réessayer » n'utilise jamais `TapeButton`. Aucun tracé décoratif ne chevauche le texte d'erreur.
-- `TapeButton` est réservé à l'action principale et n'apparaît qu'une fois par écran. Sur une question obligatoire du questionnaire, il reste désactivé tant que la réponse n'est pas valide ; son libellé barré fournit un repère qui ne dépend pas de la couleur.
+- `TapeButton` est réservé à l'action principale et n'apparaît qu'une fois par écran. Sur une question obligatoire du questionnaire, il reste désactivé tant que la réponse n'est pas valide ; le ruban est atténué et une courte phrase visible et accessible explique ce qui manque. Le trait barré reste réservé aux réponses fausses.
 - Un ruban de thème accepte au plus 55 caractères, espaces compris. Un titre d'étape ou de leçon tient sur deux lignes au maximum aux largeurs de référence. Un contenu invalide n'est ni tronqué ni enregistré silencieusement.
 
 ### 6.2 Invariants des tracés
 
 - Toutes les variations viennent de l'identifiant métier stable et restent dans les bornes du `viewBox`. Les tests parcourent au moins 500 identifiants par famille de tracé.
 - Les flèches gardent une hampe lisible, une pointe attachée et deux branches d'au moins 8 unités.
-- `PenCircle` conserve au moins 4 unités géométriques et 8 px rendus de marge autour de la boîte du texte, pour les libellés courts comme longs.
+- `PenCircle` conserve au moins 6 unités géométriques et 12 px rendus de marge autour de la boîte complète des mots, accents et jambages compris, pour les libellés courts comme longs. Sa variante ronde compacte reste proche du signe et conserve au moins 3 px autour d’un chiffre ou d’un jour. Sa jonction est un léger chevauchement continu aux extrémités arrondies, jamais une pointe.
 - Les coches gardent deux branches distinctes et croissantes ; les traits barrés couvrent au moins 90 % du libellé et les doubles traits restent séparés.
 - Les boucles restent dans leur cadre, reviennent vers une pointe attachée et conservent une largeur utile d'au moins 33 unités.
 - Les soulignements et traits de chargement couvrent au moins 93 % de leur cadre sans toucher ses bords verticaux.

@@ -62,7 +62,13 @@ export function PenCircle({
 
   return (
     <span
-      className={clsx(styles.gesture, styles.circle, className)}
+      className={clsx(
+        styles.gesture,
+        styles.circle,
+        variant === "round" && styles["circle--round"],
+        className,
+      )}
+      data-circle-variant={variant}
       data-pen-circle
     >
       <span>{children}</span>

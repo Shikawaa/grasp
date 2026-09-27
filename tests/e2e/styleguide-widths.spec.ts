@@ -71,7 +71,13 @@ test("les états interactifs et de données restent distincts", async ({ page })
   expect(buttonMetrics[1]).toEqual(buttonMetrics[0]);
   await expect(loadingButton.locator('[role="status"]')).toHaveCount(1);
   await expect(disabledButton).toBeDisabled();
-  await expect(disabledButton).toHaveCSS("text-decoration-line", "line-through");
+  await expect(disabledButton).toHaveCSS("text-decoration-line", "none");
+  await expect(disabledButton).toHaveAccessibleDescription(
+    "Choisis un thème pour continuer.",
+  );
+  await expect(
+    tapeButtonSheet.getByText("Choisis un thème pour continuer.", { exact: true }),
+  ).toBeVisible();
 
   const buttonFocus = tapeButtonSheet.locator('button[data-state="focus"]');
   await expect(buttonFocus).toHaveCSS("outline-color", "rgb(31, 27, 22)");
@@ -155,11 +161,20 @@ test("les couleurs et contrôles réservés au guide sont complets", async ({ pa
 
   const memoryMeters = page.getByRole("img", { name: /Mémoire.*4.*5/ });
   await expect(memoryMeters).toHaveCount(17);
-  for (const meter of await memoryMeters.all()) {
-    await expect(meter.locator("span").first()).toHaveCSS(
-      "border-color",
-      "rgb(31, 27, 22)",
-    );
+  for (const color of await colors.all()) {
+    const meter = color.getByRole("img", { name: /Mémoire.*4.*5/ });
+    const segments = meter.locator(":scope > span");
+    await expect(segments).toHaveCount(5);
+    for (let index = 0; index < 5; index += 1) {
+      await expect(segments.nth(index)).toHaveCSS(
+        "border-color",
+        "rgb(31, 27, 22)",
+      );
+      await expect(segments.nth(index)).toHaveCSS(
+        "border-style",
+        index < 4 ? "solid" : "dashed",
+      );
+    }
   }
 
   const circleSheet = page.locator("[data-component-sheet]").filter({
@@ -169,24 +184,29 @@ test("les couleurs et contrôles réservés au guide sont complets", async ({ pa
     (circles) =>
       circles.map((circle) => {
         const text = circle.querySelector(":scope > span")?.getBoundingClientRect();
-        const drawing = circle.querySelector("svg")?.getBoundingClientRect();
+        const drawing = circle.querySelector("path")?.getBoundingClientRect();
         if (!text || !drawing) return null;
         return {
           bottom: drawing.bottom - text.bottom,
           left: text.left - drawing.left,
           right: drawing.right - text.right,
           top: text.top - drawing.top,
+          variant: circle.getAttribute("data-circle-variant"),
         };
       }),
   );
+  expect(circleTextMargins).toHaveLength(4);
   for (const margins of circleTextMargins) {
     expect(margins).not.toBeNull();
     if (!margins) continue;
-    expect(margins.left).toBeGreaterThanOrEqual(8);
-    expect(margins.right).toBeGreaterThanOrEqual(8);
-    expect(margins.top).toBeGreaterThanOrEqual(8);
-    expect(margins.bottom).toBeGreaterThanOrEqual(8);
+    const minimumMargin = margins.variant === "round" ? 3 : 12;
+    expect(margins.left).toBeGreaterThanOrEqual(minimumMargin);
+    expect(margins.right).toBeGreaterThanOrEqual(minimumMargin);
+    expect(margins.top).toBeGreaterThanOrEqual(minimumMargin);
+    expect(margins.bottom).toBeGreaterThanOrEqual(minimumMargin);
   }
+  await expect(circleSheet.getByText("Incompréhensibilité", { exact: true })).toBeVisible();
+  await expect(circleSheet.getByText("Épigraphique", { exact: true })).toBeVisible();
   const replayButtons = page.getByRole("button", { name: "Rejouer" });
   await expect(replayButtons).toHaveCount(2);
   await replayButtons.first().click();
