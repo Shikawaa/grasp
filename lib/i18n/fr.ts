@@ -116,6 +116,7 @@ export const fr = {
     resetDone: "Ton mot de passe est changé.",
     backToSignIn: "Retour à la connexion",
     invalidCredentials: "L’e-mail ou le mot de passe ne correspond pas.",
+    authUnavailable: "La connexion est temporairement indisponible. Réessaie plus tard.",
     emailRequired: "Entre d’abord ton e-mail.",
     resetRequestError: "Le lien n’a pas pu être envoyé. Réessaie.",
     missingToken: "Le code de réinitialisation manque ou n’est plus valide.",

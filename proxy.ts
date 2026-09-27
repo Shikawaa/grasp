@@ -1,13 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { auth } from "@/lib/auth/server";
+import type { NeonAuth } from "@neondatabase/auth/next/server";
+import { getAuth } from "@/lib/auth/server";
+import { hasAuthEnv } from "@/lib/env";
+import { isAuthConfigurationError } from "@/lib/env-validation";
 
-const authenticate = auth.middleware({ loginUrl: "/sign-in" });
 const publicPaths = new Set([
+  "/styleguide",
   "/welcome",
   "/sign-in",
   "/sign-up",
   "/reset-password",
 ]);
+let authenticate: ReturnType<NeonAuth["middleware"]> | undefined;
+
+function getAuthenticate() {
+  authenticate ??= getAuth().middleware({ loginUrl: "/sign-in" });
+  return authenticate;
+}
 
 function isSignInRedirect(response: NextResponse): boolean {
   const location = response.headers.get("location");
@@ -29,10 +38,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (pathname === "/" && !hasAuthEnv()) {
+    return NextResponse.rewrite(new URL("/welcome", request.url));
+  }
+
   let authResponse: NextResponse;
   try {
-    authResponse = await authenticate(request);
-  } catch {
+    authResponse = await getAuthenticate()(request);
+  } catch (error) {
+    if (isAuthConfigurationError(error)) console.error(error.message);
     if (pathname === "/") {
       return NextResponse.rewrite(new URL("/welcome", request.url));
     }

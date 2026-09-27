@@ -116,6 +116,7 @@ export const en = {
     resetDone: "Your password has been changed.",
     backToSignIn: "Back to sign in",
     invalidCredentials: "The email or password does not match.",
+    authUnavailable: "Sign-in is temporarily unavailable. Try again later.",
     emailRequired: "Enter your email first.",
     resetRequestError: "The link could not be sent. Try again.",
     missingToken: "The reset code is missing or no longer valid.",

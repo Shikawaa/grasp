@@ -1,4 +1,6 @@
-import { auth } from "@/lib/auth/server";
+import type { NeonAuth } from "@neondatabase/auth/next/server";
+import { getAuth } from "@/lib/auth/server";
+import { isAuthConfigurationError } from "@/lib/env-validation";
 
 type RouteContext = {
   params: Promise<{ path: string[] }>;
@@ -6,8 +8,13 @@ type RouteContext = {
 
 type AuthHandler = (request: Request, context: RouteContext) => Promise<Response>;
 
-const handlers = auth.handler();
 const blockedPaths = new Set(["sign-up/email", "sign-in/social"]);
+let handlers: ReturnType<NeonAuth["handler"]> | undefined;
+
+function getHandlers() {
+  handlers ??= getAuth().handler();
+  return handlers;
+}
 
 function withClosedRegistration(handler: AuthHandler): AuthHandler {
   return async (request, context) => {
@@ -19,8 +26,29 @@ function withClosedRegistration(handler: AuthHandler): AuthHandler {
   };
 }
 
-export const GET = withClosedRegistration(handlers.GET);
-export const POST = withClosedRegistration(handlers.POST);
-export const PUT = withClosedRegistration(handlers.PUT);
-export const DELETE = withClosedRegistration(handlers.DELETE);
-export const PATCH = withClosedRegistration(handlers.PATCH);
+type AuthMethod = keyof ReturnType<NeonAuth["handler"]>;
+
+function createHandler(method: AuthMethod): AuthHandler {
+  return async (request, context) => {
+    try {
+      return await withClosedRegistration(getHandlers()[method])(request, context);
+    } catch (error) {
+      if (!isAuthConfigurationError(error)) throw error;
+
+      console.error(error.message);
+      return Response.json(
+        {
+          code: "AUTH_UNAVAILABLE",
+          message: "Authentication is temporarily unavailable.",
+        },
+        { status: 503 },
+      );
+    }
+  };
+}
+
+export const GET = createHandler("GET");
+export const POST = createHandler("POST");
+export const PUT = createHandler("PUT");
+export const DELETE = createHandler("DELETE");
+export const PATCH = createHandler("PATCH");

@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Dictionary } from "@/lib/i18n";
 import {
+  isAuthUnavailable,
   requestPasswordReset,
   signInWithPassword,
 } from "@/lib/auth/client";
@@ -28,13 +29,17 @@ export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
     try {
       const result = await signInWithPassword(email, password);
       if (result.error) {
-        setError(dictionary.auth.invalidCredentials);
+        setError(
+          isAuthUnavailable(result.error)
+            ? dictionary.auth.authUnavailable
+            : dictionary.auth.invalidCredentials,
+        );
         return;
       }
       router.push("/");
       router.refresh();
     } catch {
-      setError(dictionary.auth.invalidCredentials);
+      setError(dictionary.auth.authUnavailable);
     } finally {
       setPending(false);
     }
@@ -56,12 +61,16 @@ export function SignInForm({ dictionary }: { dictionary: Dictionary }) {
         `${window.location.origin}/reset-password`,
       );
       if (result.error) {
-        setError(dictionary.auth.resetRequestError);
+        setError(
+          isAuthUnavailable(result.error)
+            ? dictionary.auth.authUnavailable
+            : dictionary.auth.resetRequestError,
+        );
         return;
       }
       setInformation(dictionary.auth.resetRequestSent);
     } catch {
-      setError(dictionary.auth.resetRequestError);
+      setError(dictionary.auth.authUnavailable);
     } finally {
       setResetPending(false);
     }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { resetPassword } from "@/lib/auth/client";
+import { isAuthUnavailable, resetPassword } from "@/lib/auth/client";
 import type { Dictionary } from "@/lib/i18n";
 import styles from "@/styles/components.module.css";
 
@@ -38,12 +38,16 @@ export function ResetPasswordForm({ dictionary }: { dictionary: Dictionary }) {
     try {
       const result = await resetPassword(newPassword, token);
       if (result.error) {
-        setError(dictionary.auth.resetError);
+        setError(
+          isAuthUnavailable(result.error)
+            ? dictionary.auth.authUnavailable
+            : dictionary.auth.resetError,
+        );
         return;
       }
       setDone(true);
     } catch {
-      setError(dictionary.auth.resetError);
+      setError(dictionary.auth.authUnavailable);
     } finally {
       setPending(false);
     }

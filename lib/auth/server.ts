@@ -1,16 +1,25 @@
 import "server-only";
 
-import { createNeonAuth } from "@neondatabase/auth/next/server";
+import {
+  createNeonAuth,
+  type NeonAuth,
+} from "@neondatabase/auth/next/server";
 import { getAuthEnv } from "@/lib/env";
 
-const env = getAuthEnv();
+let authInstance: NeonAuth | undefined;
 
-export const auth = createNeonAuth({
-  baseUrl: env.NEON_AUTH_BASE_URL,
-  cookies: {
-    secret: env.NEON_AUTH_COOKIE_SECRET,
-  },
-});
+export function getAuth(): NeonAuth {
+  if (authInstance) return authInstance;
+
+  const env = getAuthEnv();
+  authInstance = createNeonAuth({
+    baseUrl: env.NEON_AUTH_BASE_URL,
+    cookies: {
+      secret: env.NEON_AUTH_COOKIE_SECRET,
+    },
+  });
+  return authInstance;
+}
 
 export class UnauthorizedError extends Error {
   constructor() {
@@ -20,7 +29,8 @@ export class UnauthorizedError extends Error {
 }
 
 export async function getCurrentUser() {
-  const { data, error } = await auth.getSession();
+  const env = getAuthEnv();
+  const { data, error } = await getAuth().getSession();
   if (error || !data?.user?.email) return null;
   if (!env.OWNER_EMAILS.has(data.user.email.toLowerCase())) return null;
   return data.user;

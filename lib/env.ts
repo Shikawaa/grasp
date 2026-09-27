@@ -1,27 +1,15 @@
 import "server-only";
 
-import { z } from "zod";
-
-const serverEnvSchema = z.object({
-  NEON_AUTH_BASE_URL: z.url(),
-  NEON_AUTH_COOKIE_SECRET: z.string().min(32),
-  OWNER_EMAILS: z
-    .string()
-    .min(1)
-    .transform((value) =>
-      new Set(
-        value
-          .split(",")
-          .map((email) => email.trim().toLowerCase())
-          .filter(Boolean),
-      ),
-    ),
-});
+import { authEnvKeys, parseAuthEnv } from "@/lib/env-validation";
 
 export function getAuthEnv() {
-  return serverEnvSchema.parse({
+  return parseAuthEnv({
     NEON_AUTH_BASE_URL: process.env.NEON_AUTH_BASE_URL,
     NEON_AUTH_COOKIE_SECRET: process.env.NEON_AUTH_COOKIE_SECRET,
     OWNER_EMAILS: process.env.OWNER_EMAILS,
   });
+}
+
+export function hasAuthEnv(): boolean {
+  return authEnvKeys.every((key) => Boolean(process.env[key]?.trim()));
 }
