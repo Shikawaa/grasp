@@ -185,6 +185,7 @@
 - Chaque composant apparaît dans ses dispositions téléphone (moins de 640 px), tablette (640 à 1023 px) et desktop (1024 px et plus).
 - Chaque fiche indique l'usage, les propriétés, les variantes et les états applicables. Les contrôles montrent repos, survol, focus, appui, chargement et erreur. Un état sans sens pour un élément statique est explicitement noté « sans objet », jamais simulé artificiellement.
 - Tout composant dépendant de données montre ses états normal, chargement, vide et erreur. Le chargement utilise `LoadingStroke`, jamais un rectangle gris.
+- Chaque état d'erreur d'un composant dépendant de données garde son message entièrement lisible et propose une action explicite « Réessayer ». Aucun tracé décoratif ne chevauche le texte d'erreur.
 - Un ruban de thème accepte au plus 55 caractères, espaces compris. Un titre d'étape ou de leçon tient sur deux lignes au maximum aux largeurs de référence. Un contenu invalide n'est ni tronqué ni enregistré silencieusement.
 
 ## 7. Écrans

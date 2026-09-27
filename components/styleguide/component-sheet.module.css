@@ -18,6 +18,14 @@
   line-height: var(--line-title-mobile);
 }
 
+.header code {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--font-meta-mobile);
+  font-weight: 500;
+  line-height: var(--line-meta-mobile);
+}
+
 .preview {
   display: flex;
   min-height: calc(var(--grid-mobile) * 6);
@@ -67,6 +75,11 @@
   .header h3 {
     font-size: var(--font-title-desktop);
     line-height: var(--line-title-desktop);
+  }
+
+  .header code {
+    font-size: var(--font-meta-desktop);
+    line-height: var(--line-meta-desktop);
   }
 
   .preview {

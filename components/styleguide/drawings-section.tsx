@@ -1,14 +1,13 @@
-import { DrawOnce } from "@/components/carnet/draw-once";
 import {
   CheckMark,
   HandDrawnArrow,
   HandDrawnLoop,
-  LoadingStroke,
   MarkerUnderline,
   PenCircle,
   PenStrike,
 } from "@/components/carnet/drawings";
 import { ComponentSheet } from "@/components/styleguide/component-sheet";
+import { ReplayDrawing } from "@/components/styleguide/replay-drawing";
 import type { Dictionary } from "@/lib/i18n";
 import styles from "@/components/styleguide/drawings-section.module.css";
 
@@ -23,6 +22,7 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
       </header>
       <div className={styles.grid}>
         <ComponentSheet
+          codeName={copy.drawings.arrow.codeName}
           labels={labels}
           name={copy.drawings.arrow.name}
           states={labels.staticState}
@@ -37,6 +37,7 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.circle.codeName}
           labels={labels}
           name={copy.drawings.circle.name}
           states={labels.staticState}
@@ -50,6 +51,7 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.check.codeName}
           labels={labels}
           name={copy.drawings.check.name}
           states={labels.staticState}
@@ -63,6 +65,7 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.strike.codeName}
           labels={labels}
           name={copy.drawings.strike.name}
           states={labels.staticState}
@@ -76,6 +79,7 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.loop.codeName}
           labels={labels}
           name={copy.drawings.loop.name}
           states={labels.staticState}
@@ -89,6 +93,7 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.underline.codeName}
           labels={labels}
           name={copy.drawings.underline.name}
           states={labels.staticState}
@@ -103,25 +108,33 @@ export function DrawingsSection({ copy }: { copy: Dictionary["styleguide"] }) {
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.drawOnce.codeName}
           labels={labels}
           name={copy.drawings.drawOnce.name}
           states={labels.drawOnceState}
           usage={copy.drawings.drawOnce.usage}
           variants={copy.drawings.drawOnce.variants}
         >
-          <DrawOnce id="styleguide:draw-once">
-            <HandDrawnArrow direction="right" />
-          </DrawOnce>
+          <ReplayDrawing
+            kind="draw-once"
+            loadingLabel={copy.drawings.loadingStroke.label}
+            replayLabel={labels.replay}
+          />
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={copy.drawings.loadingStroke.codeName}
           labels={labels}
           name={copy.drawings.loadingStroke.name}
           states={labels.loadingState}
           usage={copy.drawings.loadingStroke.usage}
           variants={copy.drawings.loadingStroke.variants}
         >
-          <LoadingStroke label={copy.drawings.loadingStroke.label} />
+          <ReplayDrawing
+            kind="loading"
+            loadingLabel={copy.drawings.loadingStroke.label}
+            replayLabel={labels.replay}
+          />
         </ComponentSheet>
       </div>
     </section>

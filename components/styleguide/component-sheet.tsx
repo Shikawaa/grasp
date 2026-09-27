@@ -9,6 +9,7 @@ type SheetLabels = {
 
 export function ComponentSheet({
   children,
+  codeName,
   labels,
   name,
   states,
@@ -16,6 +17,7 @@ export function ComponentSheet({
   variants,
 }: {
   children: ReactNode;
+  codeName: string;
   labels: SheetLabels;
   name: string;
   states: string;
@@ -25,7 +27,9 @@ export function ComponentSheet({
   return (
     <article className={styles.sheet} data-component-sheet>
       <header className={styles.header}>
-        <h3>{name}</h3>
+        <h3>
+          {name} <span aria-hidden="true">—</span> <code>{codeName}</code>
+        </h3>
       </header>
       <div className={styles.preview}>{children}</div>
       <dl className={styles.details}>

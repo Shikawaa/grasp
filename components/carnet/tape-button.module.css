@@ -1,21 +1,31 @@
 .button {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   min-height: var(--tap-min);
   align-items: center;
   justify-content: center;
   padding: 0 var(--space-6);
   border: 0;
-  background: var(--ink);
+  background: transparent;
   color: var(--on-ink);
   cursor: pointer;
   font-family: var(--font-caveat), cursive;
   font-size: var(--font-tape-mobile);
   font-weight: 500;
   line-height: var(--line-note-mobile);
-  clip-path: polygon(3% 0, 98% 3%, 100% 72%, 96% 100%, 2% 97%, 0 28%);
   transition:
     transform var(--dur-press) var(--ease-pop),
     opacity var(--dur-press) var(--ease-press);
+}
+
+.button::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--ink);
+  clip-path: polygon(3% 0, 98% 3%, 100% 72%, 96% 100%, 2% 97%, 0 28%);
+  content: "";
 }
 
 .button:hover,
@@ -25,7 +35,7 @@
 
 .button:focus-visible,
 .button[data-state="focus"] {
-  outline: var(--border-thin) dashed var(--ink);
+  outline: calc(var(--border-thin) * 2) dashed var(--ink);
   outline-offset: var(--focus-offset);
 }
 
@@ -35,8 +45,13 @@
 }
 
 .button:disabled {
-  cursor: wait;
+  cursor: not-allowed;
   opacity: var(--disabled-opacity);
+}
+
+.button[data-state="loading"] {
+  cursor: wait;
+  opacity: var(--visible-opacity);
 }
 
 .tilt--base {
@@ -75,13 +90,20 @@
   transform: rotate(var(--tilt-tape-8));
 }
 
-.visually-hidden {
+.loadingSpace {
+  visibility: hidden;
+}
+
+.loadingDrawing {
   position: absolute;
-  width: var(--border-thin);
-  height: var(--border-thin);
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingDrawing > * {
+  max-width: calc(100% - var(--space-6));
 }
 
 @media (--desktop) {

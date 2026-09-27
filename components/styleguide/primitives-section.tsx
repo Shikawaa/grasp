@@ -11,25 +11,22 @@ import { ComponentSheet } from "@/components/styleguide/component-sheet";
 import type { Dictionary } from "@/lib/i18n";
 import styles from "@/components/styleguide/primitives-section.module.css";
 
-const weekDayStates: readonly WeekDay["status"][] = [
-  "done",
-  "done",
-  "done",
-  "today",
-  "future",
-  "future",
-  "future",
-];
+const weekDayDefinitions = [
+  { done: true, id: "monday", isToday: false },
+  { done: true, id: "tuesday", isToday: false },
+  { done: true, id: "wednesday", isToday: false },
+  { done: true, id: "thursday", isToday: true },
+  { done: false, id: "friday", isToday: false },
+  { done: false, id: "saturday", isToday: false },
+  { done: false, id: "sunday", isToday: false },
+] as const;
 
 export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) {
   const labels = copy.labels;
   const primitives = copy.primitives;
-  const weekDays = primitives.weekStrip.weekdays.map((label, index) => ({
-    id: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"][
-      index
-    ],
-    label,
-    status: weekDayStates[index],
+  const weekDays = weekDayDefinitions.map((day, index) => ({
+    ...day,
+    label: primitives.weekStrip.weekdays[index] ?? "",
   })) satisfies WeekDay[];
   const buttonStates: readonly { label: string; state: TapeButtonState }[] = [
     { label: labels.normal, state: "rest" },
@@ -48,6 +45,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
 
       <div className={styles.grid}>
         <ComponentSheet
+          codeName={primitives.page.codeName}
           labels={labels}
           name={primitives.page.name}
           states={primitives.staticStates}
@@ -60,6 +58,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.tape.codeName}
           labels={labels}
           name={primitives.tape.name}
           states={primitives.staticStates}
@@ -80,6 +79,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.tapeButton.codeName}
           labels={labels}
           name={primitives.tapeButton.name}
           states={primitives.tapeButton.states}
@@ -89,7 +89,11 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
           <div className={styles.stateGrid}>
             {buttonStates.map(({ label, state }) => (
               <StateSample key={state} label={label}>
-                <TapeButton id={`styleguide:tape-button:${state}`} state={state}>
+                <TapeButton
+                  id="styleguide:tape-button:primary"
+                  loadingLabel={primitives.tapeButton.loadingLabel}
+                  state={state}
+                >
                   {primitives.tapeButton.label}
                 </TapeButton>
               </StateSample>
@@ -101,6 +105,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.highlight.codeName}
           labels={labels}
           name={primitives.highlight.name}
           states={primitives.staticStates}
@@ -117,35 +122,46 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.checkBox.codeName}
           labels={labels}
           name={primitives.checkBox.name}
           states={primitives.checkBox.states}
           usage={primitives.checkBox.usage}
           variants={primitives.checkBox.variants}
         >
-          <div className={styles.stateGrid}>
-            {(["rest", "hover", "focus", "pressed"] as const).map((state) => (
-              <StateSample
-                key={state}
-                label={state === "rest" ? labels.normal : labels[state]}
-              >
-                <CheckBox
-                  checked={state !== "rest"}
-                  label={primitives.checkBox.label}
-                  state={state}
-                />
-              </StateSample>
+          <div className={styles.checkBoxStates}>
+            {[false, true].map((checked) => (
+              <div className={styles.variantGroup} key={String(checked)}>
+                <h4>{checked ? primitives.checkBox.checked : primitives.checkBox.unchecked}</h4>
+                <div className={styles.stateGrid}>
+                  {(["rest", "hover", "focus", "pressed"] as const).map((state) => (
+                    <StateSample
+                      key={state}
+                      label={state === "rest" ? labels.normal : labels[state]}
+                    >
+                      <CheckBox
+                        checked={checked}
+                        label={primitives.checkBox.label}
+                        state={state}
+                      />
+                    </StateSample>
+                  ))}
+                </div>
+              </div>
             ))}
-            <StateSample label={labels.loading}>
-              <Note small>{labels.notApplicable}</Note>
-            </StateSample>
-            <StateSample label={labels.error}>
-              <Note small>{labels.notApplicable}</Note>
-            </StateSample>
+            <div className={styles.stateGrid}>
+              <StateSample label={labels.loading}>
+                <Note small>{labels.notApplicable}</Note>
+              </StateSample>
+              <StateSample label={labels.error}>
+                <Note small>{labels.notApplicable}</Note>
+              </StateSample>
+            </div>
           </div>
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.tally.codeName}
           labels={labels}
           name={primitives.tally.name}
           states={primitives.tally.states}
@@ -166,6 +182,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.weekStrip.codeName}
           labels={labels}
           name={primitives.weekStrip.name}
           states={primitives.weekStrip.states}
@@ -183,12 +200,18 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
               <WeekStrip label={primitives.weekStrip.empty} state="empty" />
             </StateSample>
             <StateSample label={labels.error}>
-              <WeekStrip label={primitives.weekStrip.error} state="error" />
+              <WeekStrip
+                label={primitives.weekStrip.error}
+                retryId="styleguide:week-strip:retry"
+                retryLabel={primitives.weekStrip.retry}
+                state="error"
+              />
             </StateSample>
           </div>
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.memoryMeter.codeName}
           labels={labels}
           name={primitives.memoryMeter.name}
           states={primitives.memoryMeter.states}
@@ -206,6 +229,7 @@ export function PrimitivesSection({ copy }: { copy: Dictionary["styleguide"] }) 
         </ComponentSheet>
 
         <ComponentSheet
+          codeName={primitives.note.codeName}
           labels={labels}
           name={primitives.note.name}
           states={primitives.staticStates}

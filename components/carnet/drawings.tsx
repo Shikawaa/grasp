@@ -163,9 +163,18 @@ export function MarkerUnderline({
   );
 }
 
-export function LoadingStroke({ label }: { label: string }) {
+export function LoadingStroke({
+  label,
+  tone = "ink",
+}: {
+  label: string;
+  tone?: "ink" | "on-ink";
+}) {
   return (
-    <span className={styles.loading} role="status">
+    <span
+      className={clsx(styles.loading, styles[`loading--${tone}`])}
+      role="status"
+    >
       <span className={styles["visually-hidden"]}>{label}</span>
       <svg viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true">
         <path pathLength="1" d="M3 9 C25 4, 68 13, 97 6" />

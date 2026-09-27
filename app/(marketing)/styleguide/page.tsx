@@ -4,6 +4,7 @@ import { LanguageSwitch } from "@/components/carnet/language-switch";
 import { Logo } from "@/components/carnet/logo";
 import { DrawingsSection } from "@/components/styleguide/drawings-section";
 import { PrimitivesSection } from "@/components/styleguide/primitives-section";
+import { ThemeColorsSection } from "@/components/styleguide/theme-colors-section";
 import { getServerDictionary } from "@/lib/i18n/server";
 import styles from "@/app/(marketing)/styleguide/styleguide.module.css";
 
@@ -40,6 +41,7 @@ export default async function StyleguidePage() {
       </div>
 
       <DrawingsSection copy={dictionary.styleguide} />
+      <ThemeColorsSection copy={dictionary.styleguide} locale={locale} />
       <PrimitivesSection copy={dictionary.styleguide} />
     </main>
   );

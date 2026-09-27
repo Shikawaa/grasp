@@ -4,11 +4,10 @@
 }
 
 .error {
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--font-caveat), cursive;
-  font-size: var(--font-note-mobile);
-  line-height: var(--line-note-mobile);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 .days {
@@ -46,8 +45,4 @@
     line-height: var(--grid-desktop);
   }
 
-  .error {
-    font-size: var(--font-note-desktop);
-    line-height: var(--line-note-desktop);
-  }
 }

@@ -1,13 +1,14 @@
-import { PenCircle } from "@/components/carnet/drawings";
+import { LoadingStroke, PenCircle } from "@/components/carnet/drawings";
 import { Highlight } from "@/components/carnet/highlight";
-import { LoadingStroke } from "@/components/carnet/drawings";
 import { Note } from "@/components/carnet/note";
+import { TapeButton } from "@/components/carnet/tape-button";
 import styles from "@/components/carnet/week-strip.module.css";
 
 export type WeekDay = {
+  done: boolean;
   id: string;
+  isToday: boolean;
   label: string;
-  status: "done" | "future" | "today";
 };
 
 type WeekStripProps =
@@ -18,7 +19,13 @@ type WeekStripProps =
     }
   | {
       label: string;
-      state: "empty" | "error" | "loading";
+      state: "empty" | "loading";
+    }
+  | {
+      label: string;
+      retryId: string;
+      retryLabel: string;
+      state: "error";
     };
 
 export function WeekStrip(props: WeekStripProps) {
@@ -32,9 +39,10 @@ export function WeekStrip(props: WeekStripProps) {
 
   if (props.state === "error") {
     return (
-      <p className={styles.error} role="alert">
-        <PenCircle variant="round">{props.label}</PenCircle>
-      </p>
+      <div className={styles.error} role="alert">
+        <Note>{props.label}</Note>
+        <TapeButton id={props.retryId}>{props.retryLabel}</TapeButton>
+      </div>
     );
   }
 
@@ -42,14 +50,14 @@ export function WeekStrip(props: WeekStripProps) {
     <div className={styles.wrapper}>
       <ol className={styles.days}>
         {props.days.map((day) => (
-          <li className={styles[day.status]} key={day.id}>
-            {day.status === "done" ? (
+          <li className={!day.done && !day.isToday ? styles.future : undefined} key={day.id}>
+            {day.isToday ? (
+              <PenCircle variant="round">
+                {day.done ? <Highlight>{day.label}</Highlight> : day.label}
+              </PenCircle>
+            ) : day.done ? (
               <Highlight>{day.label}</Highlight>
-            ) : day.status === "today" ? (
-              <PenCircle variant="round">{day.label}</PenCircle>
-            ) : (
-              day.label
-            )}
+            ) : day.label}
           </li>
         ))}
       </ol>

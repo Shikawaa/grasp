@@ -150,10 +150,17 @@
 }
 
 .loading path {
-  stroke: var(--ink-soft);
   stroke-width: var(--pen-strike-width);
   stroke-dasharray: var(--draw-path-length);
   animation: loading-stroke var(--dur-page) var(--ease-press) infinite alternate;
+}
+
+.loading--ink path {
+  stroke: var(--ink-soft);
+}
+
+.loading--on-ink path {
+  stroke: var(--on-ink);
 }
 
 .visually-hidden {

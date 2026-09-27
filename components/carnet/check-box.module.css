@@ -13,7 +13,7 @@
 
 .control:focus-visible,
 .control[data-state="focus"] {
-  outline: var(--border-thin) dashed var(--ink);
+  outline: calc(var(--border-thin) * 2) dashed var(--ink);
   outline-offset: var(--focus-offset);
 }
 

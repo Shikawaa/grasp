@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
+import type { TapeTone } from "@/components/carnet/tape";
 import styles from "@/components/carnet/highlight.module.css";
-
-type HighlightTone = "butter" | "lavender" | "sky";
 
 export function Highlight({
   animated = false,
@@ -13,7 +12,7 @@ export function Highlight({
   animated?: boolean;
   children: ReactNode;
   className?: string;
-  tone?: HighlightTone;
+  tone?: TapeTone;
 }) {
   return (
     <span

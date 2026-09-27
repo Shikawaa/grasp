@@ -1,47 +1,13 @@
 import type { ReactNode } from "react";
 import clsx from "clsx";
 import { getImperfection } from "@/lib/design/imperfections";
+import { themeColors, type ThemeTone } from "@/lib/design/theme-colors";
 import styles from "@/components/carnet/tape.module.css";
 
-export type TapeTone =
-  | "apricot"
-  | "brick"
-  | "butter"
-  | "glacier"
-  | "honey"
-  | "lagoon"
-  | "lavender"
-  | "lavender-gray"
-  | "lemon"
-  | "mauve"
-  | "mint"
-  | "periwinkle"
-  | "rose"
-  | "sage"
-  | "sand"
-  | "sky";
-
-const tapeTones: readonly TapeTone[] = [
-  "apricot",
-  "brick",
-  "butter",
-  "glacier",
-  "honey",
-  "lagoon",
-  "lavender",
-  "lavender-gray",
-  "lemon",
-  "mauve",
-  "mint",
-  "periwinkle",
-  "rose",
-  "sage",
-  "sand",
-  "sky",
-];
+export type TapeTone = ThemeTone;
 
 export function isTapeTone(value: string): value is TapeTone {
-  return tapeTones.some((tone) => tone === value);
+  return themeColors.some(({ tone }) => tone === value);
 }
 
 export function Tape({
