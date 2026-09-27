@@ -82,6 +82,7 @@
 ```
 app/
   (marketing)/welcome/page.tsx
+  (marketing)/styleguide/page.tsx # public, noindex
   demo/page.tsx
   (auth)/sign-in/page.tsx
   (app)/layout.tsx               # coque : barre du bas (mobile), intercalaires (desktop), garde onboarding
@@ -95,7 +96,6 @@ app/
   (app)/review/page.tsx
   (app)/capture/page.tsx
   (app)/settings/page.tsx
-  (app)/styleguide/page.tsx
   api/...                        # voir section 3
   opengraph-image.tsx
 lib/
