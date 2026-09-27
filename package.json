@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "npm run lint:design && npm run lint:styles && eslint .",
     "lint:design": "node scripts/check-design-tokens.mjs",
-    "lint:styles": "stylelint \"app/**/*.css\" \"styles/**/*.css\"",
+    "lint:styles": "stylelint \"app/**/*.css\" \"components/**/*.css\" \"styles/**/*.css\"",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:unit && npm run test:responsive && npm run test:visual",
     "test:unit": "vitest run",
