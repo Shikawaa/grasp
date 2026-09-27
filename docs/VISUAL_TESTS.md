@@ -23,7 +23,7 @@ En cas d'écart, consulter l'image attendue, l'image obtenue et le diff dans `te
 npm run test:visual:update
 ```
 
-3. Examiner chaque PNG modifié dans `tests/e2e/__snapshots__/darwin/`.
+3. Examiner chaque PNG de landing et de `/styleguide` modifié dans `tests/e2e/__snapshots__/darwin/`.
 4. Relancer `npm run test:visual` sans l'option de mise à jour.
 5. Placer les PNG validés dans un commit dédié dont le message explique le changement visuel.
 
